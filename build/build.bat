@@ -26,8 +26,8 @@ if %errorlevel% neq 0 (
 
 :: Clean old files
 echo [1/4] Cleaning old files...
-if exist ..\dist rmdir /s /q ..\dist
-if exist build rmdir /s /q build
+if exist dist rmdir /s /q dist 2>nul
+if exist build rmdir /s /q build 2>nul
 
 :: Build
 echo [2/4] Building EXE...
@@ -41,7 +41,7 @@ if %errorlevel% neq 0 (
 )
 
 :: Check result
-if not exist "..\dist\ZapretManager.exe" (
+if not exist "dist\ZapretManager.exe" (
     echo.
     echo [ERROR] EXE file not created!
     pause
@@ -50,7 +50,7 @@ if not exist "..\dist\ZapretManager.exe" (
 
 :: File info
 echo [3/4] Checking file...
-for %%A in ("..\dist\ZapretManager.exe") do (
+for %%A in ("dist\ZapretManager.exe") do (
     set size=%%~zA
     set /a sizeMB=!size! / 1048576
     echo Size: !sizeMB! MB
