@@ -154,6 +154,13 @@ class ZapretManager:
             # Включение TCP timestamps
             self._enable_tcp_timestamps()
 
+            # Определяем рабочую директорию
+            # В frozen mode winws2.exe должен запускаться из resources/ чтобы относительные пути работали
+            if self.config.IS_FROZEN:
+                cwd = self.config.RESOURCES_DIR
+            else:
+                cwd = self.config.BASE_DIR
+
             # Запуск winws2.exe в фоне
             logger.info(f"Запуск winws2.exe с пресетом: {self.config.ACTIVE_PRESET}")
             logger.info(f"Рабочая директория: {cwd}")
@@ -162,13 +169,6 @@ class ZapretManager:
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             startupinfo.wShowWindow = 0  # SW_HIDE
-
-            # Определяем рабочую директорию
-            # В frozen mode winws2.exe должен запускаться из resources/ чтобы относительные пути работали
-            if self.config.IS_FROZEN:
-                cwd = self.config.RESOURCES_DIR
-            else:
-                cwd = self.config.BASE_DIR
 
             # Создаем временный файл для логов winws2.exe
             import tempfile
