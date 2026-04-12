@@ -98,6 +98,18 @@ class ZapretTrayIcon(QSystemTrayIcon):
 
         self.menu.addSeparator()
 
+        # Показать логи
+        show_logs_action = QAction("📋 Показать логи", self.menu)
+        show_logs_action.triggered.connect(self.show_logs)
+        self.menu.addAction(show_logs_action)
+
+        # Диагностика
+        diagnostics_action = QAction("🔍 Диагностика", self.menu)
+        diagnostics_action.triggered.connect(self.show_diagnostics)
+        self.menu.addAction(diagnostics_action)
+
+        self.menu.addSeparator()
+
         # Автозапуск
         self.autostart_action = QAction("Автозапуск", self.menu)
         self.autostart_action.setCheckable(True)
@@ -125,21 +137,44 @@ class ZapretTrayIcon(QSystemTrayIcon):
         presets = self.preset_manager.list_presets()
         active_preset = self.preset_manager.get_active_preset()
 
-        for preset in presets[:20]:  # Ограничиваем 20 пресетами в меню
-            action = QAction(preset.name, self.presets_menu)
-            action.setCheckable(True)
+        # Популярные пресеты (топ-5)
+        popular_presets = [
+            "default-main",
+            "CrazyMaxs",
+            "Default v5",
+            "ALL TCP & UDP v1",
+            "Ростелеком"
+        ]
 
-            if active_preset and preset.name == active_preset.name:
-                action.setChecked(True)
+        # Добавляем популярные пресеты
+        for preset_name in popular_presets:
+            preset = next((p for p in presets if p.name == preset_name), None)
+            if preset:
+                action = QAction(preset.name, self.presets_menu)
+                action.setCheckable(True)
 
-            action.triggered.connect(lambda checked, p=preset.name: self.set_preset(p))
-            self.presets_menu.addAction(action)
+                if active_preset and preset.name == active_preset.name:
+                    action.setChecked(True)
 
-        if len(presets) > 20:
-            self.presets_menu.addSeparator()
-            more_action = QAction(f"...и еще {len(presets) - 20}", self.presets_menu)
-            more_action.setEnabled(False)
-            self.presets_menu.addAction(more_action)
+                action.triggered.connect(lambda checked, p=preset.name: self.set_preset(p))
+                self.presets_menu.addAction(action)
+
+        # Разделитель
+        self.presets_menu.addSeparator()
+
+        # Все остальные пресеты в подменю
+        all_presets_menu = self.presets_menu.addMenu("📋 Все пресеты")
+
+        for preset in presets:
+            if preset.name not in popular_presets:
+                action = QAction(preset.name, all_presets_menu)
+                action.setCheckable(True)
+
+                if active_preset and preset.name == active_preset.name:
+                    action.setChecked(True)
+
+                action.triggered.connect(lambda checked, p=preset.name: self.set_preset(p))
+                all_presets_menu.addAction(action)
 
     def on_tray_activated(self, reason):
         """Обработка кликов по иконке"""
@@ -232,10 +267,30 @@ class ZapretTrayIcon(QSystemTrayIcon):
                 self.showMessage(Config.APP_NAME, "Запущен", QSystemTrayIcon.Information, 2000)
                 QTimer.singleShot(2000, self.update_status)
             else:
+                # Показываем детальную ошибку
+                import tempfile
+                log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "winws2.log"
+                error_msg = "Не удалось запустить zapret.\n\n"
+
+                # Пытаемся прочитать логи winws2.exe
+                if log_file.exists():
+                    try:
+                        log_content = log_file.read_text(encoding='utf-8', errors='ignore')
+                        if log_content.strip():
+                            error_msg += f"Вывод winws2.exe:\n{log_content[:500]}\n\n"
+                    except:
+                        pass
+
+                error_msg += "Возможные причины:\n"
+                error_msg += "• Отсутствуют права администратора\n"
+                error_msg += "• Неверный пресет или отсутствуют файлы списков\n"
+                error_msg += "• Конфликт с другими программами (VPN, антивирус)\n\n"
+                error_msg += "Проверьте логи: Меню → Показать логи"
+
                 QMessageBox.critical(
                     None,
-                    "Ошибка",
-                    "Не удалось запустить zapret.\n\nПроверьте логи для подробностей."
+                    "Ошибка запуска",
+                    error_msg
                 )
 
         except Exception as e:
@@ -362,6 +417,95 @@ class ZapretTrayIcon(QSystemTrayIcon):
             "Главное окно будет доступно в следующей версии.\n\n"
             "Пока используйте меню системного трея для управления."
         )
+
+    def show_logs(self):
+        """Показать логи приложения"""
+        try:
+            import tempfile
+            import subprocess
+
+            log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "app.log"
+
+            if not log_file.exists():
+                QMessageBox.warning(
+                    None,
+                    "Логи не найдены",
+                    f"Файл логов не найден:\n{log_file}"
+                )
+                return
+
+            # Открываем в блокноте
+            subprocess.Popen(['notepad.exe', str(log_file)])
+
+        except Exception as e:
+            logger.error(f"Ошибка открытия логов: {e}", exc_info=True)
+            QMessageBox.critical(None, "Ошибка", f"Не удалось открыть логи:\n{e}")
+
+    def show_diagnostics(self):
+        """Показать диагностику системы"""
+        try:
+            from core.privileges import PrivilegesManager
+            import tempfile
+
+            # Собираем информацию
+            info = []
+            info.append("=== Диагностика Zapret Manager ===\n")
+
+            # Права администратора
+            is_admin = PrivilegesManager.is_admin()
+            info.append(f"Права администратора: {'✓ Да' if is_admin else '✗ НЕТ (ТРЕБУЕТСЯ!)'}")
+
+            # Статус zapret
+            status = self.zapret_manager.get_status()
+            info.append(f"Статус zapret: {'✓ Запущен' if status['running'] else '✗ Остановлен'}")
+            if status['running']:
+                info.append(f"  PID: {status['pid']}")
+                info.append(f"  Uptime: {status['uptime']}")
+
+            # Активный пресет
+            info.append(f"Активный пресет: {status['preset']}")
+
+            # Пути
+            info.append(f"\nБазовая директория: {Config.BASE_DIR}")
+            info.append(f"Режим: {'EXE (frozen)' if Config.IS_FROZEN else 'Python скрипт'}")
+            info.append(f"winws2.exe: {'✓' if Config.WINWS2_EXE.exists() else '✗ НЕ НАЙДЕН'} {Config.WINWS2_EXE}")
+
+            # Логи
+            log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "app.log"
+            info.append(f"\nЛоги приложения: {log_file}")
+            info.append(f"  Существует: {'✓' if log_file.exists() else '✗'}")
+
+            winws2_log = Path(tempfile.gettempdir()) / "ZapretManager" / "winws2.log"
+            info.append(f"Логи winws2.exe: {winws2_log}")
+            info.append(f"  Существует: {'✓' if winws2_log.exists() else '✗'}")
+
+            # Процессы
+            info.append("\n=== Запущенные процессы ===")
+            try:
+                result = subprocess.run(
+                    ['tasklist', '/FI', 'IMAGENAME eq winws2.exe', '/NH'],
+                    capture_output=True,
+                    text=True,
+                    creationflags=subprocess.CREATE_NO_WINDOW,
+                    timeout=5
+                )
+                if 'winws2.exe' in result.stdout:
+                    info.append("✓ winws2.exe запущен")
+                else:
+                    info.append("✗ winws2.exe не запущен")
+            except:
+                info.append("? Не удалось проверить")
+
+            # Показываем результат
+            QMessageBox.information(
+                None,
+                "Диагностика",
+                "\n".join(info)
+            )
+
+        except Exception as e:
+            logger.error(f"Ошибка диагностики: {e}", exc_info=True)
+            QMessageBox.critical(None, "Ошибка", f"Не удалось выполнить диагностику:\n{e}")
 
     def show_about(self):
         """Показать окно 'О программе'"""

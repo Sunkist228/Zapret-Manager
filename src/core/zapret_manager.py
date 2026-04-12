@@ -156,34 +156,66 @@ class ZapretManager:
 
             # Запуск winws2.exe в фоне
             logger.info(f"Запуск winws2.exe с пресетом: {self.config.ACTIVE_PRESET}")
+            logger.info(f"Рабочая директория: {cwd}")
+            logger.info(f"Команда: {self.config.WINWS2_EXE} @{self.config.ACTIVE_PRESET}")
 
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             startupinfo.wShowWindow = 0  # SW_HIDE
 
             # Определяем рабочую директорию
+            # В frozen mode winws2.exe должен запускаться из resources/ чтобы относительные пути работали
             if self.config.IS_FROZEN:
-                cwd = self.config.BASE_DIR
+                cwd = self.config.RESOURCES_DIR
             else:
                 cwd = self.config.BASE_DIR
 
-            process = subprocess.Popen(
-                [str(self.config.WINWS2_EXE), f'@{self.config.ACTIVE_PRESET}'],
-                cwd=str(cwd),
-                creationflags=subprocess.CREATE_NO_WINDOW | subprocess.DETACHED_PROCESS,
-                startupinfo=startupinfo,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                stdin=subprocess.DEVNULL
-            )
+            # Создаем временный файл для логов winws2.exe
+            import tempfile
+            log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "winws2.log"
+            log_file.parent.mkdir(parents=True, exist_ok=True)
+
+            # Запускаем с захватом вывода
+            with open(log_file, 'w', encoding='utf-8') as log_f:
+                process = subprocess.Popen(
+                    [str(self.config.WINWS2_EXE), f'@{self.config.ACTIVE_PRESET}'],
+                    cwd=str(cwd),
+                    creationflags=subprocess.CREATE_NO_WINDOW | subprocess.DETACHED_PROCESS,
+                    startupinfo=startupinfo,
+                    stdout=log_f,
+                    stderr=subprocess.STDOUT,
+                    stdin=subprocess.DEVNULL
+                )
 
             logger.info(f"winws2.exe запущен, PID: {process.pid}")
+            logger.info(f"Логи winws2.exe: {log_file}")
             self.process_start_time = datetime.now()
 
             # Проверяем что процесс действительно запустился
             time.sleep(2)
+
+            # Проверяем код возврата
+            return_code = process.poll()
+            if return_code is not None:
+                logger.error(f"winws2.exe завершился с кодом: {return_code}")
+                # Читаем логи для диагностики
+                try:
+                    if log_file.exists():
+                        log_content = log_file.read_text(encoding='utf-8', errors='ignore')
+                        logger.error(f"Вывод winws2.exe:\n{log_content}")
+                except Exception as e:
+                    logger.error(f"Не удалось прочитать логи: {e}")
+                return False
+
             if not self.is_running():
                 logger.error("winws2.exe не удалось запустить")
+                # Читаем логи для диагностики
+                try:
+                    if log_file.exists():
+                        log_content = log_file.read_text(encoding='utf-8', errors='ignore')
+                        logger.error(f"Вывод winws2.exe:\n{log_content}")
+                except Exception as e:
+                    logger.error(f"Не удалось прочитать логи: {e}")
                 return False
 
             return True

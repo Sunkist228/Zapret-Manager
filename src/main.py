@@ -30,7 +30,7 @@ if sys.platform == 'win32' and sys.stdout is not None:
         pass
 
 from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSharedMemory
 
 from utils.config import Config
 from utils.logger import logger
@@ -46,32 +46,52 @@ def main():
         logger.info(f"Режим: {'EXE' if Config.IS_FROZEN else 'Python скрипт'}")
         logger.info(f"Базовая директория: {Config.BASE_DIR}")
 
-        # Проверка прав администратора
+        # Создаем приложение для проверки единственного экземпляра
+        app = QApplication(sys.argv)
+
+        # Проверка единственного экземпляра
+        shared_memory = QSharedMemory("ZapretManagerSingleInstance")
+        if not shared_memory.create(1):
+            logger.warning("Приложение уже запущено")
+            QMessageBox.warning(
+                None,
+                "Приложение уже запущено",
+                "Zapret Manager уже запущен.\n\nПроверьте системный трей."
+            )
+            sys.exit(0)
+
+        # Проверка прав администратора (ОБЯЗАТЕЛЬНО)
         if not PrivilegesManager.is_admin():
             logger.warning("Требуются права администратора")
 
-            # Показываем предупреждение
-            app = QApplication(sys.argv)
-            reply = QMessageBox.question(
+            # Показываем предупреждение с обязательным запросом прав
+            reply = QMessageBox.critical(
                 None,
                 "Требуются права администратора",
                 "Для работы с сетевым стеком Windows требуются права администратора.\n\n"
+                "Zapret Manager не может работать без прав администратора.\n\n"
                 "Перезапустить приложение с правами администратора?",
-                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes | QMessageBox.Cancel,
                 QMessageBox.Yes
             )
 
             if reply == QMessageBox.Yes:
+                logger.info("Перезапуск с правами администратора")
                 PrivilegesManager.request_admin_rights()
                 sys.exit(0)
             else:
-                logger.info("Пользователь отказался от прав администратора")
+                logger.info("Пользователь отменил запрос прав администратора")
+                QMessageBox.information(
+                    None,
+                    "Приложение не может запуститься",
+                    "Zapret Manager требует права администратора для работы.\n\n"
+                    "Запустите приложение правой кнопкой мыши → 'Запуск от имени администратора'"
+                )
                 sys.exit(1)
 
         # Проверка ресурсов
         if not Config.validate_resources():
             logger.error("Не все ресурсы найдены")
-            app = QApplication(sys.argv)
             QMessageBox.critical(
                 None,
                 "Ошибка",
@@ -82,7 +102,6 @@ def main():
             sys.exit(1)
 
         # Создаем приложение
-        app = QApplication(sys.argv)
         app.setQuitOnLastWindowClosed(False)
         app.setApplicationName(Config.APP_NAME)
         app.setApplicationVersion(Config.VERSION)
@@ -100,7 +119,6 @@ def main():
         logger.error(f"Критическая ошибка: {e}", exc_info=True)
 
         try:
-            app = QApplication(sys.argv)
             QMessageBox.critical(
                 None,
                 "Критическая ошибка",
