@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(tasklist)",
+      "Bash(./test_tray.bat:*)",
+      "Bash(ls -lh *.py *.bat *.md)",
+      "Bash(./run_exe.bat:*)",
+      "Bash(taskkill:*)",
+      "Bash(./dist/ZapretTray.exe:*)",
+      "Bash(findstr /I \"ZapretTray\")",
+      "Bash(./ZapretTray.exe)",
+      "Bash(cp -r presets lists lua src/resources/)",
+      "Bash(cp exe/winws2.exe exe/WinDivert*.dll exe/WinDivert*.sys exe/cygwin1.dll src/resources/bin/)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(find src:*)",
+      "Bash(find . -name \"*.py\" -type f -exec grep -l \"from \\\\.\\\\.\" {} \\\\;)"
+    ]
+  }
+}

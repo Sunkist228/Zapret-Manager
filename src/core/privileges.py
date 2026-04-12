@@ -7,8 +7,9 @@ import ctypes
 import sys
 import subprocess
 from typing import Optional
+import logging
 
-from ..utils.logger import logger
+logger = logging.getLogger("ZapretManager")
 
 
 class PrivilegesManager:

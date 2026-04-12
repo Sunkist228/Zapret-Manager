@@ -3,15 +3,21 @@
 Системный трей для Zapret Manager
 """
 
+import sys
+import os
+
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from PyQt5.QtWidgets import (QSystemTrayIcon, QMenu, QAction, QMessageBox)
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QFont
 from PyQt5.QtCore import QTimer, Qt
 
-from ..core.zapret_manager import ZapretManager
-from ..core.preset_manager import PresetManager
-from ..core.autostart import AutostartManager
-from ..utils.config import Config
-from ..utils.logger import logger
+from core.zapret_manager import ZapretManager
+from core.preset_manager import PresetManager
+from core.autostart import AutostartManager
+from utils.config import Config
+from utils.logger import logger
 
 
 class ZapretTrayIcon(QSystemTrayIcon):

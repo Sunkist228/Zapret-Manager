@@ -21,10 +21,10 @@ if sys.platform == 'win32' and sys.stdout is not None:
 from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import Qt
 
-from src.utils.config import Config
-from src.utils.logger import logger
-from src.core.privileges import PrivilegesManager
-from src.gui.tray_icon import ZapretTrayIcon
+from utils.config import Config
+from utils.logger import logger
+from core.privileges import PrivilegesManager
+from gui.tray_icon import ZapretTrayIcon
 
 
 def main():

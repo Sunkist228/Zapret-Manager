@@ -5,10 +5,15 @@
 
 from pathlib import Path
 from typing import List, Optional
+import sys
+import os
 
-from ..utils.config import Config
-from ..utils.logger import logger
-from ..utils.validators import Validators
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils.config import Config
+from utils.logger import logger
+from utils.validators import Validators
 
 
 class ListManager:

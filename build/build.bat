@@ -1,67 +1,68 @@
 @echo off
-chcp 65001 >nul
+setlocal EnableDelayedExpansion
+
 echo ========================================
-echo   Сборка Zapret Manager
+echo   Build Zapret Manager
 echo ========================================
 echo.
 
-:: Проверка Python
+:: Check Python
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ОШИБКА] Python не найден!
-    echo Установите Python 3.8+ и добавьте в PATH
+    echo [ERROR] Python not found!
+    echo Install Python 3.8+ and add to PATH
     pause
     exit /b 1
 )
 
-:: Проверка PyInstaller
+:: Check PyInstaller
 python -c "import PyInstaller" >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ОШИБКА] PyInstaller не установлен!
-    echo Установите: pip install pyinstaller
+    echo [ERROR] PyInstaller not installed!
+    echo Install: pip install pyinstaller
     pause
     exit /b 1
 )
 
-:: Очистка старых файлов
-echo [1/4] Очистка старых файлов...
-if exist dist rmdir /s /q dist
+:: Clean old files
+echo [1/4] Cleaning old files...
+if exist ..\dist rmdir /s /q ..\dist
 if exist build rmdir /s /q build
 
-:: Сборка
-echo [2/4] Сборка EXE...
+:: Build
+echo [2/4] Building EXE...
 pyinstaller zapret_manager.spec
 
 if %errorlevel% neq 0 (
     echo.
-    echo [ОШИБКА] Сборка не удалась!
+    echo [ERROR] Build failed!
     pause
     exit /b 1
 )
 
-:: Проверка результата
+:: Check result
 if not exist "..\dist\ZapretManager.exe" (
     echo.
-    echo [ОШИБКА] EXE файл не создан!
+    echo [ERROR] EXE file not created!
     pause
     exit /b 1
 )
 
-:: Информация о файле
-echo [3/4] Проверка файла...
+:: File info
+echo [3/4] Checking file...
 for %%A in ("..\dist\ZapretManager.exe") do (
     set size=%%~zA
     set /a sizeMB=!size! / 1048576
-    echo Размер: !sizeMB! MB
+    echo Size: !sizeMB! MB
 )
 
-echo [4/4] Готово!
+echo [4/4] Done!
 echo.
 echo ========================================
-echo   Файл создан: dist\ZapretManager.exe
+echo   File created: dist\ZapretManager.exe
 echo ========================================
 echo.
-echo Для запуска: dist\ZapretManager.exe
-echo (требуются права администратора)
+echo To run: dist\ZapretManager.exe
+echo (requires administrator rights)
 echo.
 pause
