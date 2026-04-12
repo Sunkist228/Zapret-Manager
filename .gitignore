@@ -44,12 +44,17 @@ Thumbs.db
 
 # Project specific
 dist/
-build/
 *.exe
 *.pyc
 temp/
 tmp/
 
-# Keep important files
-!build/zapret_manager.spec
-!build/build.bat
+# PyInstaller build artifacts (но не конфигурацию)
+build/build/
+build/dist/
+
+# Keep build configuration
+!build/
+!build/*.spec
+!build/*.bat
+!build/*.md
