@@ -5,7 +5,18 @@ Zapret Manager - главная точка входа
 """
 
 import sys
+import os
 from pathlib import Path
+
+# Добавляем текущую директорию в путь для импортов
+if getattr(sys, 'frozen', False):
+    # Если запущен как EXE
+    application_path = Path(sys._MEIPASS)
+    sys.path.insert(0, str(application_path))
+else:
+    # Если запущен как скрипт
+    application_path = Path(__file__).parent
+    sys.path.insert(0, str(application_path))
 
 # Исправление кодировки для Windows
 if sys.platform == 'win32' and sys.stdout is not None:

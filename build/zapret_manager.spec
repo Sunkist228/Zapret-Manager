@@ -1,18 +1,25 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+from pathlib import Path
+
+# Определяем базовую директорию
+spec_root = Path(SPECPATH).parent
+src_dir = spec_root / 'src'
+
 block_cipher = None
 
 a = Analysis(
-    ['../src/main.py'],
-    pathex=[],
+    [str(src_dir / 'main.py')],
+    pathex=[str(src_dir)],
     binaries=[],
     datas=[
-        ('../src/resources/presets', 'resources/presets'),
-        ('../src/resources/lists', 'resources/lists'),
-        ('../src/resources/lua', 'resources/lua'),
-        ('../src/resources/bin', 'resources/bin'),
+        (str(src_dir / 'resources' / 'presets'), 'resources/presets'),
+        (str(src_dir / 'resources' / 'lists'), 'resources/lists'),
+        (str(src_dir / 'resources' / 'lua'), 'resources/lua'),
+        (str(src_dir / 'resources' / 'bin'), 'resources/bin'),
     ],
-    hiddenimports=['PyQt5'],
+    hiddenimports=['PyQt5', 'PyQt5.QtCore', 'PyQt5.QtGui', 'PyQt5.QtWidgets'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
