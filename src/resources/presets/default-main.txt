@@ -1,0 +1,17 @@
+# Default preset for Discord, YouTube, Telegram
+# Минимальный рабочий пресет с LUA конфигурацией
+
+--lua-init=@lua/zapret-lib.lua
+--lua-init=@lua/zapret-antidpi.lua
+--lua-init=@lua/zapret-auto.lua
+
+--ctrack-disable=0
+--ipcache-lifetime=7200
+--ipcache-hostname=1
+
+--wf-tcp-out=80,443
+--wf-udp-out=443,50000-65535
+
+--hostlist=lists/discord.txt
+--hostlist=lists/youtube.txt
+--hostlist=lists/telegram.txt

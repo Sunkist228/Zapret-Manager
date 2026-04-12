@@ -18,10 +18,9 @@
   <a target="code" href="///C:/zapret/zapret2/src/main.py" type="text/plain"><tt>main.py</tt></a>
 <span class="moduletype">Script</span>  <div class="import">
 imports:
-    <a href="#'utils.config'">'utils.config'</a>
- &#8226;   <a href="#'utils.logger'">'utils.logger'</a>
- &#8226;   <a href="#PyQt5">PyQt5</a>
+    <a href="#PyQt5">PyQt5</a>
  &#8226;   <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
+ &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
  &#8226;   <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_weakrefset">_weakrefset</a>
@@ -29,7 +28,7 @@ imports:
  &#8226;   <a href="#codecs">codecs</a>
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#copyreg">copyreg</a>
- &#8226;   <a href="#core">core</a>
+ &#8226;   <a href="#core.privileges">core.privileges</a>
  &#8226;   <a href="#encodings">encodings</a>
  &#8226;   <a href="#encodings._win_cp_codecs">encodings._win_cp_codecs</a>
  &#8226;   <a href="#encodings.aliases">encodings.aliases</a>
@@ -156,7 +155,7 @@ imports:
  &#8226;   <a href="#enum">enum</a>
  &#8226;   <a href="#functools">functools</a>
  &#8226;   <a href="#genericpath">genericpath</a>
- &#8226;   <a href="#gui">gui</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
  &#8226;   <a href="#heapq">heapq</a>
  &#8226;   <a href="#io">io</a>
  &#8226;   <a href="#keyword">keyword</a>
@@ -183,6 +182,8 @@ imports:
  &#8226;   <a href="#sys">sys</a>
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#types">types</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -265,28 +266,6 @@ imported by:
 </div>
 
 <div class="node">
-  <a name="'utils.config'"></a>
-  <a target="code" href="" type="text/plain"><tt>'utils.config'</tt></a>
-<span class="moduletype">MissingModule</span>  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="'utils.logger'"></a>
-  <a target="code" href="" type="text/plain"><tt>'utils.logger'</tt></a>
-<span class="moduletype">MissingModule</span>  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
-
-  </div>
-
-</div>
-
-<div class="node">
   <a name="PyQt5"></a>
   <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/site-packages/PyQt5/__init__.py" type="text/plain"><tt>PyQt5</tt></a>
 <span class="moduletype">Package</span>  <div class="import">
@@ -328,6 +307,7 @@ imported by:
     <a href="#PyQt5">PyQt5</a>
  &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
  &#8226;   <a href="#main.py">main.py</a>
 
   </div>
@@ -350,6 +330,8 @@ imports:
 imported by:
     <a href="#PyQt5">PyQt5</a>
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -371,6 +353,7 @@ imports:
 imported by:
     <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
  &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
  &#8226;   <a href="#main.py">main.py</a>
 
   </div>
@@ -415,6 +398,26 @@ imported by:
   <tt>_abc</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#abc">abc</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="_aix_support"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/_aix_support.py" type="text/plain"><tt>_aix_support</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#sysconfig">sysconfig</a>
 
   </div>
 
@@ -667,6 +670,22 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="_ctypes"></a>
+  <tt>_ctypes</tt> <span class="moduletype"><tt>C:\Users\korki\AppData\Local\Programs\Python\Python314\DLLs\_ctypes.pyd</tt></span>  <div class="import">
+imports:
+    <a href="#ctypes._layout">ctypes._layout</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#ctypes._layout">ctypes._layout</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="_datetime"></a>
   <tt>_datetime</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imports:
@@ -734,6 +753,7 @@ imported by:
   <tt>_hashlib</tt> <span class="moduletype"><tt>C:\Users\korki\AppData\Local\Programs\Python\Python314\DLLs\_hashlib.pyd</tt></span>  <div class="import">
 imported by:
     <a href="#hashlib">hashlib</a>
+ &#8226;   <a href="#hmac">hmac</a>
 
   </div>
 
@@ -744,6 +764,16 @@ imported by:
   <tt>_heapq</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#heapq">heapq</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="_hmac"></a>
+  <tt>_hmac</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
+imported by:
+    <a href="#hmac">hmac</a>
 
   </div>
 
@@ -880,7 +910,8 @@ imported by:
   <a name="_operator"></a>
   <tt>_operator</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
-    <a href="#operator">operator</a>
+    <a href="#hmac">hmac</a>
+ &#8226;   <a href="#operator">operator</a>
 
   </div>
 
@@ -1039,6 +1070,16 @@ imports:
 imported by:
     <a href="#_pyi_rth_utils">_pyi_rth_utils</a>
  &#8226;   <a href="#pyi_rth_pyqt5.py">pyi_rth_pyqt5.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="_queue"></a>
+  <tt>_queue</tt> <span class="moduletype"><tt>C:\Users\korki\AppData\Local\Programs\Python\Python314\DLLs\_queue.pyd</tt></span>  <div class="import">
+imported by:
+    <a href="#queue">queue</a>
 
   </div>
 
@@ -1225,6 +1266,16 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="_sysconfig"></a>
+  <tt>_sysconfig</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
+imported by:
+    <a href="#sysconfig">sysconfig</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="_thread"></a>
   <tt>_thread</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
@@ -1349,6 +1400,7 @@ imported by:
  &#8226;   <a href="#pathlib._os">pathlib._os</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
 
   </div>
 
@@ -1524,6 +1576,8 @@ imported by:
  &#8226;   <a href="#email.base64mime">email.base64mime</a>
  &#8226;   <a href="#email.encoders">email.encoders</a>
  &#8226;   <a href="#encodings.base64_codec">encodings.base64_codec</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
@@ -1839,6 +1893,7 @@ imported by:
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#pprint">pprint</a>
+ &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#selectors">selectors</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#ssl">ssl</a>
@@ -1976,7 +2031,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#_ast_unparse">_ast_unparse</a>
+    <a href="#_aix_support">_aix_support</a>
+ &#8226;   <a href="#_ast_unparse">_ast_unparse</a>
  &#8226;   <a href="#_threading_local">_threading_local</a>
  &#8226;   <a href="#glob">glob</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
@@ -2029,6 +2085,8 @@ imported by:
  &#8226;   <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -2060,10 +2118,109 @@ imported by:
 
 <div class="node">
   <a name="core"></a>
-  <a target="code" href="" type="text/plain"><tt>core</tt></a>
-<span class="moduletype">MissingModule</span>  <div class="import">
+  <a target="code" href="///C:/zapret/zapret2/src/core/__init__.py" type="text/plain"><tt>core</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
 imported by:
-    <a href="#main.py">main.py</a>
+    <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.privileges">core.privileges</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="core.autostart"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/core/autostart.py" type="text/plain"><tt>core.autostart</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#core">core</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#gui.tray_icon">gui.tray_icon</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="core.preset_manager"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/core/preset_manager.py" type="text/plain"><tt>core.preset_manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#core">core</a>
+ &#8226;   <a href="#dataclasses">dataclasses</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#shutil">shutil</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
+ &#8226;   <a href="#utils.validators">utils.validators</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#gui.tray_icon">gui.tray_icon</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="core.privileges"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/core/privileges.py" type="text/plain"><tt>core.privileges</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#core">core</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#typing">typing</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#gui.tray_icon">gui.tray_icon</a>
+ &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="core.zapret_manager"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/core/zapret_manager.py" type="text/plain"><tt>core.zapret_manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#core">core</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tempfile">tempfile</a>
+ &#8226;   <a href="#time">time</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#gui.tray_icon">gui.tray_icon</a>
 
   </div>
 
@@ -2083,6 +2240,68 @@ imports:
   <div class="import">
 imported by:
     <a href="#importlib.metadata">importlib.metadata</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ctypes"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/ctypes/__init__.py" type="text/plain"><tt>ctypes</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#_ctypes">_ctypes</a>
+ &#8226;   <a href="#ctypes._endian">ctypes._endian</a>
+ &#8226;   <a href="#nt">nt</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#struct">struct</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
+ &#8226;   <a href="#types">types</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.privileges">core.privileges</a>
+ &#8226;   <a href="#ctypes._endian">ctypes._endian</a>
+ &#8226;   <a href="#ctypes._layout">ctypes._layout</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ctypes._endian"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/ctypes/_endian.py" type="text/plain"><tt>ctypes._endian</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#sys">sys</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ctypes">ctypes</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ctypes._layout"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/ctypes/_layout.py" type="text/plain"><tt>ctypes._layout</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_ctypes">_ctypes</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#_ctypes">_ctypes</a>
 
   </div>
 
@@ -2109,6 +2328,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#_colorize">_colorize</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
  &#8226;   <a href="#pprint">pprint</a>
 
   </div>
@@ -2132,8 +2352,10 @@ imported by:
  &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
  &#8226;   <a href="#_strptime">_strptime</a>
  &#8226;   <a href="#calendar">calendar</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -2344,6 +2566,7 @@ imports:
 imported by:
     <a href="#email.charset">email.charset</a>
  &#8226;   <a href="#email.header">email.header</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -2481,6 +2704,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#email.message">email.message</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -2574,6 +2798,8 @@ imported by:
  &#8226;   <a href="#email.policy">email.policy</a>
  &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#importlib.metadata._adapters">importlib.metadata._adapters</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -2667,6 +2893,8 @@ imported by:
  &#8226;   <a href="#email.headerregistry">email.headerregistry</a>
  &#8226;   <a href="#email.message">email.message</a>
  &#8226;   <a href="#email.policy">email.policy</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
@@ -5497,8 +5725,38 @@ imported by:
 
 <div class="node">
   <a name="gui"></a>
-  <a target="code" href="" type="text/plain"><tt>gui</tt></a>
-<span class="moduletype">MissingModule</span>  <div class="import">
+  <a target="code" href="///C:/zapret/zapret2/src/gui/__init__.py" type="text/plain"><tt>gui</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imported by:
+    <a href="#gui.tray_icon">gui.tray_icon</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="gui.tray_icon"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/gui/tray_icon.py" type="text/plain"><tt>gui.tray_icon</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
+ &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
+ &#8226;   <a href="#PyQt5.QtWidgets">PyQt5.QtWidgets</a>
+ &#8226;   <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.privileges">core.privileges</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#gui">gui</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tempfile">tempfile</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
+
+  </div>
+  <div class="import">
 imported by:
     <a href="#main.py">main.py</a>
 
@@ -5550,7 +5808,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#random">random</a>
+    <a href="#hmac">hmac</a>
+ &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
@@ -5570,6 +5829,27 @@ imported by:
     <a href="#collections">collections</a>
  &#8226;   <a href="#difflib">difflib</a>
  &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#queue">queue</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="hmac"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/hmac.py" type="text/plain"><tt>hmac</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_hashlib">_hashlib</a>
+ &#8226;   <a href="#_hmac">_hmac</a>
+ &#8226;   <a href="#_operator">_operator</a>
+ &#8226;   <a href="#hashlib">hashlib</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#smtplib">smtplib</a>
 
   </div>
 
@@ -5613,6 +5893,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
@@ -5680,6 +5961,7 @@ imported by:
  &#8226;   <a href="#importlib.util">importlib.util</a>
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
 
   </div>
 
@@ -5796,6 +6078,7 @@ imported by:
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#py_compile">py_compile</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
 
   </div>
 
@@ -6163,6 +6446,7 @@ imports:
 imported by:
     <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#py_compile">py_compile</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
  &#8226;   <a href="#zipfile">zipfile</a>
 
   </div>
@@ -6246,6 +6530,7 @@ imported by:
  &#8226;   <a href="#importlib.resources._adapters">importlib.resources._adapters</a>
  &#8226;   <a href="#importlib.resources.abc">importlib.resources.abc</a>
  &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#lzma">lzma</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#os">os</a>
@@ -6254,6 +6539,7 @@ imported by:
  &#8226;   <a href="#pickle">pickle</a>
  &#8226;   <a href="#pprint">pprint</a>
  &#8226;   <a href="#quopri">quopri</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#tarfile">tarfile</a>
@@ -6282,6 +6568,7 @@ imports:
 imported by:
     <a href="#urllib.parse">urllib.parse</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
+ &#8226;   <a href="#utils.validators">utils.validators</a>
 
   </div>
 
@@ -6488,8 +6775,46 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#hashlib">hashlib</a>
+    <a href="#core.privileges">core.privileges</a>
+ &#8226;   <a href="#hashlib">hashlib</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="logging.handlers"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/logging/handlers.py" type="text/plain"><tt>logging.handlers</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#base64">base64</a>
+ &#8226;   <a href="#copy">copy</a>
+ &#8226;   <a href="#email.message">email.message</a>
+ &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#pickle">pickle</a>
+ &#8226;   <a href="#queue">queue</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
+ &#8226;   <a href="#struct">struct</a>
+ &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#time">time</a>
+ &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#win32evtlog">win32evtlog</a>
+ &#8226;   <a href="#win32evtlogutil">win32evtlogutil</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#utils.logger">utils.logger</a>
 
   </div>
 
@@ -6603,6 +6928,7 @@ imported by:
   <tt>nt</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#_colorize">_colorize</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
  &#8226;   <a href="#importlib._bootstrap_external">importlib._bootstrap_external</a>
  &#8226;   <a href="#ntpath">ntpath</a>
  &#8226;   <a href="#os">os</a>
@@ -6727,6 +7053,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#PyQt5">PyQt5</a>
+ &#8226;   <a href="#_aix_support">_aix_support</a>
  &#8226;   <a href="#_colorize">_colorize</a>
  &#8226;   <a href="#_pyi_rth_utils">_pyi_rth_utils</a>
  &#8226;   <a href="#_pyi_rth_utils.qt">_pyi_rth_utils.qt</a>
@@ -6735,6 +7062,10 @@ imported by:
  &#8226;   <a href="#bz2">bz2</a>
  &#8226;   <a href="#compression.zstd._zstdfile">compression.zstd._zstdfile</a>
  &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#fnmatch">fnmatch</a>
  &#8226;   <a href="#functools">functools</a>
@@ -6742,6 +7073,7 @@ imported by:
  &#8226;   <a href="#getopt">getopt</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#glob">glob</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
  &#8226;   <a href="#gzip">gzip</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
@@ -6752,6 +7084,7 @@ imported by:
  &#8226;   <a href="#linecache">linecache</a>
  &#8226;   <a href="#locale">locale</a>
  &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#lzma">lzma</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#mimetypes">mimetypes</a>
@@ -6770,6 +7103,7 @@ imported by:
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#tempfile">tempfile</a>
  &#8226;   <a href="#threading">threading</a>
@@ -6795,6 +7129,7 @@ imported by:
     <a href="#os">os</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#py_compile">py_compile</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
  &#8226;   <a href="#tracemalloc">tracemalloc</a>
 
   </div>
@@ -6829,12 +7164,19 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#importlib.metadata">importlib.metadata</a>
+    <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
+ &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
  &#8226;   <a href="#importlib.resources._common">importlib.resources._common</a>
  &#8226;   <a href="#importlib.resources.abc">importlib.resources.abc</a>
  &#8226;   <a href="#importlib.resources.readers">importlib.resources.readers</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#pathlib._os">pathlib._os</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
+ &#8226;   <a href="#utils.validators">utils.validators</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
 
   </div>
@@ -6886,6 +7228,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#logging">logging</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#tracemalloc">tracemalloc</a>
 
   </div>
@@ -7042,6 +7385,27 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="queue"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/queue.py" type="text/plain"><tt>queue</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_queue">_queue</a>
+ &#8226;   <a href="#collections">collections</a>
+ &#8226;   <a href="#heapq">heapq</a>
+ &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#time">time</a>
+ &#8226;   <a href="#types">types</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#logging.handlers">logging.handlers</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="quopri"></a>
   <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/quopri.py" type="text/plain"><tt>quopri</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -7149,6 +7513,7 @@ imported by:
  &#8226;   <a href="#json.scanner">json.scanner</a>
  &#8226;   <a href="#locale">locale</a>
  &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#ntpath">ntpath</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
@@ -7159,16 +7524,19 @@ imported by:
  &#8226;   <a href="#re._compiler">re._compiler</a>
  &#8226;   <a href="#re._constants">re._constants</a>
  &#8226;   <a href="#re._parser">re._parser</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
  &#8226;   <a href="#string">string</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#textwrap">textwrap</a>
  &#8226;   <a href="#tokenize">tokenize</a>
  &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
+ &#8226;   <a href="#utils.validators">utils.validators</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
  &#8226;   <a href="#zipfile._path.glob">zipfile._path.glob</a>
 
@@ -7355,6 +7723,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#argparse">argparse</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
  &#8226;   <a href="#pathlib">pathlib</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#tempfile">tempfile</a>
@@ -7382,6 +7751,34 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="smtplib"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/smtplib.py" type="text/plain"><tt>smtplib</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#base64">base64</a>
+ &#8226;   <a href="#copy">copy</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#email.base64mime">email.base64mime</a>
+ &#8226;   <a href="#email.generator">email.generator</a>
+ &#8226;   <a href="#email.message">email.message</a>
+ &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#hmac">hmac</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#ssl">ssl</a>
+ &#8226;   <a href="#sys">sys</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#logging.handlers">logging.handlers</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="socket"></a>
   <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/socket.py" type="text/plain"><tt>socket</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -7402,6 +7799,8 @@ imported by:
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#ftplib">ftplib</a>
  &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
@@ -7485,6 +7884,8 @@ imports:
 imported by:
     <a href="#ftplib">ftplib</a>
  &#8226;   <a href="#http.client">http.client</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
 
   </div>
@@ -7594,8 +7995,10 @@ imports:
   <div class="import">
 imported by:
     <a href="#base64">base64</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#pickle">pickle</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#zipfile">zipfile</a>
@@ -7634,7 +8037,12 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#os">os</a>
+    <a href="#_aix_support">_aix_support</a>
+ &#8226;   <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.privileges">core.privileges</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
+ &#8226;   <a href="#os">os</a>
 
   </div>
 
@@ -7645,6 +8053,7 @@ imported by:
   <tt>sys</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#PyQt5">PyQt5</a>
+ &#8226;   <a href="#_aix_support">_aix_support</a>
  &#8226;   <a href="#_ast_unparse">_ast_unparse</a>
  &#8226;   <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_colorize">_colorize</a>
@@ -7661,6 +8070,13 @@ imported by:
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#compression._common._streams">compression._common._streams</a>
  &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.privileges">core.privileges</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#ctypes._endian">ctypes._endian</a>
+ &#8226;   <a href="#ctypes._layout">ctypes._layout</a>
  &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#decimal">decimal</a>
  &#8226;   <a href="#dis">dis</a>
@@ -7679,6 +8095,7 @@ imported by:
  &#8226;   <a href="#getopt">getopt</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#glob">glob</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
  &#8226;   <a href="#gzip">gzip</a>
  &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#importlib">importlib</a>
@@ -7707,10 +8124,12 @@ imported by:
  &#8226;   <a href="#reprlib">reprlib</a>
  &#8226;   <a href="#selectors">selectors</a>
  &#8226;   <a href="#shutil">shutil</a>
+ &#8226;   <a href="#smtplib">smtplib</a>
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#statistics">statistics</a>
  &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#tempfile">tempfile</a>
  &#8226;   <a href="#threading">threading</a>
@@ -7719,11 +8138,41 @@ imported by:
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
  &#8226;   <a href="#zipfile">zipfile</a>
  &#8226;   <a href="#zipfile._path">zipfile._path</a>
  &#8226;   <a href="#zipimport">zipimport</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="sysconfig"></a>
+  <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/sysconfig/__init__.py" type="text/plain"><tt>sysconfig</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#_aix_support">_aix_support</a>
+ &#8226;   <a href="#_sysconfig">_sysconfig</a>
+ &#8226;   <a href="#_winapi">_winapi</a>
+ &#8226;   <a href="#importlib">importlib</a>
+ &#8226;   <a href="#importlib.machinery">importlib.machinery</a>
+ &#8226;   <a href="#importlib.util">importlib.util</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#os.path">os.path</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#_aix_support">_aix_support</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
 
   </div>
 
@@ -7784,9 +8233,13 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#importlib.resources._common">importlib.resources._common</a>
+    <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
+ &#8226;   <a href="#importlib.resources._common">importlib.resources._common</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#urllib.response">urllib.response</a>
+ &#8226;   <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
 
   </div>
 
@@ -7836,7 +8289,10 @@ imported by:
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.util">importlib.util</a>
  &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
  &#8226;   <a href="#zipfile">zipfile</a>
 
   </div>
@@ -7855,6 +8311,7 @@ imported by:
     <a href="#_datetime">_datetime</a>
  &#8226;   <a href="#_pydatetime">_pydatetime</a>
  &#8226;   <a href="#_strptime">_strptime</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
  &#8226;   <a href="#datetime">datetime</a>
  &#8226;   <a href="#email._parseaddr">email._parseaddr</a>
  &#8226;   <a href="#email.generator">email.generator</a>
@@ -7863,6 +8320,8 @@ imported by:
  &#8226;   <a href="#gzip">gzip</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
@@ -7994,6 +8453,7 @@ imported by:
  &#8226;   <a href="#contextlib">contextlib</a>
  &#8226;   <a href="#copy">copy</a>
  &#8226;   <a href="#csv">csv</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
  &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#difflib">difflib</a>
  &#8226;   <a href="#dis">dis</a>
@@ -8009,6 +8469,7 @@ imported by:
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#pickle">pickle</a>
  &#8226;   <a href="#pprint">pprint</a>
+ &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#tempfile">tempfile</a>
  &#8226;   <a href="#typing">typing</a>
@@ -8048,12 +8509,17 @@ imported by:
  &#8226;   <a href="#_colorize">_colorize</a>
  &#8226;   <a href="#annotationlib">annotationlib</a>
  &#8226;   <a href="#copyreg">copyreg</a>
+ &#8226;   <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.privileges">core.privileges</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
  &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#functools">functools</a>
  &#8226;   <a href="#importlib.metadata">importlib.metadata</a>
  &#8226;   <a href="#importlib.metadata._meta">importlib.metadata._meta</a>
  &#8226;   <a href="#importlib.resources._common">importlib.resources._common</a>
  &#8226;   <a href="#importlib.resources.abc">importlib.resources.abc</a>
+ &#8226;   <a href="#utils.validators">utils.validators</a>
 
   </div>
 
@@ -8128,6 +8594,7 @@ imported by:
     <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
  &#8226;   <a href="#mimetypes">mimetypes</a>
  &#8226;   <a href="#pathlib">pathlib</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
@@ -8199,6 +8666,87 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="utils"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/utils/__init__.py" type="text/plain"><tt>utils</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imported by:
+    <a href="#utils.config">utils.config</a>
+ &#8226;   <a href="#utils.logger">utils.logger</a>
+ &#8226;   <a href="#utils.validators">utils.validators</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="utils.config"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/utils/config.py" type="text/plain"><tt>utils.config</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tempfile">tempfile</a>
+ &#8226;   <a href="#utils">utils</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
+ &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="utils.logger"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/utils/logger.py" type="text/plain"><tt>utils.logger</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#logging">logging</a>
+ &#8226;   <a href="#logging.handlers">logging.handlers</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tempfile">tempfile</a>
+ &#8226;   <a href="#utils">utils</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.autostart">core.autostart</a>
+ &#8226;   <a href="#core.preset_manager">core.preset_manager</a>
+ &#8226;   <a href="#core.zapret_manager">core.zapret_manager</a>
+ &#8226;   <a href="#gui.tray_icon">gui.tray_icon</a>
+ &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="utils.validators"></a>
+  <a target="code" href="///C:/zapret/zapret2/src/utils/validators.py" type="text/plain"><tt>utils.validators</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#ipaddress">ipaddress</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#utils">utils</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.preset_manager">core.preset_manager</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="warnings"></a>
   <a target="code" href="///C:/Users/korki/AppData/Local/Programs/Python/Python314/Lib/warnings.py" type="text/plain"><tt>warnings</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -8218,10 +8766,13 @@ imported by:
  &#8226;   <a href="#calendar">calendar</a>
  &#8226;   <a href="#codecs">codecs</a>
  &#8226;   <a href="#codeop">codeop</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#ctypes._layout">ctypes._layout</a>
  &#8226;   <a href="#functools">functools</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#glob">glob</a>
  &#8226;   <a href="#gzip">gzip</a>
+ &#8226;   <a href="#hmac">hmac</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#importlib.abc">importlib.abc</a>
  &#8226;   <a href="#importlib.machinery">importlib.machinery</a>
@@ -8245,6 +8796,7 @@ imported by:
  &#8226;   <a href="#sre_parse">sre_parse</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sysconfig">sysconfig</a>
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#tempfile">tempfile</a>
  &#8226;   <a href="#threading">threading</a>
@@ -8284,6 +8836,28 @@ imported by:
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#tempfile">tempfile</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="win32evtlog"></a>
+  <a target="code" href="" type="text/plain"><tt>win32evtlog</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#logging.handlers">logging.handlers</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="win32evtlogutil"></a>
+  <a target="code" href="" type="text/plain"><tt>win32evtlogutil</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#logging.handlers">logging.handlers</a>
 
   </div>
 

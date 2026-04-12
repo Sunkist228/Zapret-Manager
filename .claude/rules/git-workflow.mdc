@@ -1,0 +1,75 @@
+---
+description: |
+  Git workflow for zapret2: branches, creating feature/fix/refactor, merging to master.
+  One task — one branch. See also commit-standards.mdc.
+alwaysApply: true
+---
+
+# Git Workflow (zapret2)
+
+## Agent Behavior
+
+- **Always follow these rules** — do not ignore workflow and branches in any session.
+- Check current branch before making changes.
+- **Never work in `master` directly.** For any new or substantial task, create a separate branch: `feature/*`, `fix/*`, or `refactor/*` from `master`.
+- If the task is new or touches many files/logic — create a branch before starting changes. Do not develop in `master`.
+- If unable to create a branch (no remote, permission denied), inform the user and suggest safe alternatives.
+
+## Branch Hierarchy
+
+- **master** — production. Protected; changes only through merge from `feature/*`, `fix/*`, or `hotfix/*`.
+- **feature/short-description** — new functionality or major task. Create from `master`, merge back to `master` via PR.
+- **fix/description** — bug fixes. From `master`, merge to `master` via PR.
+- **refactor/description** — code refactoring. From `master`, merge to `master` via PR.
+- **hotfix/description** — urgent production fixes. From `master`, merge to `master` and tag immediately.
+
+Rule: **one task/feature — one branch**. Do not mix multiple independent features in one branch.
+
+## Required Process
+
+### 1. Create Branch
+
+```bash
+git checkout master
+git pull origin master
+git checkout -b feature/short-description   # or fix/..., refactor/...
+```
+
+Do not work directly in `master`. Do not create branch from outdated `master`.
+
+### 2. Development in Branch
+
+- Make logical commits, one change per commit (see commit-standards.mdc).
+- Commit and push only after user confirms the result (see commit-standards.mdc).
+- After push — create Pull Request to `master`. Merge to `master` via PR, not through direct local merge.
+
+### 3. Before Merging
+
+1. All tests pass (lint, unit tests).
+2. Code builds without errors.
+3. EXE builds successfully (for Windows builds).
+4. Code review (if adopted in team).
+
+### 4. Merge to master (via PR)
+
+- Merge to `master` — **only through Pull Request** (create PR from your branch to `master`, then merge in web interface or per team process).
+- Do not execute direct `git merge` to `master` from local machine; after PR approval, merge is done by process (or user manually via UI).
+- After successful merge to `master`, delete feature branch locally and on remote (if adopted in team).
+
+Do not merge to `master` without tests and without updating `master` before merge.
+
+## Branch Naming
+
+| Type | Examples |
+|------|----------|
+| feature | `feature/auto-update`, `feature/tray-notifications` |
+| fix | `fix/tray-icon-crash`, `fix/preset-loading` |
+| refactor | `refactor/config-manager` |
+| hotfix | `hotfix/critical-windivert-crash` |
+
+## Forbidden Actions
+
+- Work directly in `master` for feature development.
+- Merge to `master` with failing CI/CD.
+- Leave dead branches after merge (delete locally and on remote).
+- Create commits with messages like "fix", "update", "WIP" without description.

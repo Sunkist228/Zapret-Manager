@@ -1,0 +1,62 @@
+---
+description: CI/CD and versioning conventions for zapret2 desktop application
+alwaysApply: true
+---
+
+# CI/CD and Versioning
+
+## Project Model
+
+- **Desktop application** — Windows EXE built with PyInstaller.
+- **No Kubernetes/GitOps** — artifacts published to GitHub Releases and Artifact Server.
+- **Hybrid CI/CD** — GitHub Actions for PR validation and releases, Jenkins for delivery pipeline.
+
+## Versioning
+
+- Single product version in root `VERSION`.
+- Semantic versioning `MAJOR.MINOR.PATCH`.
+- Release tags: `vX.Y.Z`.
+- Version bump: `python scripts/bump_version.py [major|minor|patch]`.
+
+## Environment Model
+
+- `local`: Development on developer machine.
+- `dev`: Development builds from `develop` branch (if used) or feature branches.
+- `prod`: Production builds from `master` branch, published to GitHub Releases.
+
+## Delivery Model
+
+1. **PR Validation** (GitHub Actions):
+   - Lint (flake8, black, mypy)
+   - Tests (pytest with coverage)
+   - Test build (EXE compilation check)
+
+2. **Delivery** (Jenkins):
+   - Build Windows x64 EXE
+   - Publish to Artifact Server (dev/stable channels)
+   - Archive artifacts
+
+3. **Releases** (GitHub Actions):
+   - Triggered by git tags (`v*`)
+   - Build Windows x64 EXE
+   - Create GitHub Release
+   - Upload EXE to release
+   - Generate release notes
+
+## Build Matrix
+
+- **Primary**: Windows x64 (required)
+- **Future**: Windows x86, Linux (optional)
+
+## Artifact Naming
+
+- Development: `ZapretManager-dev-{build}.exe`
+- Production: `zapret-manager-windows-x64.exe`
+
+## Mandatory References
+
+- `git-workflow.mdc`
+- `commit-standards.mdc`
+- `safe-development.mdc`
+- `jenkins-pipeline.mdc` (when editing Jenkinsfile)
+- `release-management.mdc` (when creating releases)

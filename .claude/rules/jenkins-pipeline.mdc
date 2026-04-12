@@ -1,0 +1,82 @@
+---
+description: Jenkins pipeline conventions for zapret2 delivery
+globs: ["Jenkinsfile", "**/*.groovy"]
+alwaysApply: false
+---
+
+# Jenkins Pipeline
+
+## Pipeline Structure
+
+zapret2 uses a **multibranch pipeline** with the following stages:
+
+1. **Prepare Build Metadata** — read VERSION, generate build version, set environment variables.
+2. **Validate** — run tests (pytest), linting (flake8).
+3. **Build Windows EXE** — compile with PyInstaller on Windows agent.
+4. **Publish to Artifact Server** — upload to Playerok artifact server (dev/stable channels).
+
+## Branch Strategy
+
+- **master** — production builds, publish to `stable` channel.
+- **develop** — development builds, publish to `dev` channel (if develop branch exists).
+- **feature/**, **fix/**, **refactor/** — validation only, no publishing.
+
+## Environment Variables
+
+- `PRODUCT_VERSION` — from VERSION file.
+- `BUILD_VERSION` — formatted version with build number.
+- `GIT_SHA_FULL` — full commit SHA.
+- `GIT_SHA_SHORT` — short commit SHA (12 chars).
+- `BRANCH_NAME_SAFE` — sanitized branch name.
+- `DEPLOYS` — `true` for master/develop, `false` for feature branches.
+
+## Credentials
+
+Required Jenkins credentials:
+- `ARTIFACT_SERVER_API_KEY_DEV` — API key for dev artifacts.
+- `ARTIFACT_SERVER_API_KEY_PROD` — API key for prod artifacts.
+- `ARTIFACT_SERVER_URL` — URL of artifact server.
+- `GitHub` — GitHub credentials for checkout.
+
+## Agent Requirements
+
+- **Windows agent** with label `windows`.
+- Python 3.12+ installed.
+- PyInstaller available.
+- Git installed.
+
+## Best Practices
+
+- **Fail fast** — stop pipeline on first error.
+- **Archive artifacts** — always archive EXE files.
+- **JUnit reports** — publish test results for visibility.
+- **Clean workspace** — ensure clean state between builds.
+- **Timeout** — set reasonable timeouts for each stage.
+
+## Example Stage
+
+```groovy
+stage('Build Windows EXE') {
+    when {
+        expression { env.DEPLOYS == 'true' }
+    }
+    steps {
+        bat '''
+            cd build
+            call build.bat
+        '''
+        archiveArtifacts 'dist/ZapretManager.exe'
+    }
+}
+```
+
+## Troubleshooting
+
+- **Build fails** — check Python version, dependencies.
+- **Artifact upload fails** — verify credentials, network access.
+- **Tests fail** — check test environment, dependencies.
+
+## References
+
+- `ci-cd-versioning.mdc`
+- `safe-development.mdc`

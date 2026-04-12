@@ -34,6 +34,38 @@ class PresetManager:
         self.config = Config
         self.config.ensure_config_dir()
 
+        # Установить дефолтный пресет при первом запуске
+        if not self.config.ACTIVE_PRESET.exists():
+            self._set_default_preset()
+        else:
+            # Синхронизация активного пресета с файлом в директории пресетов (при обновлении)
+            try:
+                active_name = self.get_active_preset_name()
+                if active_name:
+                    source_preset = self.config.PRESETS_DIR / f"{active_name}.txt"
+                    if source_preset.exists():
+                        shutil.copy2(source_preset, self.config.ACTIVE_PRESET)
+                        logger.info(f"Активный пресет '{active_name}' синхронизирован с источником")
+                    else:
+                        logger.warning(f"Источник для активного пресета '{active_name}' не найден")
+            except Exception as e:
+                logger.error(f"Ошибка синхронизации активного пресета: {e}")
+
+    def _set_default_preset(self):
+        """Установить дефолтный пресет при первом запуске"""
+        try:
+            logger.info("Установка дефолтного пресета")
+            default_preset = self.config.PRESETS_DIR / "default-main.txt"
+
+            if default_preset.exists():
+                shutil.copy2(default_preset, self.config.ACTIVE_PRESET)
+                self.config.CURRENT_PRESET_NAME.write_text("default-main", encoding='utf-8')
+                logger.info("Дефолтный пресет установлен")
+            else:
+                logger.warning(f"Дефолтный пресет не найден: {default_preset}")
+        except Exception as e:
+            logger.error(f"Ошибка установки дефолтного пресета: {e}")
+
     def list_presets(self) -> List[Preset]:
         """
         Получить список всех пресетов

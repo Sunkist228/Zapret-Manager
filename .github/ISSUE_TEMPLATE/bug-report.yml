@@ -1,0 +1,61 @@
+name: Bug Report
+description: Сообщить о проблеме или ошибке
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Проблема
+      description: Что сейчас не работает?
+      placeholder: Опишите симптом и влияние на использование приложения.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Шаги воспроизведения
+      description: Как воспроизвести проблему?
+      placeholder: |
+        1. Запустить приложение
+        2. Выбрать пресет "Default v5"
+        3. Нажать "Включить"
+        4. Наблюдать ошибку...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Ожидаемое поведение
+      description: Что должно происходить вместо этого?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Окружение
+      description: Информация о системе
+      placeholder: |
+        - Windows версия: Windows 11 Pro
+        - Версия приложения: 1.0.0
+        - Запущено с правами администратора: Да/Нет
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Логи
+      description: Содержимое файла %TEMP%\ZapretManager\app.log
+      placeholder: Вставьте релевантные части логов
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Дополнительная информация
+      description: Скриншоты, дополнительный контекст

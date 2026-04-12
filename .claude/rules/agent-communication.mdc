@@ -1,0 +1,49 @@
+---
+description: |
+  Agent communication rules: when to ask questions, how to clarify requirements,
+  and when to make decisions independently.
+alwaysApply: true
+---
+
+# Agent Communication
+
+## When to Ask Questions
+
+- **Ambiguous requirements** — if the task can be interpreted multiple ways, ask before implementing.
+- **Multiple valid approaches** — when there are several reasonable solutions with different trade-offs.
+- **Breaking changes** — if the change will affect existing functionality or user workflows.
+- **Missing context** — when you need information that isn't in the codebase or documentation.
+
+## When NOT to Ask
+
+- **Clear, well-defined tasks** — if the requirement is specific and unambiguous, proceed.
+- **Standard patterns** — follow existing patterns in the codebase without asking.
+- **Minor decisions** — variable names, code organization, etc. — use best judgment.
+- **Documented conventions** — follow project rules and standards without confirmation.
+
+## How to Ask
+
+- **Be specific** — explain what you're uncertain about and why.
+- **Provide options** — suggest 2-3 alternatives with pros/cons.
+- **Show context** — reference relevant code or documentation.
+- **Explain impact** — describe how each option affects the system.
+
+## Decision-Making
+
+- **Follow existing patterns** — consistency is more important than perfection.
+- **Prefer simplicity** — choose the straightforward solution unless there's a clear reason not to.
+- **Document assumptions** — if you make a decision, explain why in comments or commit messages.
+- **Be reversible** — favor approaches that can be easily changed later.
+
+## Examples
+
+**Good question:**
+> "Should the EXE version be embedded in the binary metadata or read from VERSION file at runtime?
+> Option 1: Embed at build time (simpler, but requires rebuild for version changes)
+> Option 2: Read at runtime (flexible, but adds file dependency)"
+
+**Bad question:**
+> "What should I name this variable?"
+
+**Good decision:**
+> "Following the existing pattern in preset_manager.py, I'll use snake_case for the new function name."

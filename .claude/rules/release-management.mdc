@@ -1,0 +1,89 @@
+---
+description: Release management process for zapret2
+globs: ["VERSION", "CHANGELOG.md", "scripts/bump_version.py"]
+alwaysApply: false
+---
+
+# Release Management
+
+## Release Process
+
+1. **Prepare release**:
+   - Update CHANGELOG.md with release notes.
+   - Bump version: `python scripts/bump_version.py [major|minor|patch]`.
+   - Commit: `git commit -am "chore: bump version to X.Y.Z"`.
+
+2. **Create tag**:
+   - Tag: `git tag vX.Y.Z`.
+   - Push: `git push origin master --tags`.
+
+3. **Automated build**:
+   - GitHub Actions workflow triggers on tag push.
+   - Builds Windows x64 EXE.
+   - Creates GitHub Release.
+   - Uploads EXE to release.
+   - Generates release notes from commits.
+
+4. **Verify release**:
+   - Check GitHub Releases page.
+   - Download and test EXE.
+   - Verify release notes are accurate.
+
+## Version Bumping
+
+- **Major** (X.0.0) — breaking changes, major new features.
+- **Minor** (x.Y.0) — new features, backward compatible.
+- **Patch** (x.y.Z) — bug fixes, minor improvements.
+
+## CHANGELOG Format
+
+Follow [Keep a Changelog](https://keepachangelog.com/):
+
+```markdown
+## [X.Y.Z] - YYYY-MM-DD
+
+### Added
+- New features
+
+### Changed
+- Changes to existing functionality
+
+### Fixed
+- Bug fixes
+
+### Removed
+- Removed features
+```
+
+## Pre-release Checklist
+
+- [ ] All tests pass locally.
+- [ ] CHANGELOG.md updated.
+- [ ] VERSION file updated.
+- [ ] No uncommitted changes.
+- [ ] On `master` branch.
+- [ ] Pulled latest from origin.
+
+## Post-release Tasks
+
+- [ ] Verify GitHub Release created.
+- [ ] Test downloaded EXE.
+- [ ] Announce release (if applicable).
+- [ ] Update documentation (if needed).
+
+## Hotfix Process
+
+For urgent production fixes:
+
+1. Create hotfix branch: `git checkout -b hotfix/critical-fix master`.
+2. Fix the issue and test thoroughly.
+3. Bump patch version: `python scripts/bump_version.py patch`.
+4. Commit: `git commit -am "fix: critical issue description"`.
+5. Merge to master: create PR, review, merge.
+6. Tag immediately: `git tag vX.Y.Z && git push origin master --tags`.
+
+## References
+
+- `ci-cd-versioning.mdc`
+- `git-workflow.mdc`
+- `commit-standards.mdc`

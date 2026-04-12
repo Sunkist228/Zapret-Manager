@@ -1,0 +1,55 @@
+---
+description: Baseline secure development rules for code, CI/CD, secrets, and deployments
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Safe Development
+
+## Core Security Rules
+
+- Never commit secrets (plaintext or base64 placeholders with real values).
+- Validate external input and fail safely.
+- Do not leak secrets in logs, errors, or debug output.
+- Handle file paths securely (avoid path traversal vulnerabilities).
+
+## Windows-Specific Security
+
+- **Administrator privileges** — zapret2 requires admin rights for WinDivert. Document this clearly.
+- **UAC prompts** — ensure users understand why admin rights are needed.
+- **File system access** — validate all file paths before reading/writing.
+- **Process execution** — sanitize all arguments passed to subprocess calls.
+
+## Secret Management
+
+- **No secrets in code** — use environment variables or secure configuration files.
+- **Jenkins Credentials** — store API keys and tokens in Jenkins Credentials Store.
+- **GitHub Secrets** — use GitHub repository secrets for Actions workflows.
+- If a secret was ever committed, rotate immediately and document rotation.
+
+## CI/CD Safety
+
+- CI should include secret scanning (gitleaks or similar).
+- Test builds should not expose sensitive data in logs.
+- Artifact publishing requires authentication (API keys).
+
+## Runtime Hardening
+
+- Validate all user inputs (preset names, file paths, domain lists).
+- Handle errors gracefully without exposing internal details.
+- Log security-relevant events (failed auth, invalid inputs).
+- Keep dependencies updated (requirements.txt).
+
+## Code Review Checklist
+
+- [ ] No hardcoded secrets or credentials
+- [ ] Input validation for all external data
+- [ ] Error handling doesn't leak sensitive info
+- [ ] File operations use safe paths
+- [ ] Subprocess calls sanitize arguments
+- [ ] Admin privilege requirements documented
+
+## References
+
+- `ci-cd-versioning.mdc`
+- `jenkins-pipeline.mdc`

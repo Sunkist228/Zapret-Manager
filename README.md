@@ -1,5 +1,10 @@
 # Zapret Manager
 
+[![CI](https://github.com/Sunkist228/zapret2/actions/workflows/ci.yml/badge.svg)](https://github.com/Sunkist228/zapret2/actions/workflows/ci.yml)
+[![Release](https://github.com/Sunkist228/zapret2/actions/workflows/release.yml/badge.svg)](https://github.com/Sunkist228/zapret2/actions/workflows/release.yml)
+[![Version](https://img.shields.io/github/v/release/Sunkist228/zapret2)](https://github.com/Sunkist228/zapret2/releases/latest)
+[![License](https://img.shields.io/github/license/Sunkist228/zapret2)](LICENSE)
+
 Полноценное управляющее приложение для [zapret2](https://github.com/bol-van/zapret2) - системы обхода блокировок Discord и YouTube.
 
 ## Возможности
@@ -64,9 +69,9 @@ cd ..
 run_as_admin.bat
 ```
 
-### Вариант 3: Готовый EXE (будет доступен позже)
+### Вариант 3: Готовый EXE
 
-Скачайте `ZapretManager.exe` из [Releases](../../releases/latest) когда релиз будет опубликован.
+Скачайте `zapret-manager-windows-x64.exe` из [Releases](../../releases/latest).
 
 ## Системные требования
 
@@ -176,6 +181,29 @@ run_as_admin.bat
 
 ## Разработка
 
+См. [CONTRIBUTING.md](CONTRIBUTING.md) для детального руководства по разработке.
+
+### Быстрый старт для разработчиков
+
+```bash
+# Клонировать репозиторий
+git clone https://github.com/Sunkist228/zapret2.git
+cd zapret2
+
+# Создать ветку для вашей фичи
+git checkout -b feature/your-feature
+
+# Установить зависимости
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+# Запустить тесты
+pytest tests/ -v
+
+# Собрать EXE
+cd build && build.bat
+```
+
 ### Структура проекта
 
 ```
@@ -219,6 +247,21 @@ pytest tests/ -v
 cd build
 build.bat
 ```
+
+### CI/CD
+
+Проект использует гибридный подход:
+- **GitHub Actions** — PR validation, automated releases
+- **Jenkins** — delivery pipeline для dev/prod artifacts
+
+См. [docs/ci-cd/](docs/ci-cd/) для деталей.
+
+### Versioning
+
+Проект следует [Semantic Versioning](https://semver.org/):
+- Версия хранится в файле `VERSION`
+- Релизы создаются через git tags (`vX.Y.Z`)
+- История изменений в [CHANGELOG.md](CHANGELOG.md)
 
 ## Благодарности
 

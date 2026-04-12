@@ -17,7 +17,23 @@
       "Bash(git commit:*)",
       "Bash(git tag:*)",
       "Bash(find src:*)",
-      "Bash(find . -name \"*.py\" -type f -exec grep -l \"from \\\\.\\\\.\" {} \\\\;)"
+      "Bash(find . -name \"*.py\" -type f -exec grep -l \"from \\\\.\\\\.\" {} \\\\;)",
+      "Bash(powershell:*)",
+      "Bash(./rebuild.bat)",
+      "Bash(cmd //c \"bin\\\\\\\\winws2.exe @C:\\\\\\\\Users\\\\\\\\korki\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\ZapretManager\\\\\\\\config\\\\\\\\preset-active.txt\")",
+      "Bash(echo \"Exit code: $?\")",
+      "Bash(timeout 5 cmd //c \"bin\\\\\\\\winws2.exe @presets\\\\\\\\CrazyMaxs.txt\")",
+      "Bash(read)",
+      "Bash(cmd //c rebuild.bat)",
+      "Bash(ls -la *.bat)",
+      "Bash(cmd:*)",
+      "Bash(pyinstaller --clean --noconfirm zapret_manager.spec)",
+      "Bash(tail -5 /c/Users/korki/AppData/Local/Temp/claude/C--zapret-zapret2/c2ad035c-1008-480b-8883-13985a0de620/tasks/*.output)",
+      "Bash(awk '{print $6, $7, $8, $9}')",
+      "Bash(cmd.exe /c build.bat)",
+      "Bash(gh auth:*)",
+      "Bash(java -jar \"C:\\\\Users\\\\korki\\\\jenkins-cli.jar\" -s https://jenkins.devflux.ru -auth @C:\\\\Users\\\\korki\\\\.jenkins-cli)",
+      "Bash(gh repo:*)"
     ]
   }
 }

@@ -58,3 +58,15 @@ build/dist/
 !build/*.spec
 !build/*.bat
 !build/*.md
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+reports/
+
+# CI/CD
+.jenkins/
+*.log

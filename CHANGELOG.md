@@ -1,46 +1,51 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- CI/CD pipeline with GitHub Actions and Jenkins
+- Automated releases via GitHub Releases
+- Comprehensive AI rules for development (.claude/rules/)
+- Version management script (scripts/bump_version.py)
+- Artifact publishing script (scripts/publish_artifact.py)
+- Contributing guidelines (CONTRIBUTING.md)
+- Git workflow with feature branches
+- Commit standards enforcement
+
+### Changed
+- Adopted Semantic Versioning with VERSION file
+- Improved build process documentation
+- Enhanced .gitignore with CI/CD patterns
+
+### Infrastructure
+- GitHub Actions workflows: CI, PR governance, releases
+- Jenkins multibranch pipeline for delivery
+- Integration with Playerok Artifact Server
+
 ## [1.0.0] - 2026-04-12
 
-### Добавлено
-- ✅ Системный трей с управлением zapret
-- ✅ Выбор пресетов из меню (70+ конфигураций)
-- ✅ Автозапуск через Task Scheduler
-- ✅ Автоматическая проверка прав администратора
-- ✅ Управление процессом winws2.exe
-- ✅ Очистка WinDivert сервисов
-- ✅ Включение TCP timestamps
-- ✅ Логирование в %TEMP%\ZapretManager\app.log
-- ✅ Сборка в один EXE файл через PyInstaller
+Initial release with CI/CD infrastructure.
 
-### Core модули
-- `zapret_manager.py` - управление winws2.exe
-- `preset_manager.py` - работа с пресетами
-- `list_manager.py` - работа со списками доменов/IP
-- `autostart.py` - автозапуск через Task Scheduler
-- `privileges.py` - проверка прав администратора
-- `diagnostics.py` - диагностика системы
+### Features
+- Windows desktop application for bypassing network blocks
+- System tray GUI with preset management
+- 70+ ready-to-use presets for Discord, YouTube, etc.
+- Domain and IP list editor
+- Automatic diagnostics and problem fixing
+- Real-time logs viewer
+- Auto-start with Windows (with admin rights)
+- Standalone EXE with all dependencies bundled
 
-### В разработке
-- ⏳ Главное окно с вкладками
-- ⏳ Редактор списков доменов/IP через GUI
-- ⏳ Диагностика и исправление проблем через GUI
-- ⏳ Просмотр логов в GUI
+### Technical
+- Python 3.12+ with PyQt6
+- PyInstaller for EXE compilation
+- WinDivert for packet manipulation
+- Requires administrator privileges
 
-## Планы на будущее
-
-### v1.1.0
-- Главное окно с полным функционалом
-- Редактор списков
-- Диагностика с автоисправлением
-- Просмотр логов
-
-### v1.2.0
-- Автоматическое тестирование пресетов
-- Статистика работы
-- Темная тема
-
-### v1.3.0
-- Автообновление
-- Профили конфигураций
-- Экспорт/импорт настроек
+[Unreleased]: https://github.com/Sunkist228/zapret2/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Sunkist228/zapret2/releases/tag/v1.0.0

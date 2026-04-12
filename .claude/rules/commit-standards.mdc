@@ -1,0 +1,58 @@
+---
+description: |
+  Commit standards: type + short subject, optional body; logical grouping and staging.
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Commit Standards
+
+## Agent Behavior
+
+- **Commit only after user confirms the result** — do not commit until the user has confirmed that the task outcome is acceptable. After completing the work, present the result; once the user confirms, run `git add` and `git commit` (one or more commits by logical unit).
+- **Do not push without explicit request** — never run `git push` unless the user explicitly asks (e.g. "push", "отправь в репозиторий"). After committing, report that the commit is done and that they can push when ready.
+- **After push — create PR via gh** — once the user has pushed (or when they ask to "create PR", "сделай PR"), create the Pull Request with GitHub CLI: `gh pr create --base master --head <current-branch> --title "<type>: short description" --body "<brief summary>"`. Use the current branch name for `--head`; derive title from the branch or last commits. Do not merge into `master` directly; use the PR flow.
+- If the user asks to "commit" or "push", run `git add` and `git commit` as needed; run `git push` only if they explicitly request it.
+- **Always follow these rules** — apply commit and branch rules in every session; do not skip them for convenience.
+
+## Logical Grouping
+
+- One commit = one logical change.
+- Group files that implement the same task.
+- Split unrelated tasks into separate commits.
+- Stage by task (e.g., `git add path/to/feature/` per task).
+
+## Message Format
+
+- Subject: <= ~50 chars, no period.
+- Format: `type: short description`.
+- Types: `feat`, `fix`, `docs`, `refactor`, `chore`, `test`, `style`, `perf`, `ci`, `build`, `revert`.
+- Body: explain what/why and scope if needed; for breaking changes include `BREAKING CHANGE` and migration notes.
+
+## Examples
+
+**Good commits:**
+```
+feat: add auto-update functionality
+fix: resolve tray icon crash on Windows 7
+docs: update installation instructions
+ci: add GitHub Actions workflow for releases
+```
+
+**Bad commits:**
+```
+update
+fix
+WIP
+changes
+```
+
+## Breaking Changes
+
+If your change breaks existing functionality:
+```
+feat: redesign preset loading system
+
+BREAKING CHANGE: Preset file format changed from .txt to .json.
+Migration: Run `python scripts/migrate_presets.py` to convert old presets.
+```

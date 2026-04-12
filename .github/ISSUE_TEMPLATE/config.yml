@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Документация
+    url: https://github.com/Sunkist228/zapret2/blob/master/README.md
+    about: Прочитайте документацию перед созданием issue
+  - name: Telegram поддержка
+    url: https://t.me/zapretvpns_bot
+    about: Получите помощь в Telegram боте
+  - name: Обсуждения
+    url: https://github.com/Sunkist228/zapret2/discussions
+    about: Задайте вопрос или обсудите идею

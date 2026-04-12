@@ -1,0 +1,49 @@
+name: Task
+description: Зафиксировать конкретную задачу с понятным результатом
+title: "task: "
+labels:
+  - task
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Цель
+      description: Какую проблему или capability мы закрываем?
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: В scope
+      description: Конкретная работа, которая входит в задачу.
+      placeholder: |
+        - Добавить функцию X
+        - Обновить UI компонент Y
+        - Написать тесты для Z
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_scope
+    attributes:
+      label: Вне scope
+      description: Явно перечислите, что не входит в эту задачу.
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Критерии приёмки
+      description: Наблюдаемые условия завершения.
+      placeholder: |
+        - [ ] Функция X работает корректно
+        - [ ] Тесты покрывают новый код
+        - [ ] Документация обновлена
+    validations:
+      required: true
+
+  - type: input
+    id: owner
+    attributes:
+      label: Предполагаемый владелец
+      placeholder: src / build / tests / docs

@@ -30,7 +30,13 @@ class Config:
     PRESETS_DIR = RESOURCES_DIR / "presets"
     LISTS_DIR = RESOURCES_DIR / "lists"
     LUA_DIR = RESOURCES_DIR / "lua"
-    CONFIG_DIR = RESOURCES_DIR / "config"
+
+    # Конфигурационные файлы в %TEMP% для frozen mode
+    if IS_FROZEN:
+        import tempfile
+        CONFIG_DIR = Path(tempfile.gettempdir()) / "ZapretManager" / "config"
+    else:
+        CONFIG_DIR = RESOURCES_DIR / "config"
 
     # Исполняемые файлы
     WINWS2_EXE = BIN_DIR / "winws2.exe"
@@ -38,6 +44,9 @@ class Config:
     # Конфигурационные файлы
     ACTIVE_PRESET = CONFIG_DIR / "preset-active.txt"
     CURRENT_PRESET_NAME = CONFIG_DIR / "current_preset.txt"
+
+    # Дефолтный пресет
+    DEFAULT_PRESET_NAME = "Default (Discord, YouTube, Telegram)"
 
     # Task Scheduler
     TASK_NAME = "ZapretManager"
