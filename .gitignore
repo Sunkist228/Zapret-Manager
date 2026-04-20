@@ -48,16 +48,17 @@ dist/
 *.pyc
 temp/
 tmp/
+src/resources/config/
 
 # PyInstaller build artifacts (но не конфигурацию)
-build/build/
-build/dist/
+/build/*
 
 # Keep build configuration
-!build/
-!build/*.spec
-!build/*.bat
-!build/*.md
+!/build/
+!/build/*.spec
+!/build/*.bat
+!/build/*.md
+!/build/runtime_hook.py
 
 # Testing
 .pytest_cache/

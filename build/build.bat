@@ -7,7 +7,10 @@ echo   Build Zapret Manager
 echo ========================================
 echo.
 
-set "DIST_EXE=%CD%\dist\ZapretManager.exe"
+set "SPEC_FILE=zapret_manager.spec"
+set "WORK_DIR=build"
+set "DIST_DIR=dist"
+set "DIST_EXE=%CD%\%DIST_DIR%\ZapretManager.exe"
 
 :: Check Python
 python --version >nul 2>&1
@@ -42,8 +45,8 @@ if %errorlevel% equ 0 (
 
 :: Clean old files
 echo [1/4] Cleaning old files...
-if exist dist rmdir /s /q dist 2>nul
-if exist build rmdir /s /q build 2>nul
+if exist "%DIST_DIR%" rmdir /s /q "%DIST_DIR%" 2>nul
+if exist "%WORK_DIR%" rmdir /s /q "%WORK_DIR%" 2>nul
 
 if exist "%DIST_EXE%" (
     echo [ERROR] Failed to clean previous build output:
@@ -57,7 +60,7 @@ if exist "%DIST_EXE%" (
 
 :: Build
 echo [2/4] Building EXE...
-pyinstaller zapret_manager.spec
+pyinstaller --clean --workpath "%WORK_DIR%" --distpath "%DIST_DIR%" "%SPEC_FILE%"
 
 if %errorlevel% neq 0 (
     echo.
@@ -67,7 +70,7 @@ if %errorlevel% neq 0 (
 )
 
 :: Check result
-if not exist "dist\ZapretManager.exe" (
+if not exist "%DIST_EXE%" (
     echo.
     echo [ERROR] EXE file not created!
     pause
@@ -76,7 +79,7 @@ if not exist "dist\ZapretManager.exe" (
 
 :: File info
 echo [3/4] Checking file...
-for %%A in ("dist\ZapretManager.exe") do (
+for %%A in ("%DIST_EXE%") do (
     set size=%%~zA
     set /a sizeMB=!size! / 1048576
     echo Size: !sizeMB! MB

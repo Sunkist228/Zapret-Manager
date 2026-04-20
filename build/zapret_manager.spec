@@ -27,6 +27,9 @@ block_cipher = None
 
 
 def collect_tree(source: Path, target: str):
+    if not source.exists():
+        raise FileNotFoundError(f"Required resource directory not found: {source}")
+
     return [
         (str(path), str(Path(target) / path.parent.relative_to(source)))
         for path in source.rglob("*")
@@ -38,13 +41,23 @@ datas = []
 datas += collect_tree(src_dir / "resources" / "presets", "resources/presets")
 datas += collect_tree(src_dir / "resources" / "lists", "resources/lists")
 datas += collect_tree(src_dir / "resources" / "lua", "resources/lua")
-# Copy bin/ (fake packets) as data
-datas += collect_tree(project_root / "bin", "resources/bin")
-# Copy exe/ (winws2.exe and DLLs) as data - binaries don't extract to subdirs in onefile mode
-datas += collect_tree(project_root / "exe", "resources/bin")
+datas += collect_tree(src_dir / "resources" / "bin", "resources/bin")
 # Copy windivert filter files
 datas += collect_tree(project_root / "windivert.filter", "resources/windivert.filter")
 datas.append((str(version_file), "."))
+
+required_files = [
+    version_file,
+    src_dir / "resources" / "bin" / "winws2.exe",
+    src_dir / "resources" / "bin" / "WinDivert.dll",
+    src_dir / "resources" / "bin" / "WinDivert32.sys",
+    src_dir / "resources" / "bin" / "WinDivert64.sys",
+]
+missing_files = [str(path) for path in required_files if not path.exists()]
+if missing_files:
+    raise FileNotFoundError(
+        "Required build resource files are missing:\n" + "\n".join(missing_files)
+    )
 
 # No binaries - everything as data for onefile mode
 binaries = []

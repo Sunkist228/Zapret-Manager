@@ -92,16 +92,16 @@ pipeline {
                     cd build
                     call build.bat
 
-                    if not exist "..\\dist\\ZapretManager.exe" (
+                    if not exist "dist\\ZapretManager.exe" (
                         echo ERROR: EXE file not created!
                         exit /b 1
                     )
 
                     echo Build successful!
-                    dir "..\\dist\\ZapretManager.exe"
+                    dir "dist\\ZapretManager.exe"
                 '''
 
-                archiveArtifacts artifacts: 'dist/ZapretManager.exe', fingerprint: true
+                archiveArtifacts artifacts: 'build/dist/ZapretManager.exe', fingerprint: true
             }
         }
 
@@ -124,8 +124,9 @@ pipeline {
                                 --url "%ARTIFACT_URL%" ^
                                 --api-key "%ARTIFACT_API_KEY%" ^
                                 --version "${env.BUILD_VERSION}" ^
+                                --product-version "${env.PRODUCT_VERSION}" ^
                                 --channel "${env.ARTIFACT_CHANNEL}" ^
-                                --file dist/ZapretManager.exe ^
+                                --file build/dist/ZapretManager.exe ^
                                 --platform windows ^
                                 --arch x64
 
