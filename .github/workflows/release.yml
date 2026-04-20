@@ -85,7 +85,7 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         shell: bash
         run: |
-          python scripts/generate_changelog.py --version "${{ steps.bump.outputs.version }}"
+          python scripts/generate_changelog.py --version ${{ steps.bump.outputs.version }}
 
       - name: Configure Git
         if: steps.bump.outputs.skip_release != 'true'
@@ -105,21 +105,20 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         shell: bash
         run: |
-          git tag "v${{ steps.bump.outputs.version }}"
+          git tag v${{ steps.bump.outputs.version }}
 
       - name: Push changes
         if: steps.bump.outputs.skip_release != 'true'
         shell: bash
         run: |
           git push origin master
-          git push origin "v${{ steps.bump.outputs.version }}"
+          git push origin v${{ steps.bump.outputs.version }}
 
       - name: Build EXE
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
         shell: cmd
-        run: |
-          build.bat
+        run: build.bat
 
       - name: Verify EXE created
         if: steps.bump.outputs.skip_release != 'true'
@@ -128,10 +127,8 @@ jobs:
         run: |
           if [ ! -f "dist/zapret-manager-windows-x64.exe" ] && [ ! -f "dist/ZapretManager.exe" ]; then
             echo "EXE file not created"
-            ls -l dist/ || true
             exit 1
           fi
-          ls -l dist/
 
       - name: Rename artifact
         if: steps.bump.outputs.skip_release != 'true'
@@ -148,30 +145,13 @@ jobs:
         working-directory: build
         shell: bash
         run: |
-          sha256sum dist/zapret-manager-windows-x64.exe | awk '{print $1}' > dist/zapret-manager-windows-x64.exe.sha256
-          cat dist/zapret-manager-windows-x64.exe.sha256
+          sha256sum dist/zapret-manager-windows-x64.exe > dist/zapret-manager-windows-x64.exe.sha256
 
       - name: Extract changelog for release
         if: steps.bump.outputs.skip_release != 'true'
         id: changelog
         shell: bash
         run: |
-          VERSION="${{ steps.bump.outputs.version }}"
-
-          # Use awk to extract the section for this version
-          awk -v ver="$VERSION" '
-            /^## \[/ {
-              if (match($0, "^## \\[" ver "\\]")) {
-                capture = 1
-                print
-                next
-              } else if (capture) {
-                exit
-              }
-            }
-            capture { print }
-          ' CHANGELOG.md > release_notes.md
-
           if [ ! -s release_notes.md ]; then
             echo -e "## Changes\n\nSee CHANGELOG.md for details." > release_notes.md
           fi
@@ -180,8 +160,8 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ steps.bump.outputs.version }}"
-          name: "Release v${{ steps.bump.outputs.version }}"
+          tag_name: v${{ steps.bump.outputs.version }}
+          name: Release v${{ steps.bump.outputs.version }}
           body_path: release_notes.md
           files: |
             build/dist/zapret-manager-windows-x64.exe
@@ -200,8 +180,8 @@ jobs:
           python scripts/publish_artifact.py \
             --url "${{ secrets.ARTIFACT_SERVER_URL || 'https://artifact.devflux.ru' }}" \
             --api-key "${{ secrets.ARTIFACT_SERVER_API_KEY }}" \
-            --version "${{ steps.bump.outputs.version }}" \
-            --product-version "${{ steps.bump.outputs.version }}" \
+            --version ${{ steps.bump.outputs.version }} \
+            --product-version ${{ steps.bump.outputs.version }} \
             --channel stable \
             --file build/dist/zapret-manager-windows-x64.exe \
             --platform windows \
