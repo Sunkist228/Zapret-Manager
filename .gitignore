@@ -1,15 +1,15 @@
-# Python
+# Python bytecode and environments
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
 .Python
 env/
 venv/
 ENV/
-build/
+.venv/
+
+# Python packaging
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -23,45 +23,32 @@ wheels/
 .installed.cfg
 *.egg
 
-# PyInstaller
+# PyInstaller output
 *.manifest
 *.spec
-
-# Logs
-*.log
-logs/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Project specific
-dist/
 *.exe
-!src/resources/bin/winws2.exe
-*.pyc
-temp/
-tmp/
-src/resources/config/
 
-# PyInstaller build artifacts (но не конфигурацию)
+# Build artifacts, but not build configuration
 /build/*
+/dist/
 
-# Keep build configuration
+# Keep required runtime binaries and build configuration tracked
+!src/resources/bin/winws2.exe
 !/build/
 !/build/*.spec
 !/build/*.bat
 !/build/*.md
 !/build/runtime_hook.py
 
-# Testing
+# Runtime state and logs
+*.log
+logs/
+temp/
+tmp/
+src/resources/config/
+release_notes.md
+
+# Tests and coverage
 .pytest_cache/
 .coverage
 htmlcov/
@@ -69,7 +56,14 @@ htmlcov/
 .hypothesis/
 reports/
 
-# CI/CD
+# CI/CD local state
 .jenkins/
-*.log
-release_notes.md
+
+# IDE and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
