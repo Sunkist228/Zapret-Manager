@@ -4,6 +4,14 @@
 
 
 
+
+## [1.0.4] - 2026-04-20
+
+### Исправления
+
+- **build:** use DATA instead of BINARY for exe files in onefile mode (e919d0c)
+
+
 ## [1.0.3] - 2026-04-20
 
 ### Исправления
