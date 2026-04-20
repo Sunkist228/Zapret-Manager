@@ -9,8 +9,10 @@ import tempfile
 
 try:
     from utils.versioning import normalize_product_version, read_version_file
+    from utils.logger import logger
 except ImportError:
     from .versioning import normalize_product_version, read_version_file
+    from .logger import logger
 
 
 class Config:
