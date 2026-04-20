@@ -26,6 +26,7 @@ def test_release_and_ci_use_single_build_dist_contract():
     assert "working-directory: build\n        shell: bash" not in release_workflow
     assert "scripts/bump_version.py 2>&1" not in release_workflow
     assert "New-TemporaryFile" in release_workflow
+    assert 'PYTHONIOENCODING = "utf-8"' in release_workflow
 
 
 def test_config_frozen_paths_point_to_bundled_resources(tmp_path):
