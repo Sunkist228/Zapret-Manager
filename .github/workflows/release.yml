@@ -48,6 +48,7 @@ jobs:
 
       - name: Bump version
         id: bump
+        shell: pwsh
         run: |
           $bumpType = "${{ github.event.inputs.bump_type }}"
           if ([string]::IsNullOrEmpty($bumpType)) {
@@ -112,6 +113,7 @@ jobs:
       - name: Verify EXE created
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
+        shell: pwsh
         run: |
           if (!(Test-Path "dist\ZapretManager.exe")) {
             Write-Error "EXE file not created"
@@ -123,6 +125,7 @@ jobs:
       - name: Rename artifact
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
+        shell: pwsh
         run: |
           Copy-Item "dist\ZapretManager.exe" "dist\zapret-manager-windows-x64.exe"
           Write-Host "Created: zapret-manager-windows-x64.exe"
@@ -130,6 +133,7 @@ jobs:
       - name: Generate SHA256
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
+        shell: pwsh
         run: |
           $hash = (Get-FileHash "dist\zapret-manager-windows-x64.exe" -Algorithm SHA256).Hash
           $hash.ToLower() | Out-File "dist\zapret-manager-windows-x64.exe.sha256" -NoNewline -Encoding ASCII
@@ -138,6 +142,7 @@ jobs:
       - name: Extract changelog for release
         if: steps.bump.outputs.skip_release != 'true'
         id: changelog
+        shell: pwsh
         run: |
           $version = "${{ steps.bump.outputs.version }}"
           $changelog = Get-Content CHANGELOG.md -Raw
@@ -171,14 +176,15 @@ jobs:
       - name: Publish to Artifact Server
         if: steps.bump.outputs.skip_release != 'true' && secrets.ARTIFACT_SERVER_API_KEY != ''
         continue-on-error: true
+        shell: pwsh
         run: |
-          python scripts/publish_artifact.py \
-            --url "${{ secrets.ARTIFACT_SERVER_URL || 'https://artifact.devflux.ru' }}" \
-            --api-key "${{ secrets.ARTIFACT_SERVER_API_KEY }}" \
-            --version "${{ steps.bump.outputs.version }}" \
-            --product-version "${{ steps.bump.outputs.version }}" \
-            --channel stable \
-            --file build/dist/zapret-manager-windows-x64.exe \
-            --platform windows \
+          python scripts/publish_artifact.py `
+            --url "${{ secrets.ARTIFACT_SERVER_URL || 'https://artifact.devflux.ru' }}" `
+            --api-key "${{ secrets.ARTIFACT_SERVER_API_KEY }}" `
+            --version "${{ steps.bump.outputs.version }}" `
+            --product-version "${{ steps.bump.outputs.version }}" `
+            --channel stable `
+            --file build/dist/zapret-manager-windows-x64.exe `
+            --platform windows `
             --arch x64
 
