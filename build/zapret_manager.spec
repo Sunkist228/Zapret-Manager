@@ -23,8 +23,10 @@ datas = []
 datas += collect_tree(src_dir / "resources" / "presets", "resources/presets")
 datas += collect_tree(src_dir / "resources" / "lists", "resources/lists")
 datas += collect_tree(src_dir / "resources" / "lua", "resources/lua")
+# Copy both bin/ (fake packets) and exe/ (winws2.exe, WinDivert) to resources/bin
 datas += collect_tree(project_root / "bin", "resources/bin")
 datas += collect_tree(project_root / "exe", "resources/bin")
+# Copy windivert filter files
 datas += collect_tree(project_root / "windivert.filter", "resources/windivert.filter")
 datas.append((str(version_file), "."))
 
