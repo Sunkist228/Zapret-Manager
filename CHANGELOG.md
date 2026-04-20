@@ -1,45 +1,5 @@
 # История изменений
 
-
-## [1.0.0] - 2026-04-20
-
-### ⚠ КРИТИЧЕСКИЕ ИЗМЕНЕНИЯ
-
-- версия изменена с 1.0.0 на 0.1.1 для корректного semantic versioning (860e893)
-
-### Новые функции
-
-- **ci:** switch language to russian and reset version to 0.1.0 (5a6c9c2)
-- add PyInstaller build configuration and scripts (2a9b9f6)
-- implement system tray with preset management and autostart (640ade5)
-- implement core modules (zapret_manager, preset_manager, list_manager, autostart, privileges, diagnostics) (1ea39a5)
-
-### Исправления
-
-- **ci:** fix publish artifact step and avoid secret in if condition (99fa24d)
-- **ci:** fix string interpolation for version in release.yml bash steps (1e3c604)
-- **ci:** fix bash script string wrappers in release.yml (68bfe21)
-- **ci:** fix build step and check dist directory (1785713)
-- **ci:** fix check if exe exists in release.yml (134bdc4)
-- **ci:** convert release.yml to run in bash (531a35d)
-- **ci:** fix yaml pwsh variable interpolation in release.yml part 2 (b6565ef)
-- **ci:** wrap string variables in release.yml (4e128ae)
-- **ci:** fix yaml pwsh variable interpolation in release.yml (0abda44)
-- **ci:** fix yaml string interpolation in release.yml (a962df6)
-- **ci:** apply pwsh to all steps in release.yml (eeefe60)
-- **ci:** fix pwsh yaml syntax in release.yml (160bd25)
-- **ci:** fix yaml syntax in release.yml part 2 (e446ab7)
-- **ci:** fix yaml syntax in release.yml (f5c2060)
-- **scripts:** fix bump_version.py and set version to 0.1.0 (a0ac6cf)
-- **scripts:** handle unicode in git log for Windows (e808e25)
-- **ci:** correct build paths in workflows (f1eadbe)
-- добавлен импорт Path и исправлен порядок определения cwd (d0575eb)
-- исправлена работоспособность программы (v1.0.2) (053c1c5)
-- correct imports for PyInstaller EXE execution (a270457)
-- correct build.bat paths and finalize v1.0 (4769c94)
-- correct imports for standalone execution (a7aadeb)
-
-
 Все заметные изменения в этом проекте будут отражаться в этом файле.
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
