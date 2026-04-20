@@ -38,17 +38,24 @@ datas = []
 datas += collect_tree(src_dir / "resources" / "presets", "resources/presets")
 datas += collect_tree(src_dir / "resources" / "lists", "resources/lists")
 datas += collect_tree(src_dir / "resources" / "lua", "resources/lua")
-# Copy both bin/ (fake packets) and exe/ (winws2.exe, WinDivert) to resources/bin
+# Copy bin/ (fake packets) as data
 datas += collect_tree(project_root / "bin", "resources/bin")
-datas += collect_tree(project_root / "exe", "resources/bin")
 # Copy windivert filter files
 datas += collect_tree(project_root / "windivert.filter", "resources/windivert.filter")
 datas.append((str(version_file), "."))
 
+# Mark executables and DLLs as binaries for proper extraction
+binaries = []
+exe_dir = project_root / "exe"
+if exe_dir.exists():
+    for exe_file in exe_dir.rglob("*"):
+        if exe_file.is_file() and exe_file.suffix.lower() in ['.exe', '.dll', '.sys']:
+            binaries.append((str(exe_file), "resources/bin"))
+
 a = Analysis(
     [str(src_dir / "main.py")],
     pathex=[str(src_dir)],
-    binaries=[],
+    binaries=binaries,
     datas=datas,
     hiddenimports=[
         "PyQt5",
