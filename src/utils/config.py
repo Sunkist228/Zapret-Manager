@@ -102,14 +102,41 @@ class Config:
     def validate_resources(cls) -> bool:
         """Validate required bundled resources."""
         required_paths = [
-            cls.WINWS2_EXE,
-            cls.PRESETS_DIR,
-            cls.LISTS_DIR,
-            cls.LUA_DIR,
+            (cls.WINWS2_EXE, "winws2.exe"),
+            (cls.PRESETS_DIR, "presets directory"),
+            (cls.LISTS_DIR, "lists directory"),
+            (cls.LUA_DIR, "lua directory"),
         ]
 
-        for path in required_paths:
+        missing = []
+        for path, name in required_paths:
             if not path.exists():
-                return False
+                missing.append(f"{name}: {path}")
+                logger.error(f"Missing resource: {name} at {path}")
+
+        if missing:
+            logger.error(f"Missing {len(missing)} required resources")
+
+            # Вывести содержимое родительских директорий для диагностики
+            if cls.IS_FROZEN:
+                try:
+                    logger.error(f"BASE_DIR contents: {list(cls.BASE_DIR.iterdir())}")
+                except Exception as e:
+                    logger.error(f"Cannot list BASE_DIR: {e}")
+
+                if cls.RESOURCES_DIR.exists():
+                    try:
+                        logger.error(f"RESOURCES_DIR contents: {list(cls.RESOURCES_DIR.iterdir())}")
+                    except Exception as e:
+                        logger.error(f"Cannot list RESOURCES_DIR: {e}")
+
+                if cls.BIN_DIR.exists():
+                    try:
+                        bin_contents = list(cls.BIN_DIR.iterdir())[:20]
+                        logger.error(f"BIN_DIR contents (first 20): {bin_contents}")
+                    except Exception as e:
+                        logger.error(f"Cannot list BIN_DIR: {e}")
+
+            return False
 
         return True

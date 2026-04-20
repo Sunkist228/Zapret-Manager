@@ -42,6 +42,25 @@ def main():
         logger.info(f"Режим: {'EXE' if Config.IS_FROZEN else 'Python скрипт'}")
         logger.info(f"Базовая директория: {Config.BASE_DIR}")
 
+        if Config.IS_FROZEN:
+            logger.info(f"sys._MEIPASS: {sys._MEIPASS}")
+            logger.info(f"RESOURCES_DIR: {Config.RESOURCES_DIR}")
+            logger.info(f"BIN_DIR: {Config.BIN_DIR}")
+            logger.info(f"WINWS2_EXE: {Config.WINWS2_EXE}")
+
+            logger.info(f"RESOURCES_DIR exists: {Config.RESOURCES_DIR.exists()}")
+            logger.info(f"BIN_DIR exists: {Config.BIN_DIR.exists()}")
+
+            if Config.BIN_DIR.exists():
+                bin_files = list(Config.BIN_DIR.iterdir())
+                logger.info(f"Files in BIN_DIR ({len(bin_files)}):")
+                for f in bin_files[:20]:
+                    logger.info(f"  - {f.name} ({f.stat().st_size} bytes)")
+
+            logger.info(f"WINWS2_EXE exists: {Config.WINWS2_EXE.exists()}")
+            if Config.WINWS2_EXE.exists():
+                logger.info(f"WINWS2_EXE size: {Config.WINWS2_EXE.stat().st_size} bytes")
+
         app = QApplication(sys.argv)
 
         shared_memory = QSharedMemory("ZapretManagerSingleInstance")
