@@ -156,15 +156,13 @@ def bump_version(current_version: str, bump_type: str) -> str:
     ver = parse_version(current_version)
 
     if bump_type == "major":
-        new_ver = SemVer(major=ver.major + 1, minor=0, patch=0)
+        return f"{ver.major + 1}.0.0"
     elif bump_type == "minor":
-        new_ver = SemVer(major=ver.major, minor=ver.minor + 1, patch=0)
+        return f"{ver.major}.{ver.minor + 1}.0"
     elif bump_type == "patch":
-        new_ver = SemVer(major=ver.major, minor=ver.minor, patch=ver.patch + 1)
+        return f"{ver.major}.{ver.minor}.{ver.patch + 1}"
     else:
         raise ValueError(f"Invalid bump type: {bump_type}")
-
-    return str(new_ver)
 
 
 def main():
