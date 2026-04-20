@@ -7,6 +7,15 @@
 
 
 
+
+## [1.0.7] - 2026-04-20
+
+### Исправления
+
+- parse release bump version from stdout (ee2aaad)
+- align release artifact paths (489fb19)
+
+
 ## [1.0.6] - 2026-04-20
 
 ### Исправления
