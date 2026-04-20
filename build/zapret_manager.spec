@@ -3,10 +3,25 @@
 from pathlib import Path
 
 
-spec_root = Path(SPECPATH).parent
-project_root = spec_root.parent if not (spec_root / "src").exists() else spec_root
+# SPECPATH is the directory containing the .spec file
+spec_dir = Path(SPECPATH).absolute()
+
+# When PyInstaller runs, it creates build/ subdirectory
+# So we might be in: zapret2/build/ or zapret2/build/build/
+# We need to find the project root (zapret2/)
+current = spec_dir
+while current.name in ['build', 'dist'] and current.parent != current:
+    current = current.parent
+
+project_root = current
 src_dir = project_root / "src"
 version_file = project_root / "VERSION"
+
+print(f"[SPEC] SPECPATH: {spec_dir}")
+print(f"[SPEC] Project root: {project_root}")
+print(f"[SPEC] Checking bin: {(project_root / 'bin').exists()}")
+print(f"[SPEC] Checking exe: {(project_root / 'exe').exists()}")
+print(f"[SPEC] Checking src: {src_dir.exists()}")
 
 block_cipher = None
 
