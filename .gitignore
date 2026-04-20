@@ -45,6 +45,7 @@ Thumbs.db
 # Project specific
 dist/
 *.exe
+!src/resources/bin/winws2.exe
 *.pyc
 temp/
 tmp/

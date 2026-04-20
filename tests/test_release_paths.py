@@ -57,3 +57,24 @@ assert Config.WINWS2_EXE == base / "resources" / "bin" / "winws2.exe"
     )
 
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_required_pyinstaller_resources_are_tracked():
+    required_paths = [
+        "src/resources/bin/winws2.exe",
+        "src/resources/bin/WinDivert.dll",
+        "src/resources/bin/WinDivert32.sys",
+        "src/resources/bin/WinDivert64.sys",
+    ]
+    result = subprocess.run(
+        ["git", "ls-files", *required_paths],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+
+    tracked = set(result.stdout.splitlines())
+
+    assert result.returncode == 0, result.stderr
+    assert set(required_paths).issubset(tracked)
