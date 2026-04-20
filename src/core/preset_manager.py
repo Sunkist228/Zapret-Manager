@@ -5,13 +5,8 @@
 
 import shutil
 from pathlib import Path
-from typing import List, Optional, Dict
 from dataclasses import dataclass
-import sys
-import os
-
-# Add parent directory to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from typing import List, Optional
 
 from utils.config import Config
 from utils.logger import logger
@@ -21,6 +16,7 @@ from utils.validators import Validators
 @dataclass
 class Preset:
     """Информация о пресете"""
+
     name: str
     path: Path
     description: str = ""
@@ -59,7 +55,9 @@ class PresetManager:
 
             if default_preset.exists():
                 shutil.copy2(default_preset, self.config.ACTIVE_PRESET)
-                self.config.CURRENT_PRESET_NAME.write_text(self.config.DEFAULT_PRESET_NAME, encoding='utf-8')
+                self.config.CURRENT_PRESET_NAME.write_text(
+                    self.config.DEFAULT_PRESET_NAME, encoding="utf-8"
+                )
                 logger.info("Дефолтный пресет установлен")
             else:
                 logger.warning(f"Дефолтный пресет не найден: {default_preset}")
@@ -85,19 +83,16 @@ class PresetManager:
         # Сканируем директорию
         for preset_file in sorted(self.config.PRESETS_DIR.glob("*.txt")):
             # Пропускаем файлы начинающиеся с _
-            if preset_file.name.startswith('_'):
+            if preset_file.name.startswith("_"):
                 continue
 
             name = preset_file.stem
             description = self._extract_description(preset_file)
-            is_active = (name == active_preset_name)
+            is_active = name == active_preset_name
 
-            presets.append(Preset(
-                name=name,
-                path=preset_file,
-                description=description,
-                is_active=is_active
-            ))
+            presets.append(
+                Preset(name=name, path=preset_file, description=description, is_active=is_active)
+            )
 
         return presets
 
@@ -112,13 +107,13 @@ class PresetManager:
             Описание или пустая строка
         """
         try:
-            content = preset_path.read_text(encoding='utf-8')
-            lines = content.split('\n')
+            content = preset_path.read_text(encoding="utf-8")
+            lines = content.split("\n")
 
             # Ищем строку # Description:
             for line in lines:
-                if line.strip().startswith('# Description:'):
-                    return line.split(':', 1)[1].strip()
+                if line.strip().startswith("# Description:"):
+                    return line.split(":", 1)[1].strip()
 
             return ""
 
@@ -137,7 +132,7 @@ class PresetManager:
             return None
 
         try:
-            name = self.config.CURRENT_PRESET_NAME.read_text(encoding='utf-8').strip()
+            name = self.config.CURRENT_PRESET_NAME.read_text(encoding="utf-8").strip()
             return name if name else None
         except Exception as e:
             logger.error(f"Ошибка чтения имени активного пресета: {e}")
@@ -190,7 +185,7 @@ class PresetManager:
             shutil.copy2(preset_path, self.config.ACTIVE_PRESET)
 
             # Сохраняем имя
-            self.config.CURRENT_PRESET_NAME.write_text(preset_name, encoding='utf-8')
+            self.config.CURRENT_PRESET_NAME.write_text(preset_name, encoding="utf-8")
 
             logger.info(f"Пресет '{preset_name}' установлен как активный")
             return True
@@ -288,6 +283,7 @@ class PresetManager:
         all_presets = self.list_presets()
 
         return [
-            preset for preset in all_presets
+            preset
+            for preset in all_presets
             if query_lower in preset.name.lower() or query_lower in preset.description.lower()
         ]

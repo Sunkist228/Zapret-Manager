@@ -3,7 +3,6 @@
 Управление автозапуском через Task Scheduler
 """
 
-import os
 import subprocess
 import sys
 import tempfile
@@ -11,9 +10,6 @@ import winreg
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict, Optional
-
-# Add parent directory to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.config import Config
 from utils.logger import logger
@@ -28,24 +24,24 @@ class AutostartManager:
 
     def _get_expected_action(self) -> Dict[str, str]:
         """Получить ожидаемую команду автозапуска."""
-        if getattr(sys, 'frozen', False):
+        if getattr(sys, "frozen", False):
             command = str(Path(sys.executable))
             arguments = "--autostart"
             working_directory = str(Path(sys.executable).parent)
         else:
             current_python = Path(sys.executable)
-            pythonw = current_python.with_name('pythonw.exe')
+            pythonw = current_python.with_name("pythonw.exe")
             if not pythonw.exists():
                 pythonw = current_python
-            script_path = (Path(__file__).parent.parent / 'main.py').resolve()
+            script_path = (Path(__file__).parent.parent / "main.py").resolve()
             command = str(pythonw)
             arguments = f'"{script_path}" --autostart'
             working_directory = str(self.config.BASE_DIR)
 
         return {
-            'command': command,
-            'arguments': arguments,
-            'working_directory': working_directory,
+            "command": command,
+            "arguments": arguments,
+            "working_directory": working_directory,
         }
 
     @staticmethod
@@ -63,15 +59,15 @@ class AutostartManager:
     @staticmethod
     def _normalize_arguments(value: str) -> str:
         """Нормализовать аргументы командной строки."""
-        return " ".join((value or "").replace('"', '').split()).lower()
+        return " ".join((value or "").replace('"', "").split()).lower()
 
     def _task_exists(self, task_name: str) -> bool:
         """Проверить существование задачи планировщика."""
         result = subprocess.run(
-            ['schtasks', '/Query', '/TN', task_name],
+            ["schtasks", "/Query", "/TN", task_name],
             capture_output=True,
             creationflags=subprocess.CREATE_NO_WINDOW,
-            timeout=5
+            timeout=5,
         )
         return result.returncode == 0
 
@@ -81,27 +77,30 @@ class AutostartManager:
 
         try:
             result = subprocess.run(
-                ['schtasks', '/Query', '/TN', task_name, '/XML'],
+                ["schtasks", "/Query", "/TN", task_name, "/XML"],
                 capture_output=True,
                 text=True,
                 creationflags=subprocess.CREATE_NO_WINDOW,
-                timeout=5
+                timeout=5,
             )
 
             if result.returncode != 0 or not result.stdout.strip():
                 return None
 
             root = ET.fromstring(result.stdout)
-            namespace = {'ts': 'http://schemas.microsoft.com/windows/2004/02/mit/task'}
+            namespace = {"ts": "http://schemas.microsoft.com/windows/2004/02/mit/task"}
 
             return {
-                'command': root.findtext('.//ts:Exec/ts:Command', default='', namespaces=namespace) or '',
-                'arguments': root.findtext('.//ts:Exec/ts:Arguments', default='', namespaces=namespace) or '',
-                'working_directory': root.findtext(
-                    './/ts:Exec/ts:WorkingDirectory',
-                    default='',
-                    namespaces=namespace
-                ) or '',
+                "command": root.findtext(".//ts:Exec/ts:Command", default="", namespaces=namespace)
+                or "",
+                "arguments": root.findtext(
+                    ".//ts:Exec/ts:Arguments", default="", namespaces=namespace
+                )
+                or "",
+                "working_directory": root.findtext(
+                    ".//ts:Exec/ts:WorkingDirectory", default="", namespaces=namespace
+                )
+                or "",
             }
 
         except Exception as e:
@@ -115,12 +114,12 @@ class AutostartManager:
 
         expected = self._get_expected_action()
         return (
-            self._normalize_path(definition.get('command', '')) ==
-            self._normalize_path(expected['command']) and
-            self._normalize_arguments(definition.get('arguments', '')) ==
-            self._normalize_arguments(expected['arguments']) and
-            self._normalize_path(definition.get('working_directory', '')) ==
-            self._normalize_path(expected['working_directory'])
+            self._normalize_path(definition.get("command", ""))
+            == self._normalize_path(expected["command"])
+            and self._normalize_arguments(definition.get("arguments", ""))
+            == self._normalize_arguments(expected["arguments"])
+            and self._normalize_path(definition.get("working_directory", ""))
+            == self._normalize_path(expected["working_directory"])
         )
 
     def _delete_task(self, task_name: str):
@@ -129,11 +128,11 @@ class AutostartManager:
             return
 
         result = subprocess.run(
-            ['schtasks', '/Delete', '/TN', task_name, '/F'],
+            ["schtasks", "/Delete", "/TN", task_name, "/F"],
             capture_output=True,
             text=True,
             creationflags=subprocess.CREATE_NO_WINDOW,
-            timeout=10
+            timeout=10,
         )
 
         if result.returncode != 0:
@@ -146,7 +145,7 @@ class AutostartManager:
                 winreg.HKEY_CURRENT_USER,
                 r"Software\Microsoft\Windows\CurrentVersion\Run",
                 0,
-                winreg.KEY_SET_VALUE | winreg.KEY_READ
+                winreg.KEY_SET_VALUE | winreg.KEY_READ,
             )
         except FileNotFoundError:
             return
@@ -211,20 +210,18 @@ class AutostartManager:
 
             action = self._get_expected_action()
             xml_content = self._generate_task_xml(
-                action['command'],
-                action['arguments'],
-                action['working_directory']
+                action["command"], action["arguments"], action["working_directory"]
             )
             xml_path = Path(tempfile.gettempdir()) / "ZapretManager" / "zapret_manager_task.xml"
             xml_path.parent.mkdir(parents=True, exist_ok=True)
-            xml_path.write_text(xml_content, encoding='utf-16')
+            xml_path.write_text(xml_content, encoding="utf-16")
 
             result = subprocess.run(
-                ['schtasks', '/Create', '/TN', self.task_name, '/XML', str(xml_path), '/F'],
+                ["schtasks", "/Create", "/TN", self.task_name, "/XML", str(xml_path), "/F"],
                 capture_output=True,
                 text=True,
                 creationflags=subprocess.CREATE_NO_WINDOW,
-                timeout=10
+                timeout=10,
             )
 
             try:
@@ -284,28 +281,28 @@ class AutostartManager:
                 return None
 
             result = subprocess.run(
-                ['schtasks', '/Query', '/TN', self.task_name, '/V', '/FO', 'LIST'],
+                ["schtasks", "/Query", "/TN", self.task_name, "/V", "/FO", "LIST"],
                 capture_output=True,
                 text=True,
                 creationflags=subprocess.CREATE_NO_WINDOW,
-                timeout=5
+                timeout=5,
             )
 
             if result.returncode != 0:
                 return None
 
             info = {}
-            for line in result.stdout.split('\n'):
-                if ':' in line:
-                    key, value = line.split(':', 1)
+            for line in result.stdout.split("\n"):
+                if ":" in line:
+                    key, value = line.split(":", 1)
                     info[key.strip()] = value.strip()
 
             definition = self._get_task_definition(self.task_name)
             if definition:
-                info['Command'] = definition['command']
-                info['Arguments'] = definition['arguments']
-                info['WorkingDirectory'] = definition['working_directory']
-                info['IsCurrentInstall'] = self._is_expected_task_definition(definition)
+                info["Command"] = definition["command"]
+                info["Arguments"] = definition["arguments"]
+                info["WorkingDirectory"] = definition["working_directory"]
+                info["IsCurrentInstall"] = self._is_expected_task_definition(definition)
 
             return info
 
@@ -325,7 +322,7 @@ class AutostartManager:
         Returns:
             XML содержимое.
         """
-        xml = f'''<?xml version="1.0" encoding="UTF-16"?>
+        xml = f"""<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <Triggers>
     <LogonTrigger>
@@ -349,19 +346,19 @@ class AutostartManager:
   </Settings>
   <Actions>
     <Exec>
-      <Command>{command}</Command>'''
+      <Command>{command}</Command>"""
 
         if arguments:
-            xml += f'''
-      <Arguments>{arguments}</Arguments>'''
+            xml += f"""
+      <Arguments>{arguments}</Arguments>"""
 
         if working_directory:
-            xml += f'''
-      <WorkingDirectory>{working_directory}</WorkingDirectory>'''
+            xml += f"""
+      <WorkingDirectory>{working_directory}</WorkingDirectory>"""
 
-        xml += '''
+        xml += """
     </Exec>
   </Actions>
-</Task>'''
+</Task>"""
 
         return xml

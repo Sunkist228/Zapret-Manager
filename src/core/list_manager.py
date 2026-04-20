@@ -5,11 +5,6 @@
 
 from pathlib import Path
 from typing import List, Optional
-import sys
-import os
-
-# Add parent directory to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.config import Config
 from utils.logger import logger
@@ -56,8 +51,8 @@ class ListManager:
             return []
 
         try:
-            content = list_path.read_text(encoding='utf-8')
-            lines = content.split('\n')
+            content = list_path.read_text(encoding="utf-8")
+            lines = content.split("\n")
 
             # Фильтруем пустые строки
             entries = [line.strip() for line in lines if line.strip()]
@@ -90,7 +85,7 @@ class ListManager:
                     continue
 
                 # Пропускаем комментарии
-                if entry.startswith('#'):
+                if entry.startswith("#"):
                     valid_entries.append(entry)
                     continue
 
@@ -102,8 +97,8 @@ class ListManager:
                     logger.warning(f"Невалидная запись пропущена: {entry}")
 
             # Записываем
-            content = '\n'.join(valid_entries)
-            list_path.write_text(content, encoding='utf-8')
+            content = "\n".join(valid_entries)
+            list_path.write_text(content, encoding="utf-8")
 
             logger.info(f"Список {list_name} сохранен ({len(valid_entries)} записей)")
             return True
@@ -186,7 +181,7 @@ class ListManager:
             return False
 
         try:
-            list_path.write_text("", encoding='utf-8')
+            list_path.write_text("", encoding="utf-8")
             logger.info(f"Создан новый список: {list_name}")
             return True
 
@@ -236,8 +231,8 @@ class ListManager:
 
         try:
             # Читаем файл
-            content = file_path.read_text(encoding='utf-8')
-            entries = [line.strip() for line in content.split('\n') if line.strip()]
+            content = file_path.read_text(encoding="utf-8")
+            entries = [line.strip() for line in content.split("\n") if line.strip()]
 
             # Определяем имя
             if list_name is None:
@@ -269,6 +264,7 @@ class ListManager:
 
         try:
             import shutil
+
             shutil.copy2(list_path, dest_path)
             logger.info(f"Список экспортирован: {dest_path}")
             return True

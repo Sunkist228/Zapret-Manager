@@ -7,21 +7,21 @@ Zapret Manager entry point.
 import sys
 from pathlib import Path
 
-if getattr(sys, 'frozen', False):
+if getattr(sys, "frozen", False):
     application_path = Path(sys._MEIPASS)
     sys.path.insert(0, str(application_path))
 else:
     application_path = Path(__file__).parent
     sys.path.insert(0, str(application_path))
 
-if sys.platform == 'win32' and sys.stdout is not None:
+if sys.platform == "win32" and sys.stdout is not None:
     try:
         import codecs
 
-        if hasattr(sys.stdout, 'buffer'):
-            sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
-        if hasattr(sys.stderr, 'buffer'):
-            sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+        if hasattr(sys.stdout, "buffer"):
+            sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "strict")
+        if hasattr(sys.stderr, "buffer"):
+            sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "strict")
     except Exception:
         pass
 
@@ -78,7 +78,7 @@ def main():
                 "Zapret Manager не может работать без прав администратора.\n\n"
                 "Перезапустить приложение с правами администратора?",
                 QMessageBox.Yes | QMessageBox.Cancel,
-                QMessageBox.Yes
+                QMessageBox.Yes,
             )
 
             if reply == QMessageBox.Yes:
@@ -91,7 +91,7 @@ def main():
                 None,
                 "Приложение не может запуститься",
                 "Zapret Manager требует права администратора для работы.\n\n"
-                "Запустите приложение правой кнопкой мыши → 'Запуск от имени администратора'"
+                "Запустите приложение правой кнопкой мыши → 'Запуск от имени администратора'",
             )
             return 1
 
@@ -102,7 +102,7 @@ def main():
                 "Ошибка",
                 f"Не найдены необходимые файлы.\n\n"
                 f"Проверьте что winws2.exe находится в:\n{Config.WINWS2_EXE}\n\n"
-                f"Базовая директория: {Config.BASE_DIR}"
+                f"Базовая директория: {Config.BASE_DIR}",
             )
             return 1
 
@@ -125,9 +125,7 @@ def main():
 
         try:
             QMessageBox.critical(
-                None,
-                "Критическая ошибка",
-                f"Не удалось запустить приложение:\n\n{e}"
+                None, "Критическая ошибка", f"Не удалось запустить приложение:\n\n{e}"
             )
         except Exception:
             pass

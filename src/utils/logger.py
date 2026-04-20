@@ -35,16 +35,12 @@ def setup_logger(name: str = "ZapretManager", level: int = logging.INFO) -> logg
 
     # Формат логов
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
     )
 
     # Файловый хэндлер с ротацией (макс 10 MB)
     file_handler = RotatingFileHandler(
-        log_file,
-        maxBytes=10 * 1024 * 1024,  # 10 MB
-        backupCount=3,
-        encoding='utf-8'
+        log_file, maxBytes=10 * 1024 * 1024, backupCount=3, encoding="utf-8"  # 10 MB
     )
     file_handler.setLevel(level)
     file_handler.setFormatter(formatter)

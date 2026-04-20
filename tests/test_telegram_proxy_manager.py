@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from src.core.telegram_proxy_manager import TelegramProxyManager
-from src.utils import config as config_module
+from core.telegram_proxy_manager import TelegramProxyManager
+from utils import config as config_module
 
 
 def test_telegram_proxy_manager_finds_helper_in_tools_dir(monkeypatch, tmp_path):

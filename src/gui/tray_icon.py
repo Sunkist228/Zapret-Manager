@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 System tray icon for Zapret Manager.
 """
 
-import os
 import subprocess
-import sys
 import tempfile
 import threading
 from pathlib import Path
@@ -13,8 +11,6 @@ from pathlib import Path
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QColor, QFont, QIcon, QPainter, QPixmap
 from PyQt5.QtWidgets import QAction, QApplication, QMenu, QMessageBox, QSystemTrayIcon
-
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.autostart import AutostartManager
 from core.preset_manager import PresetManager
@@ -86,22 +82,22 @@ class ZapretTrayIcon(QSystemTrayIcon):
         """Create tray context menu."""
         self.menu = QMenu()
 
-        self.status_action = QAction("Статус: проверка...", self.menu)
+        self.status_action = QAction("РЎС‚Р°С‚СѓСЃ: РїСЂРѕРІРµСЂРєР°...", self.menu)
         self.status_action.setEnabled(False)
         self.menu.addAction(self.status_action)
         self.menu.addSeparator()
 
-        self.toggle_action = QAction("▶ Включить", self.menu)
+        self.toggle_action = QAction("в–¶ Р’РєР»СЋС‡РёС‚СЊ", self.menu)
         self.toggle_action.triggered.connect(self.toggle_zapret)
         self.menu.addAction(self.toggle_action)
 
-        self.restart_action = QAction("Перезапустить", self.menu)
+        self.restart_action = QAction("РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ", self.menu)
         self.restart_action.triggered.connect(self.restart_zapret)
         self.restart_action.setEnabled(False)
         self.menu.addAction(self.restart_action)
         self.menu.addSeparator()
 
-        self.presets_menu = QMenu("Пресеты", self.menu)
+        self.presets_menu = QMenu("РџСЂРµСЃРµС‚С‹", self.menu)
         self.menu.addMenu(self.presets_menu)
         self.update_presets_menu()
         self.menu.addSeparator()
@@ -111,41 +107,41 @@ class ZapretTrayIcon(QSystemTrayIcon):
         self.update_telegram_proxy_menu()
         self.menu.addSeparator()
 
-        self.check_updates_action = QAction("Проверить обновления", self.menu)
+        self.check_updates_action = QAction("РџСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёСЏ", self.menu)
         self.check_updates_action.triggered.connect(self.manual_update_check)
         self.menu.addAction(self.check_updates_action)
 
-        self.install_update_action = QAction("Установить обновление", self.menu)
+        self.install_update_action = QAction("РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ", self.menu)
         self.install_update_action.setEnabled(False)
         self.install_update_action.triggered.connect(self.prepare_update_install)
         self.menu.addAction(self.install_update_action)
         self.menu.addSeparator()
 
-        self.show_window_action = QAction("Открыть главное окно", self.menu)
+        self.show_window_action = QAction("РћС‚РєСЂС‹С‚СЊ РіР»Р°РІРЅРѕРµ РѕРєРЅРѕ", self.menu)
         self.show_window_action.triggered.connect(self.show_main_window)
         self.menu.addAction(self.show_window_action)
         self.menu.addSeparator()
 
-        show_logs_action = QAction("Показать логи", self.menu)
+        show_logs_action = QAction("РџРѕРєР°Р·Р°С‚СЊ Р»РѕРіРё", self.menu)
         show_logs_action.triggered.connect(self.show_logs)
         self.menu.addAction(show_logs_action)
 
-        diagnostics_action = QAction("Диагностика", self.menu)
+        diagnostics_action = QAction("Р”РёР°РіРЅРѕСЃС‚РёРєР°", self.menu)
         diagnostics_action.triggered.connect(self.show_diagnostics)
         self.menu.addAction(diagnostics_action)
         self.menu.addSeparator()
 
-        self.autostart_action = QAction("Автозапуск", self.menu)
+        self.autostart_action = QAction("РђРІС‚РѕР·Р°РїСѓСЃРє", self.menu)
         self.autostart_action.setCheckable(True)
         self.autostart_action.triggered.connect(self.toggle_autostart)
         self.menu.addAction(self.autostart_action)
         self.menu.addSeparator()
 
-        about_action = QAction("О программе", self.menu)
+        about_action = QAction("Рћ РїСЂРѕРіСЂР°РјРјРµ", self.menu)
         about_action.triggered.connect(self.show_about)
         self.menu.addAction(about_action)
 
-        quit_action = QAction("Выход", self.menu)
+        quit_action = QAction("Р’С‹С…РѕРґ", self.menu)
         quit_action.triggered.connect(self.quit_app)
         self.menu.addAction(quit_action)
 
@@ -167,7 +163,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             "CrazyMaxs",
             "Default v5",
             "ALL TCP & UDP v1",
-            "Ростелеком",
+            "Р РѕСЃС‚РµР»РµРєРѕРј",
         ]
 
         for preset_name in popular_presets:
@@ -183,7 +179,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             self.presets_menu.addAction(action)
 
         self.presets_menu.addSeparator()
-        all_presets_menu = self.presets_menu.addMenu("Все пресеты")
+        all_presets_menu = self.presets_menu.addMenu("Р’СЃРµ РїСЂРµСЃРµС‚С‹")
 
         for preset in presets:
             if preset.name in popular_presets:
@@ -209,24 +205,24 @@ class ZapretTrayIcon(QSystemTrayIcon):
 
             if running:
                 uptime_str = f" ({status['uptime']})" if status["uptime"] else ""
-                self.status_action.setText(f"● Запущен{uptime_str}")
-                self.toggle_action.setText("⏹ Выключить")
+                self.status_action.setText(f"в—Џ Р—Р°РїСѓС‰РµРЅ{uptime_str}")
+                self.toggle_action.setText("вЏ№ Р’С‹РєР»СЋС‡РёС‚СЊ")
                 self.restart_action.setEnabled(True)
                 self.setToolTip(
-                    f"{Config.APP_NAME} - Запущен\nПресет: {status['preset']}"
+                    f"{Config.APP_NAME} - Р—Р°РїСѓС‰РµРЅ\nРџСЂРµСЃРµС‚: {status['preset']}"
                 )
                 self.set_icon_color("green")
             else:
-                self.status_action.setText("✗ Остановлен")
-                self.toggle_action.setText("▶ Включить")
+                self.status_action.setText("вњ— РћСЃС‚Р°РЅРѕРІР»РµРЅ")
+                self.toggle_action.setText("в–¶ Р’РєР»СЋС‡РёС‚СЊ")
                 self.restart_action.setEnabled(False)
-                self.setToolTip(f"{Config.APP_NAME} - Остановлен")
+                self.setToolTip(f"{Config.APP_NAME} - РћСЃС‚Р°РЅРѕРІР»РµРЅ")
                 self.set_icon_color("red")
 
             self.update_telegram_proxy_menu()
 
         except Exception as exc:
-            logger.error(f"Ошибка обновления статуса: {exc}")
+            logger.error(f"РћС€РёР±РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚Р°С‚СѓСЃР°: {exc}")
 
     def update_telegram_proxy_menu(self):
         """Refresh Telegram proxy submenu."""
@@ -237,29 +233,33 @@ class ZapretTrayIcon(QSystemTrayIcon):
         status = self.telegram_proxy_manager.get_status()
 
         if status.running:
-            status_text = f"Запущен: PID {status.pid}"
+            status_text = f"Р—Р°РїСѓС‰РµРЅ: PID {status.pid}"
         elif status.installed:
-            status_text = "Найден, остановлен"
+            status_text = "РќР°Р№РґРµРЅ, РѕСЃС‚Р°РЅРѕРІР»РµРЅ"
         else:
-            status_text = "Не найден"
+            status_text = "РќРµ РЅР°Р№РґРµРЅ"
 
         status_action = QAction(status_text, self.telegram_proxy_menu)
         status_action.setEnabled(False)
         self.telegram_proxy_menu.addAction(status_action)
 
-        start_action = QAction("Запустить локальный прокси", self.telegram_proxy_menu)
+        start_action = QAction(
+            "Р—Р°РїСѓСЃС‚РёС‚СЊ Р»РѕРєР°Р»СЊРЅС‹Р№ РїСЂРѕРєСЃРё", self.telegram_proxy_menu
+        )
         start_action.setEnabled(status.installed and not status.running)
         start_action.triggered.connect(self.start_telegram_proxy)
         self.telegram_proxy_menu.addAction(start_action)
 
-        stop_action = QAction("Остановить локальный прокси", self.telegram_proxy_menu)
+        stop_action = QAction(
+            "РћСЃС‚Р°РЅРѕРІРёС‚СЊ Р»РѕРєР°Р»СЊРЅС‹Р№ РїСЂРѕРєСЃРё", self.telegram_proxy_menu
+        )
         stop_action.setEnabled(status.running)
         stop_action.triggered.connect(self.stop_telegram_proxy)
         self.telegram_proxy_menu.addAction(stop_action)
 
         self.telegram_proxy_menu.addSeparator()
 
-        settings_action = QAction("Как настроить Telegram", self.telegram_proxy_menu)
+        settings_action = QAction("РљР°Рє РЅР°СЃС‚СЂРѕРёС‚СЊ Telegram", self.telegram_proxy_menu)
         settings_action.triggered.connect(self.show_telegram_proxy_help)
         self.telegram_proxy_menu.addAction(settings_action)
 
@@ -268,7 +268,8 @@ class ZapretTrayIcon(QSystemTrayIcon):
         if self.telegram_proxy_manager.start():
             self.show_notification(
                 "Telegram proxy",
-                "Локальный прокси запущен. В Telegram используйте SOCKS5 127.0.0.1:1080 или 127.0.0.1:1443.",
+                "Р›РѕРєР°Р»СЊРЅС‹Р№ РїСЂРѕРєСЃРё Р·Р°РїСѓС‰РµРЅ. Р’ Telegram РёСЃРїРѕР»СЊР·СѓР№С‚Рµ "  # noqa: E501
+                "SOCKS5 127.0.0.1:1080 РёР»Рё 127.0.0.1:1443.",
                 QSystemTrayIcon.Information,
                 4000,
             )
@@ -279,10 +280,10 @@ class ZapretTrayIcon(QSystemTrayIcon):
         QMessageBox.warning(
             None,
             "Telegram proxy",
-            "Не удалось запустить локальный Telegram-прокси.\n\n"
-            "Положите tgwsproxy.exe в папку tools\\telegram-proxy рядом с приложением "
-            "или задайте путь через переменную ZAPRET_TELEGRAM_PROXY_EXE.\n\n"
-            f"Лог: {status.log_file}",
+            "РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїСѓСЃС‚РёС‚СЊ Р»РѕРєР°Р»СЊРЅС‹Р№ Telegram-РїСЂРѕРєСЃРё.\n\n"
+            "РџРѕР»РѕР¶РёС‚Рµ tgwsproxy.exe РІ РїР°РїРєСѓ tools\\telegram-proxy СЂСЏРґРѕРј СЃ РїСЂРёР»РѕР¶РµРЅРёРµРј "  # noqa: E501
+            "РёР»Рё Р·Р°РґР°Р№С‚Рµ РїСѓС‚СЊ С‡РµСЂРµР· РїРµСЂРµРјРµРЅРЅСѓСЋ ZAPRET_TELEGRAM_PROXY_EXE.\n\n"  # noqa: E501
+            f"Р›РѕРі: {status.log_file}",
         )
         self.update_telegram_proxy_menu()
 
@@ -295,25 +296,25 @@ class ZapretTrayIcon(QSystemTrayIcon):
         QMessageBox.warning(
             None,
             "Telegram proxy",
-            "Не удалось остановить Telegram-прокси. Проверьте процесс в диспетчере задач.",
+            "РќРµ СѓРґР°Р»РѕСЃСЊ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ Telegram-РїСЂРѕРєСЃРё. РџСЂРѕРІРµСЂСЊС‚Рµ РїСЂРѕС†РµСЃСЃ РІ РґРёСЃРїРµС‚С‡РµСЂРµ Р·Р°РґР°С‡.",  # noqa: E501
         )
         self.update_telegram_proxy_menu()
 
     def show_telegram_proxy_help(self):
         """Show Telegram proxy setup instructions."""
         status = self.telegram_proxy_manager.get_status()
-        exe_text = str(status.executable) if status.executable else "не найден"
+        exe_text = str(status.executable) if status.executable else "РЅРµ РЅР°Р№РґРµРЅ"
         QMessageBox.information(
             None,
             "Telegram proxy",
-            "1. Положите tgwsproxy.exe в tools\\telegram-proxy рядом с приложением.\n"
-            "   Также можно задать полный путь в ZAPRET_TELEGRAM_PROXY_EXE.\n\n"
-            "2. Запустите прокси из этого меню.\n\n"
-            "3. В Telegram Desktop откройте:\n"
-            "   Настройки -> Продвинутые настройки -> Тип подключения -> SOCKS5.\n\n"
-            "4. Укажите адрес 127.0.0.1 и порт 1080. Если не подключается, попробуйте 1443.\n\n"
-            f"Текущий исполняемый файл: {exe_text}\n"
-            f"Лог запуска: {status.log_file}",
+            "1. РџРѕР»РѕР¶РёС‚Рµ tgwsproxy.exe РІ tools\\telegram-proxy СЂСЏРґРѕРј СЃ РїСЂРёР»РѕР¶РµРЅРёРµРј.\n"  # noqa: E501
+            "   РўР°РєР¶Рµ РјРѕР¶РЅРѕ Р·Р°РґР°С‚СЊ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ РІ ZAPRET_TELEGRAM_PROXY_EXE.\n\n"  # noqa: E501
+            "2. Р—Р°РїСѓСЃС‚РёС‚Рµ РїСЂРѕРєСЃРё РёР· СЌС‚РѕРіРѕ РјРµРЅСЋ.\n\n"
+            "3. Р’ Telegram Desktop РѕС‚РєСЂРѕР№С‚Рµ:\n"
+            "   РќР°СЃС‚СЂРѕР№РєРё -> РџСЂРѕРґРІРёРЅСѓС‚С‹Рµ РЅР°СЃС‚СЂРѕР№РєРё -> РўРёРї РїРѕРґРєР»СЋС‡РµРЅРёСЏ -> SOCKS5.\n\n"  # noqa: E501
+            "4. РЈРєР°Р¶РёС‚Рµ Р°РґСЂРµСЃ 127.0.0.1 Рё РїРѕСЂС‚ 1080. Р•СЃР»Рё РЅРµ РїРѕРґРєР»СЋС‡Р°РµС‚СЃСЏ, РїРѕРїСЂРѕР±СѓР№С‚Рµ 1443.\n\n"  # noqa: E501
+            f"РўРµРєСѓС‰РёР№ РёСЃРїРѕР»РЅСЏРµРјС‹Р№ С„Р°Р№Р»: {exe_text}\n"
+            f"Р›РѕРі Р·Р°РїСѓСЃРєР°: {status.log_file}",
         )
 
     def set_icon_color(self, color: str):
@@ -343,7 +344,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             self.setIcon(QIcon(pixmap))
 
         except Exception as exc:
-            logger.error(f"Ошибка установки иконки: {exc}")
+            logger.error(f"РћС€РёР±РєР° СѓСЃС‚Р°РЅРѕРІРєРё РёРєРѕРЅРєРё: {exc}")
 
     def schedule_background_update_check(self):
         """Schedule a silent background update check."""
@@ -359,14 +360,14 @@ class ZapretTrayIcon(QSystemTrayIcon):
             if manual:
                 QMessageBox.information(
                     None,
-                    "Обновления",
-                    "Проверка уже выполняется.",
+                    "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                    "РџСЂРѕРІРµСЂРєР° СѓР¶Рµ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ.",
                 )
             return
 
         self.update_check_in_progress = True
         self.check_updates_action.setEnabled(False)
-        self.check_updates_action.setText("Проверка обновлений...")
+        self.check_updates_action.setText("РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёР№...")
 
         thread = threading.Thread(
             target=self._run_update_check,
@@ -380,24 +381,26 @@ class ZapretTrayIcon(QSystemTrayIcon):
             result = self.update_manager.check_for_updates(force=force)
             self.update_check_finished.emit(result, manual)
         except Exception as exc:
-            logger.error("Ошибка проверки обновлений: %s", exc, exc_info=True)
+            logger.error(
+                "РћС€РёР±РєР° РїСЂРѕРІРµСЂРєРё РѕР±РЅРѕРІР»РµРЅРёР№: %s", exc, exc_info=True
+            )
             self.update_check_failed.emit(str(exc), manual)
 
     def on_update_check_finished(self, result, manual: bool):
         """Handle update check completion on UI thread."""
         self.update_check_in_progress = False
         self.check_updates_action.setEnabled(True)
-        self.check_updates_action.setText("Проверить обновления")
+        self.check_updates_action.setText("РџСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёСЏ")
 
         self.available_release = result.release
         self.downloaded_update = result.downloaded_update
         self.refresh_update_actions()
 
         if result.update_available and result.release:
-            message = f"Доступна версия {result.release.product_version}"
+            message = f"Р”РѕСЃС‚СѓРїРЅР° РІРµСЂСЃРёСЏ {result.release.product_version}"
             logger.info(message)
             self.show_notification(
-                "Доступно обновление",
+                "Р”РѕСЃС‚СѓРїРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ",
                 message,
                 QSystemTrayIcon.Information,
                 4000,
@@ -406,7 +409,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             if manual:
                 QMessageBox.information(
                     None,
-                    "Обновления",
+                    "РћР±РЅРѕРІР»РµРЅРёСЏ",
                     self._build_update_message(
                         result.release,
                         downloaded=bool(result.downloaded_update),
@@ -417,22 +420,22 @@ class ZapretTrayIcon(QSystemTrayIcon):
         if manual:
             QMessageBox.information(
                 None,
-                "Обновления",
-                "Новых обновлений не найдено.",
+                "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                "РќРѕРІС‹С… РѕР±РЅРѕРІР»РµРЅРёР№ РЅРµ РЅР°Р№РґРµРЅРѕ.",
             )
 
     def on_update_check_failed(self, error_message: str, manual: bool):
         """Handle update check failure on UI thread."""
         self.update_check_in_progress = False
         self.check_updates_action.setEnabled(True)
-        self.check_updates_action.setText("Проверить обновления")
+        self.check_updates_action.setText("РџСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёСЏ")
         self.refresh_update_actions()
 
         if manual:
             QMessageBox.warning(
                 None,
-                "Обновления",
-                f"Не удалось проверить обновления:\n{error_message}",
+                "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёСЏ:\n{error_message}",
             )
 
     def prepare_update_install(self):
@@ -440,8 +443,8 @@ class ZapretTrayIcon(QSystemTrayIcon):
         if self.update_download_in_progress:
             QMessageBox.information(
                 None,
-                "Обновления",
-                "Загрузка обновления уже выполняется.",
+                "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                "Р—Р°РіСЂСѓР·РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ СѓР¶Рµ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ.",
             )
             return
 
@@ -450,16 +453,16 @@ class ZapretTrayIcon(QSystemTrayIcon):
             if not self.available_release:
                 QMessageBox.information(
                     None,
-                    "Обновления",
-                    "Сначала проверьте наличие обновлений.",
+                    "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                    "РЎРЅР°С‡Р°Р»Р° РїСЂРѕРІРµСЂСЊС‚Рµ РЅР°Р»РёС‡РёРµ РѕР±РЅРѕРІР»РµРЅРёР№.",
                 )
                 return
 
             reply = QMessageBox.question(
                 None,
-                "Обновления",
+                "РћР±РЅРѕРІР»РµРЅРёСЏ",
                 self._build_update_message(self.available_release, downloaded=False)
-                + "\n\nСкачать сейчас?",
+                + "\n\nРЎРєР°С‡Р°С‚СЊ СЃРµР№С‡Р°СЃ?",
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.Yes,
             )
@@ -475,7 +478,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
         """Start background update download."""
         self.update_download_in_progress = True
         self.install_update_action.setEnabled(False)
-        self.install_update_action.setText("Загрузка обновления...")
+        self.install_update_action.setText("Р—Р°РіСЂСѓР·РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ...")
 
         thread = threading.Thread(
             target=self._run_update_download,
@@ -489,7 +492,9 @@ class ZapretTrayIcon(QSystemTrayIcon):
             downloaded = self.update_manager.download_update(release)
             self.update_download_finished.emit(downloaded)
         except Exception as exc:
-            logger.error("Ошибка загрузки обновления: %s", exc, exc_info=True)
+            logger.error(
+                "РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РѕР±РЅРѕРІР»РµРЅРёСЏ: %s", exc, exc_info=True
+            )
             self.update_download_failed.emit(str(exc))
 
     def on_update_download_finished(self, downloaded):
@@ -501,9 +506,9 @@ class ZapretTrayIcon(QSystemTrayIcon):
 
         reply = QMessageBox.question(
             None,
-            "Обновление загружено",
+            "РћР±РЅРѕРІР»РµРЅРёРµ Р·Р°РіСЂСѓР¶РµРЅРѕ",
             self._build_update_message(downloaded.release, downloaded=True)
-            + "\n\nУстановить обновление сейчас?",
+            + "\n\nРЈСЃС‚Р°РЅРѕРІРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ СЃРµР№С‡Р°СЃ?",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
@@ -516,8 +521,8 @@ class ZapretTrayIcon(QSystemTrayIcon):
         self.refresh_update_actions()
         QMessageBox.warning(
             None,
-            "Обновления",
-            f"Не удалось загрузить обновление:\n{error_message}",
+            "РћР±РЅРѕРІР»РµРЅРёСЏ",
+            f"РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ:\n{error_message}",
         )
 
     def install_downloaded_update(self, downloaded):
@@ -525,23 +530,23 @@ class ZapretTrayIcon(QSystemTrayIcon):
         if self.zapret_manager.is_running():
             QMessageBox.warning(
                 None,
-                "Обновления",
-                "Сначала остановите zapret перед установкой обновления.",
+                "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                "РЎРЅР°С‡Р°Р»Р° РѕСЃС‚Р°РЅРѕРІРёС‚Рµ zapret РїРµСЂРµРґ СѓСЃС‚Р°РЅРѕРІРєРѕР№ РѕР±РЅРѕРІР»РµРЅРёСЏ.",  # noqa: E501
             )
             return
 
         if not Config.IS_FROZEN:
             QMessageBox.information(
                 None,
-                "Обновления",
-                "Автоустановка доступна только в собранной EXE-версии приложения.",
+                "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                "РђРІС‚РѕСѓСЃС‚Р°РЅРѕРІРєР° РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РІ СЃРѕР±СЂР°РЅРЅРѕР№ EXE-РІРµСЂСЃРёРё РїСЂРёР»РѕР¶РµРЅРёСЏ.",  # noqa: E501
             )
             return
 
         reply = QMessageBox.question(
             None,
-            "Установить обновление",
-            "Приложение будет закрыто, обновлено и запущено заново.\n\nПродолжить?",
+            "РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ",
+            "РџСЂРёР»РѕР¶РµРЅРёРµ Р±СѓРґРµС‚ Р·Р°РєСЂС‹С‚Рѕ, РѕР±РЅРѕРІР»РµРЅРѕ Рё Р·Р°РїСѓС‰РµРЅРѕ Р·Р°РЅРѕРІРѕ.\n\nРџСЂРѕРґРѕР»Р¶РёС‚СЊ?",  # noqa: E501
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
@@ -551,18 +556,25 @@ class ZapretTrayIcon(QSystemTrayIcon):
         try:
             self.update_manager.install_update(downloaded)
         except UpdateError as exc:
-            QMessageBox.critical(None, "Обновления", str(exc))
+            QMessageBox.critical(None, "РћР±РЅРѕРІР»РµРЅРёСЏ", str(exc))
             return
         except Exception as exc:
-            logger.error("Ошибка запуска установки обновления: %s", exc, exc_info=True)
+            logger.error(
+                "РћС€РёР±РєР° Р·Р°РїСѓСЃРєР° СѓСЃС‚Р°РЅРѕРІРєРё РѕР±РЅРѕРІР»РµРЅРёСЏ: %s",
+                exc,
+                exc_info=True,
+            )
             QMessageBox.critical(
                 None,
-                "Обновления",
-                f"Не удалось запустить установку:\n{exc}",
+                "РћР±РЅРѕРІР»РµРЅРёСЏ",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїСѓСЃС‚РёС‚СЊ СѓСЃС‚Р°РЅРѕРІРєСѓ:\n{exc}",
             )
             return
 
-        logger.info("Запущена установка обновления %s", downloaded.release.product_version)
+        logger.info(
+            "Р—Р°РїСѓС‰РµРЅР° СѓСЃС‚Р°РЅРѕРІРєР° РѕР±РЅРѕРІР»РµРЅРёСЏ %s",
+            downloaded.release.product_version,
+        )
         self.hide()
         QApplication.quit()
 
@@ -570,39 +582,48 @@ class ZapretTrayIcon(QSystemTrayIcon):
         """Refresh tray menu state for update actions."""
         if self.update_check_in_progress:
             self.check_updates_action.setEnabled(False)
-            self.check_updates_action.setText("Проверка обновлений...")
+            self.check_updates_action.setText("РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёР№...")
         else:
             self.check_updates_action.setEnabled(True)
-            self.check_updates_action.setText("Проверить обновления")
+            self.check_updates_action.setText("РџСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёСЏ")
 
         if self.update_download_in_progress:
             self.install_update_action.setEnabled(False)
-            self.install_update_action.setText("Загрузка обновления...")
+            self.install_update_action.setText("Р—Р°РіСЂСѓР·РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ...")
             return
 
         if self.downloaded_update:
             version = self.downloaded_update.release.product_version
             self.install_update_action.setEnabled(True)
-            self.install_update_action.setText(f"Установить обновление {version}")
+            self.install_update_action.setText(
+                f"РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ {version}"
+            )
             return
 
         if self.available_release:
             version = self.available_release.product_version
             self.install_update_action.setEnabled(True)
-            self.install_update_action.setText(f"Скачать обновление {version}")
+            self.install_update_action.setText(f"РЎРєР°С‡Р°С‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ {version}")
             return
 
         self.install_update_action.setEnabled(False)
-        self.install_update_action.setText("Установить обновление")
+        self.install_update_action.setText("РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ")
 
     def _build_update_message(self, release, downloaded: bool) -> str:
-        release_notes = release.release_notes.strip() or "Описание обновления отсутствует."
-        prefix = "Обновление уже загружено." if downloaded else "Доступно обновление."
+        release_notes = (
+            release.release_notes.strip()
+            or "РћРїРёСЃР°РЅРёРµ РѕР±РЅРѕРІР»РµРЅРёСЏ РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚."
+        )
+        prefix = (
+            "РћР±РЅРѕРІР»РµРЅРёРµ СѓР¶Рµ Р·Р°РіСЂСѓР¶РµРЅРѕ."
+            if downloaded
+            else "Р”РѕСЃС‚СѓРїРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ."
+        )
         return (
             f"{prefix}\n\n"
-            f"Версия: {release.product_version}\n"
-            f"Канал: {release.channel}\n"
-            f"Источник: {release.source_endpoint}\n\n"
+            f"Р’РµСЂСЃРёСЏ: {release.product_version}\n"
+            f"РљР°РЅР°Р»: {release.channel}\n"
+            f"РСЃС‚РѕС‡РЅРёРє: {release.source_endpoint}\n\n"
             f"{release_notes}"
         )
 
@@ -616,20 +637,20 @@ class ZapretTrayIcon(QSystemTrayIcon):
         except Exception as exc:
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Ошибка переключения:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РћС€РёР±РєР° РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ:\n{exc}",
             )
 
     def start_zapret(self):
         """Start zapret."""
         try:
-            logger.info("Запуск zapret через трей")
+            logger.info("Р—Р°РїСѓСЃРє zapret С‡РµСЂРµР· С‚СЂРµР№")
 
             if not Config.ACTIVE_PRESET.exists():
                 QMessageBox.warning(
                     None,
-                    "Пресет не выбран",
-                    "Сначала выберите пресет из меню 'Пресеты'",
+                    "РџСЂРµСЃРµС‚ РЅРµ РІС‹Р±СЂР°РЅ",
+                    "РЎРЅР°С‡Р°Р»Р° РІС‹Р±РµСЂРёС‚Рµ РїСЂРµСЃРµС‚ РёР· РјРµРЅСЋ 'РџСЂРµСЃРµС‚С‹'",
                 )
                 return
 
@@ -638,92 +659,92 @@ class ZapretTrayIcon(QSystemTrayIcon):
                 return
 
             log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "winws2.log"
-            error_msg = "Не удалось запустить zapret.\n\n"
+            error_msg = "РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїСѓСЃС‚РёС‚СЊ zapret.\n\n"
 
             if log_file.exists():
                 try:
                     log_content = log_file.read_text(encoding="utf-8", errors="ignore")
                     if log_content.strip():
-                        error_msg += f"Вывод winws2.exe:\n{log_content[:500]}\n\n"
+                        error_msg += f"Р’С‹РІРѕРґ winws2.exe:\n{log_content[:500]}\n\n"
                 except OSError:
                     pass
 
-            error_msg += "Возможные причины:\n"
-            error_msg += "• Отсутствуют права администратора\n"
-            error_msg += "• Неверный пресет или отсутствуют файлы списков\n"
-            error_msg += "• Конфликт с другими программами (VPN, антивирус)\n\n"
-            error_msg += "Проверьте логи: Меню → Показать логи"
+            error_msg += "Р’РѕР·РјРѕР¶РЅС‹Рµ РїСЂРёС‡РёРЅС‹:\n"
+            error_msg += "вЂў РћС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РїСЂР°РІР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°\n"
+            error_msg += "вЂў РќРµРІРµСЂРЅС‹Р№ РїСЂРµСЃРµС‚ РёР»Рё РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ С„Р°Р№Р»С‹ СЃРїРёСЃРєРѕРІ\n"  # noqa: E501
+            error_msg += "вЂў РљРѕРЅС„Р»РёРєС‚ СЃ РґСЂСѓРіРёРјРё РїСЂРѕРіСЂР°РјРјР°РјРё (VPN, Р°РЅС‚РёРІРёСЂСѓСЃ)\n\n"  # noqa: E501
+            error_msg += "РџСЂРѕРІРµСЂСЊС‚Рµ Р»РѕРіРё: РњРµРЅСЋ в†’ РџРѕРєР°Р·Р°С‚СЊ Р»РѕРіРё"
 
-            QMessageBox.critical(None, "Ошибка запуска", error_msg)
+            QMessageBox.critical(None, "РћС€РёР±РєР° Р·Р°РїСѓСЃРєР°", error_msg)
 
         except Exception as exc:
-            logger.error(f"Ошибка запуска: {exc}", exc_info=True)
+            logger.error(f"РћС€РёР±РєР° Р·Р°РїСѓСЃРєР°: {exc}", exc_info=True)
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Не удалось запустить:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїСѓСЃС‚РёС‚СЊ:\n{exc}",
             )
 
     def stop_zapret(self):
         """Stop zapret."""
         try:
-            logger.info("Остановка zapret через трей")
+            logger.info("РћСЃС‚Р°РЅРѕРІРєР° zapret С‡РµСЂРµР· С‚СЂРµР№")
 
             if self.zapret_manager.stop():
                 QTimer.singleShot(500, self.update_status)
             else:
                 QMessageBox.warning(
                     None,
-                    "Предупреждение",
-                    "Не удалось остановить zapret.\n\nПопробуйте еще раз.",
+                    "РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ",
+                    "РќРµ СѓРґР°Р»РѕСЃСЊ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ zapret.\n\nРџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰Рµ СЂР°Р·.",  # noqa: E501
                 )
 
         except Exception as exc:
-            logger.error(f"Ошибка остановки: {exc}", exc_info=True)
+            logger.error(f"РћС€РёР±РєР° РѕСЃС‚Р°РЅРѕРІРєРё: {exc}", exc_info=True)
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Не удалось остановить:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ:\n{exc}",
             )
 
     def restart_zapret(self):
         """Restart zapret."""
         try:
-            logger.info("Перезапуск zapret через трей")
+            logger.info("РџРµСЂРµР·Р°РїСѓСЃРє zapret С‡РµСЂРµР· С‚СЂРµР№")
 
             if self.zapret_manager.restart():
                 QTimer.singleShot(2000, self.update_status)
             else:
                 QMessageBox.critical(
                     None,
-                    "Ошибка",
-                    "Не удалось перезапустить zapret.",
+                    "РћС€РёР±РєР°",
+                    "РќРµ СѓРґР°Р»РѕСЃСЊ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ zapret.",
                 )
 
         except Exception as exc:
-            logger.error(f"Ошибка перезапуска: {exc}", exc_info=True)
+            logger.error(f"РћС€РёР±РєР° РїРµСЂРµР·Р°РїСѓСЃРєР°: {exc}", exc_info=True)
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Не удалось перезапустить:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ:\n{exc}",
             )
 
     def set_preset(self, preset_name: str):
         """Set active preset."""
         try:
-            logger.info(f"Установка пресета: {preset_name}")
+            logger.info(f"РЈСЃС‚Р°РЅРѕРІРєР° РїСЂРµСЃРµС‚Р°: {preset_name}")
 
             if not self.preset_manager.set_active_preset(preset_name):
                 QMessageBox.critical(
                     None,
-                    "Ошибка",
-                    f"Не удалось установить пресет '{preset_name}'",
+                    "РћС€РёР±РєР°",
+                    f"РќРµ СѓРґР°Р»РѕСЃСЊ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РїСЂРµСЃРµС‚ '{preset_name}'",
                 )
                 return
 
             self.show_notification(
-                "Пресет изменен",
-                f"Установлен: {preset_name}",
+                "РџСЂРµСЃРµС‚ РёР·РјРµРЅРµРЅ",
+                f"РЈСЃС‚Р°РЅРѕРІР»РµРЅ: {preset_name}",
                 QSystemTrayIcon.Information,
                 2000,
             )
@@ -732,9 +753,9 @@ class ZapretTrayIcon(QSystemTrayIcon):
             if self.zapret_manager.is_running():
                 reply = QMessageBox.question(
                     None,
-                    "Перезапустить?",
-                    f"Пресет изменен на '{preset_name}'.\n\n"
-                    "Перезапустить zapret с новым пресетом?",
+                    "РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ?",
+                    f"РџСЂРµСЃРµС‚ РёР·РјРµРЅРµРЅ РЅР° '{preset_name}'.\n\n"
+                    "РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ zapret СЃ РЅРѕРІС‹Рј РїСЂРµСЃРµС‚РѕРј?",
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.Yes,
                 )
@@ -743,11 +764,11 @@ class ZapretTrayIcon(QSystemTrayIcon):
                     self.restart_zapret()
 
         except Exception as exc:
-            logger.error(f"Ошибка установки пресета: {exc}", exc_info=True)
+            logger.error(f"РћС€РёР±РєР° СѓСЃС‚Р°РЅРѕРІРєРё РїСЂРµСЃРµС‚Р°: {exc}", exc_info=True)
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Не удалось установить пресет:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РїСЂРµСЃРµС‚:\n{exc}",
             )
 
     def check_autostart(self):
@@ -755,7 +776,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
         try:
             self.autostart_action.setChecked(self.autostart_manager.is_enabled())
         except Exception as exc:
-            logger.error(f"Ошибка проверки автозапуска: {exc}")
+            logger.error(f"РћС€РёР±РєР° РїСЂРѕРІРµСЂРєРё Р°РІС‚РѕР·Р°РїСѓСЃРєР°: {exc}")
 
     def toggle_autostart(self):
         """Toggle autostart state."""
@@ -763,40 +784,43 @@ class ZapretTrayIcon(QSystemTrayIcon):
             if self.autostart_action.isChecked():
                 if self.autostart_manager.enable():
                     self.show_notification(
-                        "Автозапуск",
-                        "Включен",
+                        "РђРІС‚РѕР·Р°РїСѓСЃРє",
+                        "Р’РєР»СЋС‡РµРЅ",
                         QSystemTrayIcon.Information,
                         2000,
                     )
                 else:
                     QMessageBox.critical(
                         None,
-                        "Ошибка",
-                        "Не удалось включить автозапуск",
+                        "РћС€РёР±РєР°",
+                        "РќРµ СѓРґР°Р»РѕСЃСЊ РІРєР»СЋС‡РёС‚СЊ Р°РІС‚РѕР·Р°РїСѓСЃРє",
                     )
                     self.autostart_action.setChecked(False)
             else:
                 if self.autostart_manager.disable():
                     self.show_notification(
-                        "Автозапуск",
-                        "Выключен",
+                        "РђРІС‚РѕР·Р°РїСѓСЃРє",
+                        "Р’С‹РєР»СЋС‡РµРЅ",
                         QSystemTrayIcon.Information,
                         2000,
                     )
                 else:
                     QMessageBox.critical(
                         None,
-                        "Ошибка",
-                        "Не удалось выключить автозапуск",
+                        "РћС€РёР±РєР°",
+                        "РќРµ СѓРґР°Р»РѕСЃСЊ РІС‹РєР»СЋС‡РёС‚СЊ Р°РІС‚РѕР·Р°РїСѓСЃРє",
                     )
                     self.autostart_action.setChecked(True)
 
         except Exception as exc:
-            logger.error(f"Ошибка переключения автозапуска: {exc}", exc_info=True)
+            logger.error(
+                f"РћС€РёР±РєР° РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ Р°РІС‚РѕР·Р°РїСѓСЃРєР°: {exc}",
+                exc_info=True,
+            )
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Не удалось изменить автозапуск:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ РёР·РјРµРЅРёС‚СЊ Р°РІС‚РѕР·Р°РїСѓСЃРє:\n{exc}",
             )
             self.check_autostart()
 
@@ -804,9 +828,9 @@ class ZapretTrayIcon(QSystemTrayIcon):
         """Placeholder for main window."""
         QMessageBox.information(
             None,
-            "В разработке",
-            "Главное окно будет доступно в следующей версии.\n\n"
-            "Пока используйте меню системного трея для управления.",
+            "Р’ СЂР°Р·СЂР°Р±РѕС‚РєРµ",
+            "Р“Р»Р°РІРЅРѕРµ РѕРєРЅРѕ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅРѕ РІ СЃР»РµРґСѓСЋС‰РµР№ РІРµСЂСЃРёРё.\n\n"  # noqa: E501
+            "РџРѕРєР° РёСЃРїРѕР»СЊР·СѓР№С‚Рµ РјРµРЅСЋ СЃРёСЃС‚РµРјРЅРѕРіРѕ С‚СЂРµСЏ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ.",  # noqa: E501
         )
 
     def show_logs(self):
@@ -817,19 +841,19 @@ class ZapretTrayIcon(QSystemTrayIcon):
             if not log_file.exists():
                 QMessageBox.warning(
                     None,
-                    "Логи не найдены",
-                    f"Файл логов не найден:\n{log_file}",
+                    "Р›РѕРіРё РЅРµ РЅР°Р№РґРµРЅС‹",
+                    f"Р¤Р°Р№Р» Р»РѕРіРѕРІ РЅРµ РЅР°Р№РґРµРЅ:\n{log_file}",
                 )
                 return
 
             subprocess.Popen(["notepad.exe", str(log_file)])
 
         except Exception as exc:
-            logger.error(f"Ошибка открытия логов: {exc}", exc_info=True)
+            logger.error(f"РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ Р»РѕРіРѕРІ: {exc}", exc_info=True)
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Не удалось открыть логи:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ Р»РѕРіРё:\n{exc}",
             )
 
     def show_diagnostics(self):
@@ -838,40 +862,46 @@ class ZapretTrayIcon(QSystemTrayIcon):
             from core.privileges import PrivilegesManager
 
             info = []
-            info.append("=== Диагностика Zapret Manager ===\n")
+            info.append("=== Р”РёР°РіРЅРѕСЃС‚РёРєР° Zapret Manager ===\n")
 
             is_admin = PrivilegesManager.is_admin()
-            admin_status = "✓ Да" if is_admin else "✗ НЕТ (ТРЕБУЕТСЯ!)"
-            info.append(f"Права администратора: {admin_status}")
+            admin_status = "вњ“ Р”Р°" if is_admin else "вњ— РќР•Рў (РўР Р•Р‘РЈР•РўРЎРЇ!)"
+            info.append(f"РџСЂР°РІР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°: {admin_status}")
 
             status = self.zapret_manager.get_status()
-            zapret_status = "✓ Запущен" if status["running"] else "✗ Остановлен"
-            info.append(f"Статус zapret: {zapret_status}")
+            zapret_status = (
+                "вњ“ Р—Р°РїСѓС‰РµРЅ" if status["running"] else "вњ— РћСЃС‚Р°РЅРѕРІР»РµРЅ"
+            )
+            info.append(f"РЎС‚Р°С‚СѓСЃ zapret: {zapret_status}")
             if status["running"]:
                 info.append(f"  PID: {status['pid']}")
                 info.append(f"  Uptime: {status['uptime']}")
 
-            info.append(f"Активный пресет: {status['preset']}")
-            info.append(f"\nБазовая директория: {Config.BASE_DIR}")
-            mode = "EXE (frozen)" if Config.IS_FROZEN else "Python скрипт"
-            info.append(f"Режим: {mode}")
-            info.append(f"Версия продукта: {Config.PRODUCT_VERSION}")
+            info.append(f"РђРєС‚РёРІРЅС‹Р№ РїСЂРµСЃРµС‚: {status['preset']}")
+            info.append(f"\nР‘Р°Р·РѕРІР°СЏ РґРёСЂРµРєС‚РѕСЂРёСЏ: {Config.BASE_DIR}")
+            mode = "EXE (frozen)" if Config.IS_FROZEN else "Python СЃРєСЂРёРїС‚"
+            info.append(f"Р РµР¶РёРј: {mode}")
+            info.append(f"Р’РµСЂСЃРёСЏ РїСЂРѕРґСѓРєС‚Р°: {Config.PRODUCT_VERSION}")
 
-            winws_exists = "✓" if Config.WINWS2_EXE.exists() else "✗ НЕ НАЙДЕН"
+            winws_exists = "вњ“" if Config.WINWS2_EXE.exists() else "вњ— РќР• РќРђР™Р”Р•Рќ"
             info.append(f"winws2.exe: {winws_exists} {Config.WINWS2_EXE}")
 
             log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "app.log"
-            info.append(f"\nЛоги приложения: {log_file}")
-            info.append(f"  Существует: {'✓' if log_file.exists() else '✗'}")
+            info.append(f"\nР›РѕРіРё РїСЂРёР»РѕР¶РµРЅРёСЏ: {log_file}")
+            info.append(f"  РЎСѓС‰РµСЃС‚РІСѓРµС‚: {'вњ“' if log_file.exists() else 'вњ—'}")
 
             winws2_log = Path(tempfile.gettempdir()) / "ZapretManager" / "winws2.log"
-            info.append(f"Логи winws2.exe: {winws2_log}")
-            info.append(f"  Существует: {'✓' if winws2_log.exists() else '✗'}")
+            info.append(f"Р›РѕРіРё winws2.exe: {winws2_log}")
+            info.append(f"  РЎСѓС‰РµСЃС‚РІСѓРµС‚: {'вњ“' if winws2_log.exists() else 'вњ—'}")
 
-            info.append(f"\nПуть состояния обновлений: {Config.UPDATE_STATE_FILE}")
-            info.append(f"Каталог загрузок обновлений: {Config.UPDATE_DOWNLOAD_DIR}")
+            info.append(
+                f"\nРџСѓС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёСЏ РѕР±РЅРѕРІР»РµРЅРёР№: {Config.UPDATE_STATE_FILE}"
+            )
+            info.append(
+                f"РљР°С‚Р°Р»РѕРі Р·Р°РіСЂСѓР·РѕРє РѕР±РЅРѕРІР»РµРЅРёР№: {Config.UPDATE_DOWNLOAD_DIR}"  # noqa: E501
+            )
 
-            info.append("\n=== Запущенные процессы ===")
+            info.append("\n=== Р—Р°РїСѓС‰РµРЅРЅС‹Рµ РїСЂРѕС†РµСЃСЃС‹ ===")
             try:
                 result = subprocess.run(
                     ["tasklist", "/FI", "IMAGENAME eq winws2.exe", "/NH"],
@@ -881,39 +911,39 @@ class ZapretTrayIcon(QSystemTrayIcon):
                     timeout=5,
                 )
                 if "winws2.exe" in result.stdout:
-                    info.append("✓ winws2.exe запущен")
+                    info.append("вњ“ winws2.exe Р·Р°РїСѓС‰РµРЅ")
                 else:
-                    info.append("✗ winws2.exe не запущен")
+                    info.append("вњ— winws2.exe РЅРµ Р·Р°РїСѓС‰РµРЅ")
             except Exception:
-                info.append("? Не удалось проверить")
+                info.append("? РќРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕРІРµСЂРёС‚СЊ")
 
-            QMessageBox.information(None, "Диагностика", "\n".join(info))
+            QMessageBox.information(None, "Р”РёР°РіРЅРѕСЃС‚РёРєР°", "\n".join(info))
 
         except Exception as exc:
-            logger.error(f"Ошибка диагностики: {exc}", exc_info=True)
+            logger.error(f"РћС€РёР±РєР° РґРёР°РіРЅРѕСЃС‚РёРєРё: {exc}", exc_info=True)
             QMessageBox.critical(
                 None,
-                "Ошибка",
-                f"Не удалось выполнить диагностику:\n{exc}",
+                "РћС€РёР±РєР°",
+                f"РќРµ СѓРґР°Р»РѕСЃСЊ РІС‹РїРѕР»РЅРёС‚СЊ РґРёР°РіРЅРѕСЃС‚РёРєСѓ:\n{exc}",
             )
 
     def show_about(self):
         """Show About dialog."""
         QMessageBox.about(
             None,
-            "О программе",
+            "Рћ РїСЂРѕРіСЂР°РјРјРµ",
             f"<h3>{Config.APP_NAME}</h3>"
-            f"<p>Версия {Config.VERSION}</p>"
-            f"<p>Полноценное управление zapret2 через удобный GUI</p>"
-            f"<p><b>Возможности:</b></p>"
+            f"<p>Р’РµСЂСЃРёСЏ {Config.VERSION}</p>"
+            f"<p>РџРѕР»РЅРѕС†РµРЅРЅРѕРµ СѓРїСЂР°РІР»РµРЅРёРµ zapret2 С‡РµСЂРµР· СѓРґРѕР±РЅС‹Р№ GUI</p>"  # noqa: E501
+            f"<p><b>Р’РѕР·РјРѕР¶РЅРѕСЃС‚Рё:</b></p>"
             f"<ul>"
-            f"<li>Управление через системный трей</li>"
-            f"<li>70+ готовых пресетов</li>"
-            f"<li>Автозапуск с Windows</li>"
-            f"<li>Автообновление через artifact/update server</li>"
-            f"<li>Диагностика и исправление проблем</li>"
+            f"<li>РЈРїСЂР°РІР»РµРЅРёРµ С‡РµСЂРµР· СЃРёСЃС‚РµРјРЅС‹Р№ С‚СЂРµР№</li>"
+            f"<li>70+ РіРѕС‚РѕРІС‹С… РїСЂРµСЃРµС‚РѕРІ</li>"
+            f"<li>РђРІС‚РѕР·Р°РїСѓСЃРє СЃ Windows</li>"
+            f"<li>РђРІС‚РѕРѕР±РЅРѕРІР»РµРЅРёРµ С‡РµСЂРµР· artifact/update server</li>"
+            f"<li>Р”РёР°РіРЅРѕСЃС‚РёРєР° Рё РёСЃРїСЂР°РІР»РµРЅРёРµ РїСЂРѕР±Р»РµРј</li>"
             f"</ul>"
-            f"<p><b>Благодарности:</b></p>"
+            f"<p><b>Р‘Р»Р°РіРѕРґР°СЂРЅРѕСЃС‚Рё:</b></p>"
             f"<p>zapret2, WinDivert, PyQt5</p>",
         )
 
@@ -921,13 +951,13 @@ class ZapretTrayIcon(QSystemTrayIcon):
         """Quit tray application."""
         reply = QMessageBox.question(
             None,
-            "Выход",
-            "Выйти из приложения?\n\nZapret продолжит работать в фоне.",
+            "Р’С‹С…РѕРґ",
+            "Р’С‹Р№С‚Рё РёР· РїСЂРёР»РѕР¶РµРЅРёСЏ?\n\nZapret РїСЂРѕРґРѕР»Р¶РёС‚ СЂР°Р±РѕС‚Р°С‚СЊ РІ С„РѕРЅРµ.",  # noqa: E501
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
 
         if reply == QMessageBox.Yes:
-            logger.info("Выход из приложения")
+            logger.info("Р’С‹С…РѕРґ РёР· РїСЂРёР»РѕР¶РµРЅРёСЏ")
             self.hide()
             QApplication.quit()

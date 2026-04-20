@@ -5,9 +5,9 @@ import json
 
 import pytest
 
-from src.core.update_manager import UpdateManager, UpdateError
-from src.utils import config as config_module
-from src.utils.versioning import compare_versions, normalize_product_version
+from core.update_manager import UpdateManager, UpdateError
+from utils import config as config_module
+from utils.versioning import compare_versions, normalize_product_version
 
 
 class FakeResponse:

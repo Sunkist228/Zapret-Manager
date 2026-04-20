@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.utils.validators import Validators
-
+from utils.validators import Validators
 
 ROOT = Path(__file__).resolve().parents[1]
 

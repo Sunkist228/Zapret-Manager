@@ -14,8 +14,8 @@ class Validators:
 
     # Regex для доменов
     DOMAIN_REGEX = re.compile(
-        r'^(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*'
-        r'[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
+        r"^(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*"
+        r"[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$"
     )
 
     @staticmethod
@@ -87,14 +87,14 @@ class Validators:
             return False
 
         try:
-            content = preset_path.read_text(encoding='utf-8')
+            content = preset_path.read_text(encoding="utf-8")
 
             # Базовая проверка: файл не пустой и содержит хотя бы одну опцию
             if not content.strip():
                 return False
 
             # Проверяем что есть хотя бы одна строка с --
-            has_option = any(line.strip().startswith('--') for line in content.split('\n'))
+            has_option = any(line.strip().startswith("--") for line in content.split("\n"))
 
             return has_option
 
@@ -116,7 +116,7 @@ class Validators:
             p = Path(path).resolve()
 
             # Проверяем что путь не содержит .. и другие опасные элементы
-            if '..' in p.parts:
+            if ".." in p.parts:
                 return None
 
             return p
@@ -137,19 +137,19 @@ class Validators:
         """
         entry = entry.strip()
 
-        if not entry or entry.startswith('#'):
-            return False, 'comment'
+        if not entry or entry.startswith("#"):
+            return False, "comment"
 
         # Проверяем IP
         if Validators.validate_ip(entry):
-            return True, 'ip'
+            return True, "ip"
 
         # Проверяем сеть
-        if '/' in entry and Validators.validate_ip_network(entry):
-            return True, 'network'
+        if "/" in entry and Validators.validate_ip_network(entry):
+            return True, "network"
 
         # Проверяем домен
         if Validators.validate_domain(entry):
-            return True, 'domain'
+            return True, "domain"
 
-        return False, 'invalid'
+        return False, "invalid"

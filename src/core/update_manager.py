@@ -550,8 +550,7 @@ class UpdateManager:
         backup_exe = target_exe.with_suffix(".old.exe")
         script_path = temp_dir / "apply_update.ps1"
 
-        script = textwrap.dedent(
-            f"""
+        script = textwrap.dedent(f"""
             $ErrorActionPreference = "Stop"
             $targetExe = "{_ps_escape(target_exe)}"
             $newExe = "{_ps_escape(downloaded.file_path)}"
@@ -573,8 +572,7 @@ class UpdateManager:
             Move-Item -LiteralPath $targetExe -Destination $backupExe -Force
             Copy-Item -LiteralPath $newExe -Destination $targetExe -Force
             Start-Process -FilePath $targetExe -WorkingDirectory $workingDir
-            """
-        ).strip()
+            """).strip()
 
         script_path.write_text(script, encoding="utf-8")
         return script_path

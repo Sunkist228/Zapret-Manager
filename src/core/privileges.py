@@ -6,7 +6,6 @@
 import ctypes
 import sys
 import subprocess
-from typing import Optional
 import logging
 
 logger = logging.getLogger("ZapretManager")
@@ -44,7 +43,7 @@ class PrivilegesManager:
             logger.info("Запрос прав администратора")
 
             # Получаем путь к исполняемому файлу
-            if getattr(sys, 'frozen', False):
+            if getattr(sys, "frozen", False):
                 # Если запущен как EXE
                 exe_path = sys.executable
             else:
@@ -55,15 +54,15 @@ class PrivilegesManager:
             # Перезапускаем с правами администратора через PowerShell
             ps_command = f'Start-Process "{exe_path}"'
 
-            if not getattr(sys, 'frozen', False):
+            if not getattr(sys, "frozen", False):
                 # Для скрипта добавляем путь к скрипту
                 ps_command = f'Start-Process "{exe_path}" -ArgumentList "{script_path}"'
 
-            ps_command += ' -Verb RunAs'
+            ps_command += " -Verb RunAs"
 
             subprocess.Popen(
-                ['powershell', '-NoProfile', '-Command', ps_command],
-                creationflags=subprocess.CREATE_NO_WINDOW
+                ["powershell", "-NoProfile", "-Command", ps_command],
+                creationflags=subprocess.CREATE_NO_WINDOW,
             )
 
             logger.info("Перезапуск с правами администратора инициирован")

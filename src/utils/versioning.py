@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-
 SEMVER_RE = re.compile(
     r"^\s*"
     r"(?P<major>0|[1-9]\d*)\."
