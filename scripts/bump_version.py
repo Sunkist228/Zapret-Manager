@@ -64,6 +64,8 @@ def get_git_commits_since_last_tag():
             ["git", "describe", "--tags", "--abbrev=0"],
             capture_output=True,
             text=True,
+            encoding='utf-8',
+            errors='replace',
             check=False
         )
 
@@ -79,14 +81,22 @@ def get_git_commits_since_last_tag():
             ["git", "log", commit_range, "--pretty=format:%B%n---COMMIT---"],
             capture_output=True,
             text=True,
-            check=True
+            encoding='utf-8',
+            errors='replace',
+            check=False
         )
+
+        if result.returncode != 0 or not result.stdout:
+            return []
 
         commits = [c.strip() for c in result.stdout.split("---COMMIT---") if c.strip()]
         return commits
 
     except subprocess.CalledProcessError as e:
         print(f"Error getting git commits: {e}", file=sys.stderr)
+        return []
+    except Exception as e:
+        print(f"Unexpected error getting git commits: {e}", file=sys.stderr)
         return []
 
 
