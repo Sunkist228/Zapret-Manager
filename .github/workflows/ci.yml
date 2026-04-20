@@ -152,11 +152,11 @@ jobs:
           pip install pyinstaller
 
       - name: Build EXE
-        run: |
-          cd build
-          .\build.bat
+        working-directory: build
+        run: .\build.bat
 
       - name: Verify EXE created
+        working-directory: build
         run: |
           if (!(Test-Path "dist\ZapretManager.exe")) {
             Write-Error "EXE file not created"
@@ -169,5 +169,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zapret-manager-test-build
-          path: dist/ZapretManager.exe
+          path: build/dist/ZapretManager.exe
           retention-days: 7
