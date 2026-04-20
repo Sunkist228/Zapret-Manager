@@ -96,20 +96,23 @@ jobs:
         shell: pwsh
         run: |
           git add VERSION CHANGELOG.md
-          git commit -m "chore: bump version to ${{ steps.bump.outputs.version }}"
+          $ver = "${{ steps.bump.outputs.version }}"
+          git commit -m "chore: bump version to $ver"
 
       - name: Create tag
         if: steps.bump.outputs.skip_release != 'true'
         shell: pwsh
         run: |
-          git tag "v${{ steps.bump.outputs.version }}"
+          $ver = "${{ steps.bump.outputs.version }}"
+          git tag "v$ver"
 
       - name: Push changes
         if: steps.bump.outputs.skip_release != 'true'
         shell: pwsh
         run: |
+          $ver = "${{ steps.bump.outputs.version }}"
           git push origin master
-          git push origin "v${{ steps.bump.outputs.version }}"
+          git push origin "v$ver"
 
       - name: Build EXE
         if: steps.bump.outputs.skip_release != 'true'
@@ -168,8 +171,8 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ steps.bump.outputs.version }}"
-          name: "Release v${{ steps.bump.outputs.version }}"
+          tag_name: v${{ steps.bump.outputs.version }}
+          name: Release v${{ steps.bump.outputs.version }}
           body_path: release_notes.md
           files: |
             build/dist/zapret-manager-windows-x64.exe
