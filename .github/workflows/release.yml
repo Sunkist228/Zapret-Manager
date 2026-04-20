@@ -59,14 +59,20 @@ jobs:
 
           Write-Host "Bumping version with type: $bumpType"
 
+          $stdoutFile = New-TemporaryFile
+          $stderrFile = New-TemporaryFile
+
           if ($bumpType -eq "auto") {
-            $output = python scripts/bump_version.py 2>&1
+            python scripts/bump_version.py 1> $stdoutFile 2> $stderrFile
           } else {
-            $output = python scripts/bump_version.py --type $bumpType 2>&1
+            python scripts/bump_version.py --type $bumpType 1> $stdoutFile 2> $stderrFile
           }
 
           $exitCode = $LASTEXITCODE
-          $output | ForEach-Object { Write-Host $_ }
+          $stdout = Get-Content -Path $stdoutFile -ErrorAction SilentlyContinue
+          $stderr = Get-Content -Path $stderrFile -ErrorAction SilentlyContinue
+          $stderr | ForEach-Object { Write-Host $_ }
+          $stdout | ForEach-Object { Write-Host $_ }
 
           if ($exitCode -ne 0) {
             Write-Host "No version bump needed, skipping release"
@@ -74,7 +80,12 @@ jobs:
             exit 0
           }
 
-          $newVersion = ($output | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Last 1).Trim()
+          $newVersion = ($stdout | Where-Object { $_ -match '^\d+\.\d+\.\d+([+-].+)?$' } | Select-Object -Last 1).Trim()
+          if ([string]::IsNullOrWhiteSpace($newVersion)) {
+            Write-Error "Could not parse bumped version from scripts/bump_version.py stdout"
+            exit 1
+          }
+
           Write-Host "New version: $newVersion"
           "version=$newVersion" >> $env:GITHUB_OUTPUT
           "skip_release=false" >> $env:GITHUB_OUTPUT
