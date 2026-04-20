@@ -82,7 +82,7 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         shell: pwsh
         run: |
-          python scripts/generate_changelog.py --version ${{ steps.bump.outputs.version }}
+          python scripts/generate_changelog.py --version "${{ steps.bump.outputs.version }}"
 
       - name: Configure Git
         if: steps.bump.outputs.skip_release != 'true'
@@ -102,14 +102,14 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         shell: pwsh
         run: |
-          git tag v${{ steps.bump.outputs.version }}
+          git tag "v${{ steps.bump.outputs.version }}"
 
       - name: Push changes
         if: steps.bump.outputs.skip_release != 'true'
         shell: pwsh
         run: |
           git push origin master
-          git push origin v${{ steps.bump.outputs.version }}
+          git push origin "v${{ steps.bump.outputs.version }}"
 
       - name: Build EXE
         if: steps.bump.outputs.skip_release != 'true'
@@ -168,8 +168,8 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.bump.outputs.version }}
-          name: Release v${{ steps.bump.outputs.version }}
+          tag_name: "v${{ steps.bump.outputs.version }}"
+          name: "Release v${{ steps.bump.outputs.version }}"
           body_path: release_notes.md
           files: |
             build/dist/zapret-manager-windows-x64.exe
