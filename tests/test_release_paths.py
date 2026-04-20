@@ -59,6 +59,15 @@ assert Config.WINWS2_EXE == base / "resources" / "bin" / "winws2.exe"
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+def test_pyinstaller_bundle_includes_preset_payload_bins():
+    spec_file = (REPO_ROOT / "build" / "zapret_manager.spec").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'collect_tree(project_root / "bin", "resources/bin")' in spec_file
+    assert 'project_root / "bin" / "tls_clienthello_www_google_com.bin"' in spec_file
+
+
 def test_required_pyinstaller_resources_are_tracked():
     required_paths = [
         "src/resources/bin/winws2.exe",

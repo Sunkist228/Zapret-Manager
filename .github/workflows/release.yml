@@ -131,6 +131,12 @@ jobs:
             exit 1
           }
 
+          $archiveList = pyi-archive_viewer build\dist\ZapretManager.exe -l
+          if (!($archiveList | Select-String -SimpleMatch "resources\bin\tls_clienthello_www_google_com.bin")) {
+            Write-Error "EXE archive is missing preset payload: resources\bin\tls_clienthello_www_google_com.bin"
+            exit 1
+          }
+
       - name: Rename artifact
         if: steps.bump.outputs.skip_release != 'true'
         run: |

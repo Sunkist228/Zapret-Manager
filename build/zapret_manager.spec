@@ -42,6 +42,7 @@ datas += collect_tree(src_dir / "resources" / "presets", "resources/presets")
 datas += collect_tree(src_dir / "resources" / "lists", "resources/lists")
 datas += collect_tree(src_dir / "resources" / "lua", "resources/lua")
 datas += collect_tree(src_dir / "resources" / "bin", "resources/bin")
+datas += collect_tree(project_root / "bin", "resources/bin")
 # Copy windivert filter files
 datas += collect_tree(project_root / "windivert.filter", "resources/windivert.filter")
 datas.append((str(version_file), "."))
@@ -52,6 +53,7 @@ required_files = [
     src_dir / "resources" / "bin" / "WinDivert.dll",
     src_dir / "resources" / "bin" / "WinDivert32.sys",
     src_dir / "resources" / "bin" / "WinDivert64.sys",
+    project_root / "bin" / "tls_clienthello_www_google_com.bin",
 ]
 missing_files = [str(path) for path in required_files if not path.exists()]
 if missing_files:
