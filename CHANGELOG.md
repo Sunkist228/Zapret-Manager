@@ -2,6 +2,14 @@
 
 
 
+
+## [1.0.2] - 2026-04-20
+
+### Исправления
+
+- **build:** mark executables as BINARY in PyInstaller spec for proper extraction (f57406f)
+
+
 ## [1.0.1] - 2026-04-20
 
 ### Исправления
