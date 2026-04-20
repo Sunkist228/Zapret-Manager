@@ -70,3 +70,4 @@ reports/
 # CI/CD
 .jenkins/
 *.log
+release_notes.md
