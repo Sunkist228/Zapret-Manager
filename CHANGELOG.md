@@ -3,6 +3,14 @@
 
 
 
+
+## [1.0.3] - 2026-04-20
+
+### Исправления
+
+- **build:** add detailed logging and runtime hook for path diagnostics (a9bc637)
+
+
 ## [1.0.2] - 2026-04-20
 
 ### Исправления
