@@ -125,18 +125,20 @@ jobs:
         working-directory: build
         shell: bash
         run: |
-          if [ ! -f "dist/ZapretManager.exe" ]; then
+          if [ ! -f "dist/zapret-manager-windows-x64.exe" ] && [ ! -f "dist/ZapretManager.exe" ]; then
             echo "EXE file not created"
             exit 1
           fi
-          ls -lh dist/ZapretManager.exe
+          ls -lh dist/
 
       - name: Rename artifact
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
         shell: bash
         run: |
-          cp dist/ZapretManager.exe dist/zapret-manager-windows-x64.exe
+          if [ -f "dist/ZapretManager.exe" ]; then
+            cp dist/ZapretManager.exe dist/zapret-manager-windows-x64.exe
+          fi
           echo "Created: zapret-manager-windows-x64.exe"
 
       - name: Generate SHA256
