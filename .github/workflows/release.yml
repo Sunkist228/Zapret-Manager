@@ -172,13 +172,13 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true' && secrets.ARTIFACT_SERVER_API_KEY != ''
         continue-on-error: true
         run: |
-          python scripts/publish_artifact.py `
-            --url "${{ secrets.ARTIFACT_SERVER_URL || 'https://artifact.devflux.ru' }}" `
-            --api-key "${{ secrets.ARTIFACT_SERVER_API_KEY }}" `
-            --version "${{ steps.bump.outputs.version }}" `
-            --product-version "${{ steps.bump.outputs.version }}" `
-            --channel stable `
-            --file build/dist/zapret-manager-windows-x64.exe `
-            --platform windows `
+          python scripts/publish_artifact.py \
+            --url "${{ secrets.ARTIFACT_SERVER_URL || 'https://artifact.devflux.ru' }}" \
+            --api-key "${{ secrets.ARTIFACT_SERVER_API_KEY }}" \
+            --version "${{ steps.bump.outputs.version }}" \
+            --product-version "${{ steps.bump.outputs.version }}" \
+            --channel stable \
+            --file build/dist/zapret-manager-windows-x64.exe \
+            --platform windows \
             --arch x64
 
