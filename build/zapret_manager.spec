@@ -40,17 +40,14 @@ datas += collect_tree(src_dir / "resources" / "lists", "resources/lists")
 datas += collect_tree(src_dir / "resources" / "lua", "resources/lua")
 # Copy bin/ (fake packets) as data
 datas += collect_tree(project_root / "bin", "resources/bin")
+# Copy exe/ (winws2.exe and DLLs) as data - binaries don't extract to subdirs in onefile mode
+datas += collect_tree(project_root / "exe", "resources/bin")
 # Copy windivert filter files
 datas += collect_tree(project_root / "windivert.filter", "resources/windivert.filter")
 datas.append((str(version_file), "."))
 
-# Mark executables and DLLs as binaries for proper extraction
+# No binaries - everything as data for onefile mode
 binaries = []
-exe_dir = project_root / "exe"
-if exe_dir.exists():
-    for exe_file in exe_dir.rglob("*"):
-        if exe_file.is_file() and exe_file.suffix.lower() in ['.exe', '.dll', '.sys']:
-            binaries.append((str(exe_file), "resources/bin"))
 
 a = Analysis(
     [str(src_dir / "main.py")],
