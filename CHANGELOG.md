@@ -1,5 +1,13 @@
 # История изменений
 
+
+## [0.1.1] - 2026-04-20
+
+### Исправления
+
+- revert version to 0.1.0 and clean up changelog (ab4c5e6)
+
+
 Все заметные изменения в этом проекте будут отражаться в этом файле.
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
