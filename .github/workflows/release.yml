@@ -44,6 +44,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
+        shell: pwsh
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -82,17 +83,20 @@ jobs:
 
       - name: Generate CHANGELOG
         if: steps.bump.outputs.skip_release != 'true'
+        shell: pwsh
         run: |
-          python scripts/generate_changelog.py --version "${{ steps.bump.outputs.version }}"
+          python scripts/generate_changelog.py --version ${{ steps.bump.outputs.version }}
 
       - name: Configure Git
         if: steps.bump.outputs.skip_release != 'true'
+        shell: pwsh
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit version bump
         if: steps.bump.outputs.skip_release != 'true'
+        shell: pwsh
         run: |
           git add VERSION CHANGELOG.md
           $ver = "${{ steps.bump.outputs.version }}"
@@ -100,25 +104,27 @@ jobs:
 
       - name: Create tag
         if: steps.bump.outputs.skip_release != 'true'
+        shell: pwsh
         run: |
-          $ver = "${{ steps.bump.outputs.version }}"
-          git tag "v$ver"
+          git tag v${{ steps.bump.outputs.version }}
 
       - name: Push changes
         if: steps.bump.outputs.skip_release != 'true'
+        shell: pwsh
         run: |
-          $ver = "${{ steps.bump.outputs.version }}"
           git push origin master
-          git push origin "v$ver"
+          git push origin v${{ steps.bump.outputs.version }}
 
       - name: Build EXE
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
+        shell: pwsh
         run: .\build.bat
 
       - name: Verify EXE created
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
+        shell: pwsh
         run: |
           if (!(Test-Path "dist\ZapretManager.exe")) {
             Write-Error "EXE file not created"
@@ -130,6 +136,7 @@ jobs:
       - name: Rename artifact
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
+        shell: pwsh
         run: |
           Copy-Item "dist\ZapretManager.exe" "dist\zapret-manager-windows-x64.exe"
           Write-Host "Created: zapret-manager-windows-x64.exe"
@@ -137,6 +144,7 @@ jobs:
       - name: Generate SHA256
         if: steps.bump.outputs.skip_release != 'true'
         working-directory: build
+        shell: pwsh
         run: |
           $hash = (Get-FileHash "dist\zapret-manager-windows-x64.exe" -Algorithm SHA256).Hash
           $hash.ToLower() | Out-File "dist\zapret-manager-windows-x64.exe.sha256" -NoNewline -Encoding ASCII
@@ -145,6 +153,7 @@ jobs:
       - name: Extract changelog for release
         if: steps.bump.outputs.skip_release != 'true'
         id: changelog
+        shell: pwsh
         run: |
           $version = "${{ steps.bump.outputs.version }}"
           $changelog = Get-Content CHANGELOG.md -Raw
@@ -163,8 +172,8 @@ jobs:
         if: steps.bump.outputs.skip_release != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ steps.bump.outputs.version }}"
-          name: "Release v${{ steps.bump.outputs.version }}"
+          tag_name: v${{ steps.bump.outputs.version }}
+          name: Release v${{ steps.bump.outputs.version }}
           body_path: release_notes.md
           files: |
             build/dist/zapret-manager-windows-x64.exe
@@ -178,6 +187,7 @@ jobs:
       - name: Publish to Artifact Server
         if: steps.bump.outputs.skip_release != 'true' && secrets.ARTIFACT_SERVER_API_KEY != ''
         continue-on-error: true
+        shell: pwsh
         run: |
           python scripts/publish_artifact.py `
             --url "${{ secrets.ARTIFACT_SERVER_URL || 'https://artifact.devflux.ru' }}" `
