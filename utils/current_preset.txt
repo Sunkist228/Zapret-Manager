@@ -1,1 +1,1 @@
-general SIMPLE FAKE (game filter)
+Default (Discord, YouTube, Telegram)

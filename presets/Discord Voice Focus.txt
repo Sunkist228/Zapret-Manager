@@ -1,0 +1,56 @@
+# Preset: Discord Voice Focus
+# ActivePreset: Discord Voice Focus
+# BuiltinVersion: 2.12
+# Description: Discord-only preset for login, updates, CDN and voice. Uses Discord voice packet signatures instead of broad game UDP capture.
+
+--lua-init=@lua/zapret-lib.lua
+--lua-init=@lua/zapret-antidpi.lua
+--lua-init=@lua/zapret-auto.lua
+--lua-init=@lua/custom_funcs.lua
+--lua-init=@lua/custom_diag.lua
+--lua-init=@lua/zapret-multishake.lua
+
+--ctrack-disable=0
+--ipcache-lifetime=8400
+--ipcache-hostname=1
+
+--wf-tcp-out=80,443,2053,2083,2087,2096,8443
+--wf-udp-out=443,50000-50099
+
+--blob=quic2:@bin/quic_2.bin
+--blob=fake_default_udp:0x00000000000000000000000000000000
+
+--filter-tcp=443
+--hostlist-domains=updates.discord.com
+--out-range=-d10
+--lua-desync=hostfakesplit_multi:hosts=google.com,vimeo.com:tcp_ts=-1000:tcp_md5:repeats=2
+
+--new
+
+--filter-tcp=80,443,2053,2083,2087,2096,8443
+--hostlist=lists/discord.txt
+--out-range=-d10
+--lua-desync=hostfakesplit_multi:hosts=google.com,vimeo.com:tcp_ts=-1000:tcp_md5:repeats=2
+
+--new
+
+--filter-tcp=80,443,2053,2083,2087,2096,8443
+--hostlist-domains=discord.media
+--out-range=-d10
+--lua-desync=hostfakesplit_multi:hosts=google.com,vimeo.com:tcp_ts=-1000:tcp_md5:repeats=2
+
+--new
+
+--filter-l7=stun,discord
+--payload=stun,discord_ip_discovery
+--out-range=-n8
+--lua-desync=fake:blob=fake_default_udp
+
+--new
+
+--filter-udp=443
+--ipset=lists/ipset-discord.txt
+--out-range=-n8
+--payload=all
+--lua-desync=fake:blob=quic2:repeats=7
+--lua-desync=udplen:increment=5:pattern=0xDEADBEEF

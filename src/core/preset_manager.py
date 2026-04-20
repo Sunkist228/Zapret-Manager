@@ -55,11 +55,11 @@ class PresetManager:
         """Установить дефолтный пресет при первом запуске"""
         try:
             logger.info("Установка дефолтного пресета")
-            default_preset = self.config.PRESETS_DIR / "default-main.txt"
+            default_preset = self.config.PRESETS_DIR / f"{self.config.DEFAULT_PRESET_NAME}.txt"
 
             if default_preset.exists():
                 shutil.copy2(default_preset, self.config.ACTIVE_PRESET)
-                self.config.CURRENT_PRESET_NAME.write_text("default-main", encoding='utf-8')
+                self.config.CURRENT_PRESET_NAME.write_text(self.config.DEFAULT_PRESET_NAME, encoding='utf-8')
                 logger.info("Дефолтный пресет установлен")
             else:
                 logger.warning(f"Дефолтный пресет не найден: {default_preset}")

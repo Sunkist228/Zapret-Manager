@@ -1,5 +1,8 @@
 telegram.org
 t.me
+web.telegram.org
+api.telegram.org
+core.telegram.org
 telegram.me
 telegram.dog
 tdesktop.com
@@ -7,3 +10,5 @@ telegram.tips
 telegramusercontent.com
 telesco.pe
 telegram-cdn.org
+telegra.ph
+graph.org

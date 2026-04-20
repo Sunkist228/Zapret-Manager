@@ -47,45 +47,82 @@ git checkout -b feature/your-feature-name
 
 ## Commit Standards
 
+Проект использует **[Conventional Commits](https://www.conventionalcommits.org/)** для автоматического версионирования и генерации CHANGELOG.
+
 ### Формат сообщения
 
 ```
-type: short description
+<type>(<scope>): <description>
 
-Optional longer description explaining what and why.
+[optional body]
+
+[optional footer(s)]
 ```
 
-### Типы коммитов
+### Типы коммитов и версионирование
 
-- `feat` — новая функциональность
-- `fix` — исправление бага
-- `docs` — изменения в документации
-- `refactor` — рефакторинг без изменения функциональности
-- `test` — добавление или изменение тестов
-- `chore` — рутинные задачи (обновление зависимостей, конфигурация)
-- `ci` — изменения в CI/CD
-- `build` — изменения в процессе сборки
+| Тип | Bump | Описание | Пример |
+|-----|------|----------|--------|
+| `feat` | minor | Новая функциональность | `feat: add Telegram proxy support` |
+| `fix` | patch | Исправление бага | `fix: resolve tray icon crash` |
+| `feat!` или `BREAKING CHANGE:` | major | Breaking changes | `feat!: redesign config API` |
+| `docs` | none | Изменения в документации | `docs: update README` |
+| `refactor` | none | Рефакторинг без изменения API | `refactor: simplify preset loading` |
+| `test` | none | Добавление тестов | `test: add config manager tests` |
+| `chore` | none | Рутинные задачи | `chore: update dependencies` |
+| `ci` | none | Изменения в CI/CD | `ci: add release workflow` |
+| `build` | none | Изменения в сборке | `build: update PyInstaller config` |
 
 ### Примеры
 
+**Хорошие примеры:**
 ```bash
-feat: add auto-update functionality
-fix: resolve tray icon crash on Windows 7
-docs: update installation instructions
-refactor: simplify preset loading logic
-test: add tests for config manager
-chore: update dependencies
-ci: add GitHub Actions workflow for releases
+feat: добавлена поддержка Telegram proxy
+feat(ui): добавлено контекстное меню в трее
+fix: исправлена ошибка в preset manager
+fix(update): корректная проверка SHA256
+docs: обновлен README с инструкциями
+chore: обновлены зависимости до последних версий
 ```
 
-### Плохие примеры
+**Breaking changes:**
+```bash
+feat!: переработан API конфигурации
+
+BREAKING CHANGE: изменен формат конфигурационных файлов.
+Старые конфигурации несовместимы с новой версией.
+```
+
+**Плохие примеры:**
+```bash
+update           # Нет типа и описания
+fix              # Нет описания
+WIP              # Не информативно
+changes          # Слишком общее
+```
+
+### Scope (опционально)
+
+Область изменения: `ui`, `core`, `presets`, `update`, `build`, etc.
 
 ```bash
-update
-fix
-WIP
-changes
+feat(ui): добавлено контекстное меню
+fix(core): исправлена утечка памяти
+docs(api): обновлена документация API
 ```
+
+### Проверка формата
+
+Перед коммитом проверьте формат:
+```bash
+# Проверить последний коммит
+git log -1 --pretty=%B
+
+# Проверить все коммиты с последнего тега
+git log $(git describe --tags --abbrev=0)..HEAD --oneline
+```
+
+**Важно:** Формат коммитов критичен для автоматического релиза!
 
 ## Pull Request Process
 
@@ -189,34 +226,74 @@ dist\ZapretManager.exe
 
 ## Release Process
 
-### Для мейнтейнеров
+### Автоматический релиз (рекомендуется)
 
-1. **Подготовка релиза**:
-   ```bash
-   # Bump версию
-   python scripts/bump_version.py [major|minor|patch]
-   
-   # Обновите CHANGELOG.md
-   # Добавьте release notes для новой версии
-   ```
+Проект использует **автоматическое версионирование** на основе Conventional Commits.
 
-2. **Создание коммита и тега**:
-   ```bash
-   git add VERSION CHANGELOG.md
-   git commit -m "chore: bump version to X.Y.Z"
-   git tag vX.Y.Z
-   ```
+**Как это работает:**
+1. Вы создаете PR с коммитами в формате Conventional Commits
+2. После merge в `master` автоматически:
+   - Анализируются коммиты с последнего тега
+   - Определяется тип bump (major/minor/patch)
+   - Обновляется VERSION файл
+   - Генерируется CHANGELOG.md
+   - Создается commit и git tag
+   - Собирается EXE
+   - Публикуется GitHub Release
 
-3. **Push**:
-   ```bash
-   git push origin master --tags
-   ```
+**Примеры:**
+```bash
+# После merge PR с feat: коммитом
+# 0.1.0 → 0.2.0 (minor bump)
 
-4. **Автоматическая публикация**:
-   - GitHub Actions автоматически создаст release
-   - Соберет Windows x64 EXE
-   - Опубликует в GitHub Releases
-   - Сгенерирует release notes
+# После merge PR с fix: коммитом
+# 0.1.0 → 0.1.1 (patch bump)
+
+# После merge PR с BREAKING CHANGE:
+# 0.1.0 → 1.0.0 (major bump)
+```
+
+### Ручной релиз
+
+Если нужно создать релиз вручную:
+
+**Через GitHub UI:**
+1. Перейдите в Actions → Release
+2. Нажмите "Run workflow"
+3. Выберите bump type (auto/major/minor/patch)
+
+**Через CLI:**
+```bash
+# Автоматический bump
+gh workflow run release.yml
+
+# Принудительный patch bump
+gh workflow run release.yml -f bump_type=patch
+```
+
+### Для мейнтейнеров (legacy)
+
+Если автоматический релиз не работает, можно создать релиз вручную:
+
+```bash
+# 1. Bump версию
+python scripts/bump_version.py --type patch
+
+# 2. Генерация CHANGELOG
+python scripts/generate_changelog.py
+
+# 3. Commit и tag
+git add VERSION CHANGELOG.md
+git commit -m "chore: bump version to X.Y.Z"
+git tag vX.Y.Z
+
+# 4. Push
+git push origin master --tags
+```
+
+### Подробности
+
+См. [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md) для полной документации процесса релиза.
 
 ### Versioning
 

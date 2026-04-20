@@ -33,7 +33,21 @@
       "Bash(cmd.exe /c build.bat)",
       "Bash(gh auth:*)",
       "Bash(java -jar \"C:\\\\Users\\\\korki\\\\jenkins-cli.jar\" -s https://jenkins.devflux.ru -auth @C:\\\\Users\\\\korki\\\\.jenkins-cli)",
-      "Bash(gh repo:*)"
+      "Bash(gh repo:*)",
+      "Bash(gh api:*)",
+      "Bash(curl -s -I https://jenkins.devflux.ru/github-webhook/)",
+      "Bash(java:*)",
+      "Bash(where java:*)",
+      "Read(//c/Program Files/Java/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Bash(C:/Users/korki/AppData/Local/Programs/Eclipse Adoptium/jdk-17.0.18.8-hotspot/bin/java.exe:*)",
+      "Bash(curl:*)",
+      "Bash(kubectl get:*)",
+      "Bash(kubectl logs:*)",
+      "Bash(kubectl exec:*)",
+      "Bash(kubectl port-forward:*)",
+      "Bash(pkill -f \"port-forward.*artifact-server\")",
+      "Bash(python3 -m json.tool)"
     ]
   }
 }

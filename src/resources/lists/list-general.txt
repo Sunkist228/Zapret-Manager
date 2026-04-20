@@ -45,3 +45,17 @@ betterttv.net
 7tv.app
 7tv.io
 localizeapi.com
+telegram.org
+t.me
+web.telegram.org
+api.telegram.org
+core.telegram.org
+telegram.me
+telegram.dog
+tdesktop.com
+telegram.tips
+telegramusercontent.com
+telesco.pe
+telegram-cdn.org
+telegra.ph
+graph.org

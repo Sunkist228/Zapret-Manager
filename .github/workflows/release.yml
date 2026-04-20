@@ -2,46 +2,38 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type (auto/major/minor/patch)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - major
+          - minor
+          - patch
 
 permissions:
   contents: write
 
 concurrency:
   group: release-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  validate-version:
-    name: Validate Version
-    runs-on: ubuntu-latest
+  release:
+    name: Build and Release
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Check tag matches VERSION
-        run: |
-          VERSION=$(cat VERSION | tr -d '[:space:]')
-          TAG="${{ github.ref_name }}"
-          EXPECTED_TAG="v${VERSION}"
-
-          if [ "$TAG" != "$EXPECTED_TAG" ]; then
-            echo "ERROR: Tag '$TAG' does not match VERSION file '$EXPECTED_TAG'"
-            exit 1
-          fi
-
-          echo "✓ Tag matches VERSION: $TAG"
-
-  build-windows-x64:
-    name: Build Windows x64
-    runs-on: windows-latest
-    needs: validate-version
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -54,68 +46,139 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Bump version
+        id: bump
+        run: |
+          $bumpType = "${{ github.event.inputs.bump_type }}"
+          if ([string]::IsNullOrEmpty($bumpType)) {
+            $bumpType = "auto"
+          }
+
+          Write-Host "Bumping version with type: $bumpType"
+
+          if ($bumpType -eq "auto") {
+            $output = python scripts/bump_version.py 2>&1
+          } else {
+            $output = python scripts/bump_version.py --type $bumpType 2>&1
+          }
+
+          $exitCode = $LASTEXITCODE
+          Write-Host $output
+
+          if ($exitCode -ne 0) {
+            Write-Host "No version bump needed, skipping release"
+            echo "skip_release=true" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+
+          $newVersion = ($output -split "`n")[-1].Trim()
+          Write-Host "New version: $newVersion"
+          echo "version=$newVersion" >> $env:GITHUB_OUTPUT
+          echo "skip_release=false" >> $env:GITHUB_OUTPUT
+
+      - name: Generate CHANGELOG
+        if: steps.bump.outputs.skip_release != 'true'
+        run: |
+          python scripts/generate_changelog.py --version ${{ steps.bump.outputs.version }}
+
+      - name: Configure Git
+        if: steps.bump.outputs.skip_release != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit version bump
+        if: steps.bump.outputs.skip_release != 'true'
+        run: |
+          git add VERSION CHANGELOG.md
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.version }}
+
+          Co-Authored-By: Claude Sonnet 4 <noreply@anthropic.com>"
+
+      - name: Create tag
+        if: steps.bump.outputs.skip_release != 'true'
+        run: |
+          git tag v${{ steps.bump.outputs.version }}
+
+      - name: Push changes
+        if: steps.bump.outputs.skip_release != 'true'
+        run: |
+          git push origin master
+          git push origin v${{ steps.bump.outputs.version }}
+
       - name: Build EXE
+        if: steps.bump.outputs.skip_release != 'true'
         run: |
           cd build
           .\build.bat
 
-      - name: Rename artifact
+      - name: Verify EXE created
+        if: steps.bump.outputs.skip_release != 'true'
         run: |
-          $version = "${{ github.ref_name }}".TrimStart('v')
-          Move-Item "dist\ZapretManager.exe" "dist\zapret-manager-windows-x64.exe"
+          if (!(Test-Path "dist\ZapretManager.exe")) {
+            Write-Error "EXE file not created"
+            exit 1
+          }
+          $size = (Get-Item "dist\ZapretManager.exe").Length / 1MB
+          Write-Host "EXE size: $([math]::Round($size, 2)) MB"
+
+      - name: Rename artifact
+        if: steps.bump.outputs.skip_release != 'true'
+        run: |
+          Copy-Item "dist\ZapretManager.exe" "dist\zapret-manager-windows-x64.exe"
           Write-Host "Created: zapret-manager-windows-x64.exe"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-x64
-          path: dist/zapret-manager-windows-x64.exe
-          retention-days: 90
-
-  create-release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    needs: [validate-version, build-windows-x64]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Download Windows x64 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-x64
-          path: artifacts/
-
-      - name: Generate release notes
-        id: release_notes
+      - name: Generate SHA256
+        if: steps.bump.outputs.skip_release != 'true'
         run: |
-          VERSION="${{ github.ref_name }}"
+          $hash = (Get-FileHash "dist\zapret-manager-windows-x64.exe" -Algorithm SHA256).Hash
+          $hash.ToLower() | Out-File "dist\zapret-manager-windows-x64.exe.sha256" -NoNewline -Encoding ASCII
+          Write-Host "SHA256: $hash"
 
-          # Extract changelog for this version
-          if [ -f CHANGELOG.md ]; then
-            awk "/^## \[${VERSION#v}\]/{flag=1; next} /^## \[/{flag=0} flag" CHANGELOG.md > release_notes.md
-          fi
+      - name: Extract changelog for release
+        if: steps.bump.outputs.skip_release != 'true'
+        id: changelog
+        run: |
+          $version = "${{ steps.bump.outputs.version }}"
+          $changelog = Get-Content CHANGELOG.md -Raw
 
-          # If no changelog entry, generate from commits
-          if [ ! -s release_notes.md ]; then
-            echo "## Changes" > release_notes.md
-            git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> release_notes.md
-          fi
+          # Extract section for this version
+          $pattern = "(?s)## \[$version\].*?(?=## \[|$)"
+          if ($changelog -match $pattern) {
+            $releaseNotes = $matches[0]
+            $releaseNotes | Out-File -FilePath release_notes.md -Encoding UTF8
+            Write-Host "Extracted release notes for version $version"
+          } else {
+            "## Changes`n`nSee CHANGELOG.md for details." | Out-File -FilePath release_notes.md -Encoding UTF8
+          }
 
-          cat release_notes.md
-
-      - name: Create Release
+      - name: Create GitHub Release
+        if: steps.bump.outputs.skip_release != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag_name: v${{ steps.bump.outputs.version }}
+          name: Release v${{ steps.bump.outputs.version }}
           body_path: release_notes.md
           files: |
-            artifacts/zapret-manager-windows-x64.exe
+            dist/zapret-manager-windows-x64.exe
+            dist/zapret-manager-windows-x64.exe.sha256
           draft: false
           prerelease: false
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to Artifact Server
+        if: steps.bump.outputs.skip_release != 'true' && secrets.ARTIFACT_SERVER_API_KEY != ''
+        continue-on-error: true
+        run: |
+          python scripts/publish_artifact.py `
+            --url "${{ secrets.ARTIFACT_SERVER_URL || 'https://artifact.devflux.ru' }}" `
+            --api-key "${{ secrets.ARTIFACT_SERVER_API_KEY }}" `
+            --version "${{ steps.bump.outputs.version }}" `
+            --product-version "${{ steps.bump.outputs.version }}" `
+            --channel stable `
+            --file dist/zapret-manager-windows-x64.exe `
+            --platform windows `
+            --arch x64
+

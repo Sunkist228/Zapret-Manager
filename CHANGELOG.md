@@ -7,25 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-04-20
+
 ### Added
-- CI/CD pipeline with GitHub Actions and Jenkins
-- Automated releases via GitHub Releases
-- Comprehensive AI rules for development (.claude/rules/)
-- Version management script (scripts/bump_version.py)
-- Artifact publishing script (scripts/publish_artifact.py)
-- Contributing guidelines (CONTRIBUTING.md)
-- Git workflow with feature branches
-- Commit standards enforcement
+- **CI/CD**: Автоматическое версионирование на основе conventional commits
+- **CI/CD**: Автоматическая генерация CHANGELOG из git commits
+- **CI/CD**: Автоматический релиз при push в master через GitHub Actions
+- **Update**: Поддержка GitHub Releases API как primary источника обновлений
+- **Update**: Fallback на artifact server при недоступности GitHub
+- **Docs**: docs/RELEASE_PROCESS.md с полным описанием процесса релиза
+- **Docs**: .claude/rules/conventional-commits.md с правилами для коммитов
+- **Scripts**: scripts/bump_version.py для автоматического определения версии
+- **Scripts**: scripts/generate_changelog.py для генерации changelog
 
 ### Changed
-- Adopted Semantic Versioning with VERSION file
-- Improved build process documentation
-- Enhanced .gitignore with CI/CD patterns
+- Переработан .github/workflows/release.yml для автоматического релиза
+- Обновлен src/utils/config.py с константами для GitHub API
+- Обновлен src/core/update_manager.py с поддержкой GitHub Releases
+- Обновлен CONTRIBUTING.md с информацией о conventional commits
+- Обновлен README.md с секцией про автоматические обновления
+- Версия изменена с 1.0.0 на 0.1.1 для корректного semantic versioning
 
 ### Infrastructure
-- GitHub Actions workflows: CI, PR governance, releases
-- Jenkins multibranch pipeline for delivery
-- Integration with Playerok Artifact Server
+- GitHub Releases как primary источник обновлений
+- Artifact Server как fallback источник
+- Continuous Delivery: каждый merge в master создает новый release
 
 ## [1.0.0] - 2026-04-12
 

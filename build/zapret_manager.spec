@@ -1,25 +1,45 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-import sys
 from pathlib import Path
 
-# Определяем базовую директорию
+
 spec_root = Path(SPECPATH).parent
-src_dir = spec_root / 'src'
+project_root = spec_root.parent if not (spec_root / "src").exists() else spec_root
+src_dir = project_root / "src"
+version_file = project_root / "VERSION"
 
 block_cipher = None
 
+
+def collect_tree(source: Path, target: str):
+    return [
+        (str(path), str(Path(target) / path.parent.relative_to(source)))
+        for path in source.rglob("*")
+        if path.is_file()
+    ]
+
+
+datas = []
+datas += collect_tree(src_dir / "resources" / "presets", "resources/presets")
+datas += collect_tree(src_dir / "resources" / "lists", "resources/lists")
+datas += collect_tree(src_dir / "resources" / "lua", "resources/lua")
+datas += collect_tree(project_root / "bin", "resources/bin")
+datas += collect_tree(project_root / "exe", "resources/bin")
+datas += collect_tree(project_root / "windivert.filter", "resources/windivert.filter")
+datas.append((str(version_file), "."))
+
 a = Analysis(
-    [str(src_dir / 'main.py')],
+    [str(src_dir / "main.py")],
     pathex=[str(src_dir)],
     binaries=[],
-    datas=[
-        (str(src_dir / 'resources' / 'presets'), 'resources/presets'),
-        (str(src_dir / 'resources' / 'lists'), 'resources/lists'),
-        (str(src_dir / 'resources' / 'lua'), 'resources/lua'),
-        (str(src_dir / 'resources' / 'bin'), 'resources/bin'),
+    datas=datas,
+    hiddenimports=[
+        "PyQt5",
+        "PyQt5.QtCore",
+        "PyQt5.QtGui",
+        "PyQt5.QtWidgets",
+        "requests",
     ],
-    hiddenimports=['PyQt5', 'PyQt5.QtCore', 'PyQt5.QtGui', 'PyQt5.QtWidgets'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -39,7 +59,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='ZapretManager',
+    name="ZapretManager",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
