@@ -169,7 +169,7 @@ def generate_changelog_entry(version: str, grouped_commits: Dict[str, List[Dict]
 
     # Breaking Changes
     if grouped_commits['breaking']:
-        lines.append("### ⚠ BREAKING CHANGES")
+        lines.append("### ⚠ КРИТИЧЕСКИЕ ИЗМЕНЕНИЯ")
         lines.append("")
         for commit in grouped_commits['breaking']:
             lines.append(f"- {commit['description']} ({commit['hash']})")
@@ -177,7 +177,7 @@ def generate_changelog_entry(version: str, grouped_commits: Dict[str, List[Dict]
 
     # Features
     if grouped_commits['features']:
-        lines.append("### Features")
+        lines.append("### Новые функции")
         lines.append("")
         for commit in grouped_commits['features']:
             lines.append(f"- {commit['description']} ({commit['hash']})")
@@ -185,7 +185,7 @@ def generate_changelog_entry(version: str, grouped_commits: Dict[str, List[Dict]
 
     # Bug Fixes
     if grouped_commits['fixes']:
-        lines.append("### Bug Fixes")
+        lines.append("### Исправления")
         lines.append("")
         for commit in grouped_commits['fixes']:
             lines.append(f"- {commit['description']} ({commit['hash']})")
@@ -230,12 +230,12 @@ def update_changelog(version: str, new_entry: str, changelog_path: Path):
     else:
         # Create new CHANGELOG
         header = [
-            "# Changelog",
+            "# История изменений",
             "",
-            "All notable changes to this project will be documented in this file.",
+            "Все заметные изменения в этом проекте будут отражаться в этом файле.",
             "",
-            "The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),",
-            "and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).",
+            "Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),",
+            "и проект придерживается [Семантического версионирования](https://semver.org/lang/ru/).",
             "",
             ""
         ]

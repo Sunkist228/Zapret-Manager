@@ -152,8 +152,14 @@ jobs:
         id: changelog
         shell: bash
         run: |
+          VERSION="${{ steps.bump.outputs.version }}"
+
+          # Extract changelog section for this version
+          awk "/## \[$VERSION\]/,/## \[/" CHANGELOG.md | sed '/## \['"$VERSION"'\]/d; /## \[/d' > release_notes.md
+
+          # If empty, use default message
           if [ ! -s release_notes.md ]; then
-            echo -e "## Changes\n\nSee CHANGELOG.md for details." > release_notes.md
+            echo -e "## Изменения\n\nПодробности в CHANGELOG.md." > release_notes.md
           fi
 
       - name: Create GitHub Release
@@ -161,14 +167,14 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ steps.bump.outputs.version }}"
-          name: "Release v${{ steps.bump.outputs.version }}"
+          name: "Релиз v${{ steps.bump.outputs.version }}"
           body_path: release_notes.md
           files: |
             build/dist/zapret-manager-windows-x64.exe
             build/dist/zapret-manager-windows-x64.exe.sha256
           draft: false
           prerelease: false
-          generate_release_notes: true
+          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
