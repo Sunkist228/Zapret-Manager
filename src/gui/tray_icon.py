@@ -4,7 +4,6 @@ System tray icon for Zapret Manager.
 """
 
 import subprocess
-import tempfile
 import threading
 from pathlib import Path
 
@@ -14,11 +13,12 @@ from PyQt5.QtWidgets import QAction, QApplication, QMenu, QMessageBox, QSystemTr
 
 from core.autostart import AutostartManager
 from core.preset_manager import PresetManager
+from core.runtime_state import RuntimeState
 from core.telegram_proxy_manager import TelegramProxyManager
 from core.update_manager import UpdateError, UpdateManager
 from core.zapret_manager import ZapretManager
 from utils.config import Config
-from utils.logger import logger
+from utils.logger import LOG_DIR, logger
 
 
 class ZapretTrayIcon(QSystemTrayIcon):
@@ -36,6 +36,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
         self.preset_manager = PresetManager()
         self.telegram_proxy_manager = TelegramProxyManager()
         self.autostart_manager = AutostartManager()
+        self.runtime_state = RuntimeState()
         self.update_manager = UpdateManager()
 
         self.main_window = None
@@ -43,6 +44,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
         self.downloaded_update = self.update_manager.get_downloaded_update()
         self.update_check_in_progress = False
         self.update_download_in_progress = False
+        self.gameguard_warning_shown = False
 
         self.create_menu()
         self.set_icon_color("red")
@@ -51,6 +53,10 @@ class ZapretTrayIcon(QSystemTrayIcon):
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_status)
         self.timer.start(Config.STATUS_UPDATE_INTERVAL)
+
+        self.gameguard_timer = QTimer()
+        self.gameguard_timer.timeout.connect(self.check_gameguard_warning)
+        self.gameguard_timer.start(30000)
 
         self.update_check_finished.connect(self.on_update_check_finished)
         self.update_check_failed.connect(self.on_update_check_failed)
@@ -61,6 +67,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
         self.check_autostart()
         self.refresh_update_actions()
         QTimer.singleShot(5000, self.schedule_background_update_check)
+        QTimer.singleShot(3000, self.check_gameguard_warning)
         if auto_start:
             QTimer.singleShot(1000, self.start_zapret)
 
@@ -77,6 +84,63 @@ class ZapretTrayIcon(QSystemTrayIcon):
             return
 
         self.showMessage(title, message, icon, duration)
+
+    def detect_gameguard_processes(self):
+        """Return known GameGuard processes currently visible in tasklist."""
+        found = []
+
+        for process_name in Config.GAMEGUARD_PROCESS_NAMES:
+            try:
+                result = subprocess.run(
+                    ["tasklist", "/FI", f"IMAGENAME eq {process_name}", "/NH"],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="ignore",
+                    creationflags=subprocess.CREATE_NO_WINDOW,
+                    timeout=2,
+                )
+                if process_name.lower() in result.stdout.lower():
+                    found.append(process_name)
+            except Exception as exc:
+                logger.debug("Не удалось проверить GameGuard %s: %s", process_name, exc)
+
+        return found
+
+    def check_gameguard_warning(self):
+        """Warn about GameGuard/WinDivert conflict without stopping zapret."""
+        try:
+            if not self.zapret_manager.is_running():
+                self.gameguard_warning_shown = False
+                return
+
+            found = self.detect_gameguard_processes()
+            if not found:
+                self.gameguard_warning_shown = False
+                return
+
+            self.show_gameguard_warning(found)
+        except Exception as exc:
+            logger.debug("Ошибка проверки GameGuard: %s", exc)
+
+    def show_gameguard_warning(self, found_processes):
+        """Show a single warning for the current GameGuard detection window."""
+        if self.gameguard_warning_shown:
+            return
+
+        self.gameguard_warning_shown = True
+        processes = ", ".join(found_processes)
+        logger.warning("Обнаружен GameGuard: %s", processes)
+        QMessageBox.warning(
+            None,
+            "Возможный конфликт GameGuard",
+            "Обнаружен GameGuard: "
+            f"{processes}\n\n"
+            "GameGuard может конфликтовать с WinDivert и вызывать вылет игры "
+            "или остановку zapret.\n\n"
+            "Zapret не будет остановлен автоматически. Если игра вылетает, "
+            "остановите zapret вручную через меню трея.",
+        )
 
     def create_menu(self):
         """Create tray context menu."""
@@ -208,9 +272,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
                 self.status_action.setText(f"● Запущен{uptime_str}")
                 self.toggle_action.setText("⏹ Выключить")
                 self.restart_action.setEnabled(True)
-                self.setToolTip(
-                    f"{Config.APP_NAME} - Запущен\nПресет: {status['preset']}"
-                )
+                self.setToolTip(f"{Config.APP_NAME} - Запущен\nПресет: {status['preset']}")
                 self.set_icon_color("green")
             else:
                 self.status_action.setText("✗ Остановлен")
@@ -243,16 +305,12 @@ class ZapretTrayIcon(QSystemTrayIcon):
         status_action.setEnabled(False)
         self.telegram_proxy_menu.addAction(status_action)
 
-        start_action = QAction(
-            "Запустить локальный прокси", self.telegram_proxy_menu
-        )
+        start_action = QAction("Запустить локальный прокси", self.telegram_proxy_menu)
         start_action.setEnabled(status.installed and not status.running)
         start_action.triggered.connect(self.start_telegram_proxy)
         self.telegram_proxy_menu.addAction(start_action)
 
-        stop_action = QAction(
-            "Остановить локальный прокси", self.telegram_proxy_menu
-        )
+        stop_action = QAction("Остановить локальный прокси", self.telegram_proxy_menu)
         stop_action.setEnabled(status.running)
         stop_action.triggered.connect(self.stop_telegram_proxy)
         self.telegram_proxy_menu.addAction(stop_action)
@@ -381,9 +439,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             result = self.update_manager.check_for_updates(force=force)
             self.update_check_finished.emit(result, manual)
         except Exception as exc:
-            logger.error(
-                "Ошибка проверки обновлений: %s", exc, exc_info=True
-            )
+            logger.error("Ошибка проверки обновлений: %s", exc, exc_info=True)
             self.update_check_failed.emit(str(exc), manual)
 
     def on_update_check_finished(self, result, manual: bool):
@@ -492,9 +548,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             downloaded = self.update_manager.download_update(release)
             self.update_download_finished.emit(downloaded)
         except Exception as exc:
-            logger.error(
-                "Ошибка загрузки обновления: %s", exc, exc_info=True
-            )
+            logger.error("Ошибка загрузки обновления: %s", exc, exc_info=True)
             self.update_download_failed.emit(str(exc))
 
     def on_update_download_finished(self, downloaded):
@@ -575,6 +629,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             "Запущена установка обновления %s",
             downloaded.release.product_version,
         )
+        self.runtime_state.mark_shutdown(False, self.zapret_manager.get_current_preset_name())
         self.hide()
         QApplication.quit()
 
@@ -595,9 +650,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
         if self.downloaded_update:
             version = self.downloaded_update.release.product_version
             self.install_update_action.setEnabled(True)
-            self.install_update_action.setText(
-                f"Установить обновление {version}"
-            )
+            self.install_update_action.setText(f"Установить обновление {version}")
             return
 
         if self.available_release:
@@ -610,15 +663,8 @@ class ZapretTrayIcon(QSystemTrayIcon):
         self.install_update_action.setText("Установить обновление")
 
     def _build_update_message(self, release, downloaded: bool) -> str:
-        release_notes = (
-            release.release_notes.strip()
-            or "Описание обновления отсутствует."
-        )
-        prefix = (
-            "Обновление уже загружено."
-            if downloaded
-            else "Доступно обновление."
-        )
+        release_notes = release.release_notes.strip() or "Описание обновления отсутствует."
+        prefix = "Обновление уже загружено." if downloaded else "Доступно обновление."
         return (
             f"{prefix}\n\n"
             f"Версия: {release.product_version}\n"
@@ -646,6 +692,10 @@ class ZapretTrayIcon(QSystemTrayIcon):
         try:
             logger.info("Запуск zapret через трей")
 
+            gameguard_processes = self.detect_gameguard_processes()
+            if gameguard_processes:
+                self.show_gameguard_warning(gameguard_processes)
+
             if not Config.ACTIVE_PRESET.exists():
                 QMessageBox.warning(
                     None,
@@ -658,9 +708,11 @@ class ZapretTrayIcon(QSystemTrayIcon):
                 QTimer.singleShot(2000, self.update_status)
                 return
 
-            log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "winws2.log"
             error_msg = "Не удалось запустить zapret.\n\n"
+            if self.zapret_manager.last_start_error:
+                error_msg += f"Диагностика: {self.zapret_manager.last_start_error}\n\n"
 
+            log_file = self.latest_winws2_log_file()
             if log_file.exists():
                 try:
                     log_content = log_file.read_text(encoding="utf-8", errors="ignore")
@@ -684,6 +736,17 @@ class ZapretTrayIcon(QSystemTrayIcon):
                 "Ошибка",
                 f"Не удалось запустить:\n{exc}",
             )
+
+    def latest_winws2_log_file(self) -> Path:
+        """Return the latest per-run winws2 log if available."""
+        try:
+            logs = sorted(LOG_DIR.glob("winws2-*.log"), key=lambda path: path.stat().st_mtime)
+            if logs:
+                return logs[-1]
+        except OSError:
+            pass
+
+        return LOG_DIR / "winws2.log"
 
     def stop_zapret(self):
         """Stop zapret."""
@@ -836,7 +899,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
     def show_logs(self):
         """Open application logs."""
         try:
-            log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "app.log"
+            log_file = LOG_DIR / "app.log"
 
             if not log_file.exists():
                 QMessageBox.warning(
@@ -869,9 +932,7 @@ class ZapretTrayIcon(QSystemTrayIcon):
             info.append(f"Права администратора: {admin_status}")
 
             status = self.zapret_manager.get_status()
-            zapret_status = (
-                "✓ Запущен" if status["running"] else "✗ Остановлен"
-            )
+            zapret_status = "✓ Запущен" if status["running"] else "✗ Остановлен"
             info.append(f"Статус zapret: {zapret_status}")
             if status["running"]:
                 info.append(f"  PID: {status['pid']}")
@@ -886,20 +947,31 @@ class ZapretTrayIcon(QSystemTrayIcon):
             winws_exists = "✓" if Config.WINWS2_EXE.exists() else "✗ НЕ НАЙДЕН"
             info.append(f"winws2.exe: {winws_exists} {Config.WINWS2_EXE}")
 
-            log_file = Path(tempfile.gettempdir()) / "ZapretManager" / "app.log"
+            log_file = LOG_DIR / "app.log"
             info.append(f"\nЛоги приложения: {log_file}")
             info.append(f"  Существует: {'✓' if log_file.exists() else '✗'}")
 
-            winws2_log = Path(tempfile.gettempdir()) / "ZapretManager" / "winws2.log"
+            winws2_log = self.latest_winws2_log_file()
             info.append(f"Логи winws2.exe: {winws2_log}")
             info.append(f"  Существует: {'✓' if winws2_log.exists() else '✗'}")
+            if status.get("last_start_error"):
+                info.append(f"Последняя ошибка запуска: {status['last_start_error']}")
 
-            info.append(
-                f"\nПуть состояния обновлений: {Config.UPDATE_STATE_FILE}"
-            )
-            info.append(
-                f"Каталог загрузок обновлений: {Config.UPDATE_DOWNLOAD_DIR}"  # noqa: E501
-            )
+            missing_resources = self.zapret_manager.validate_active_preset_resources()
+            if missing_resources:
+                info.append("\nОтсутствующие ресурсы активного пресета:")
+                for path in missing_resources[:10]:
+                    info.append(f"  - {path}")
+                if len(missing_resources) > 10:
+                    info.append("  - ...")
+
+            gameguard_processes = self.detect_gameguard_processes()
+            gameguard_status = ", ".join(gameguard_processes) if gameguard_processes else "не найден"
+            info.append(f"\nGameGuard: {gameguard_status}")
+
+            info.append(f"\nПуть состояния обновлений: {Config.UPDATE_STATE_FILE}")
+            info.append(f"Путь runtime-состояния: {Config.RUNTIME_STATE_FILE}")
+            info.append(f"Каталог загрузок обновлений: {Config.UPDATE_DOWNLOAD_DIR}")  # noqa: E501
 
             info.append("\n=== Запущенные процессы ===")
             try:
@@ -958,6 +1030,9 @@ class ZapretTrayIcon(QSystemTrayIcon):
         )
 
         if reply == QMessageBox.Yes:
+            status = self.zapret_manager.get_status()
+            preset_name = status["preset"] if status["preset"] != "не выбран" else None
+            self.runtime_state.mark_shutdown(status["running"], preset_name)
             logger.info("Выход из приложения")
             self.hide()
             QApplication.quit()
