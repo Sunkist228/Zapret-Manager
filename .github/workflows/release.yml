@@ -93,7 +93,16 @@ jobs:
       - name: Generate CHANGELOG
         if: steps.bump.outputs.skip_release != 'true'
         run: |
-          python scripts/generate_changelog.py --version "${{ steps.bump.outputs.version }}"
+          $bumpType = "${{ github.event.inputs.bump_type }}"
+          if ([string]::IsNullOrWhiteSpace($bumpType)) {
+            $bumpType = "auto"
+          }
+
+          if ($bumpType -eq "auto") {
+            python scripts/generate_changelog.py --version "${{ steps.bump.outputs.version }}"
+          } else {
+            python scripts/generate_changelog.py --version "${{ steps.bump.outputs.version }}" --allow-other
+          }
 
       - name: Configure Git
         if: steps.bump.outputs.skip_release != 'true'

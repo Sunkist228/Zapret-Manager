@@ -191,13 +191,13 @@ def generate_changelog_entry(version: str, grouped_commits: Dict[str, List[Dict]
             lines.append(f"- {commit['description']} ({commit['hash']})")
         lines.append("")
 
-    # Other changes (optional, usually not included)
-    # if grouped_commits['other']:
-    #     lines.append("### Other Changes")
-    #     lines.append("")
-    #     for commit in grouped_commits['other']:
-    #         lines.append(f"- {commit['description']} ({commit['hash']})")
-    #     lines.append("")
+    # Other changes are used as a fallback for manually forced releases.
+    if grouped_commits['other']:
+        lines.append("### Другие изменения")
+        lines.append("")
+        for commit in grouped_commits['other']:
+            lines.append(f"- {commit['description']} ({commit['hash']})")
+        lines.append("")
 
     return "\n".join(lines)
 
@@ -255,6 +255,11 @@ def main():
         action="store_true",
         help="Print changelog entry without writing to file"
     )
+    parser.add_argument(
+        "--allow-other",
+        action="store_true",
+        help="Allow changelog generation from non-release conventional commits"
+    )
 
     args = parser.parse_args()
 
@@ -279,8 +284,14 @@ def main():
 
     # Check if there are any relevant commits
     total_relevant = len(grouped['breaking']) + len(grouped['features']) + len(grouped['fixes'])
+    if args.allow_other:
+        total_relevant += len(grouped['other'])
+
     if total_relevant == 0:
-        print("No relevant commits found (feat, fix, or breaking changes)", file=sys.stderr)
+        if args.allow_other:
+            print("No commits available for changelog", file=sys.stderr)
+        else:
+            print("No relevant commits found (feat, fix, or breaking changes)", file=sys.stderr)
         sys.exit(1)
 
     # Generate changelog entry
