@@ -13,6 +13,15 @@
 
 
 
+
+## [1.0.13] - 2026-04-27
+
+### Исправления
+
+- document release bump rule (3ff1f27)
+- guard release bump for runtime PRs (75a3e34)
+
+
 ## [1.0.12] - 2026-04-20
 
 ### Исправления
