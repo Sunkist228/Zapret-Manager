@@ -6,6 +6,8 @@ on:
       - opened
       - reopened
       - ready_for_review
+      - edited
+      - synchronize
 
 permissions:
   contents: read
@@ -13,6 +15,76 @@ permissions:
   pull-requests: write
 
 jobs:
+  release-bump-guard:
+    name: Release Bump Guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require release-bumping conventional commit for runtime changes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const releaseRelevantPaths = [
+              /^src\//,
+              /^build\//,
+              /^scripts\//,
+              /^requirements\.txt$/,
+              /^VERSION$/,
+            ];
+            const releaseBumpPattern =
+              /^(?:\[codex\]\s*)?(?:fix|feat)(?:\([^)]+\))?!?:\s.+|BREAKING[- ]CHANGE:/m;
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const releaseRelevantFiles = files
+              .map((file) => file.filename)
+              .filter((filename) =>
+                releaseRelevantPaths.some((pattern) => pattern.test(filename))
+              );
+
+            if (releaseRelevantFiles.length === 0) {
+              core.info("No release-relevant files changed.");
+              return;
+            }
+
+            const commits = await github.paginate(github.rest.pulls.listCommits, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const titleMatches = releaseBumpPattern.test(pr.title);
+            const commitMatches = commits.some((commit) =>
+              releaseBumpPattern.test(commit.commit.message)
+            );
+
+            if (titleMatches || commitMatches) {
+              core.info("Release-relevant PR contains a release-bumping title or commit.");
+              return;
+            }
+
+            core.setFailed(
+              [
+                "This PR changes release-relevant files but has no release-bumping conventional title/commit.",
+                "",
+                "Use one of:",
+                "- fix: describe the runtime fix",
+                "- feat: describe the user-visible feature",
+                "- fix(scope)!: describe breaking fix",
+                "- add BREAKING CHANGE: in a commit body",
+                "",
+                "Without this, scripts/bump_version.py returns skip_release=true and no GitHub Release is created.",
+                "",
+                `Release-relevant files: ${releaseRelevantFiles.join(", ")}`,
+              ].join("\n")
+            );
+
   assign-author:
     name: Assign PR Author
     runs-on: ubuntu-latest
