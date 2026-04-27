@@ -29,9 +29,16 @@ from PyQt5.QtCore import QSharedMemory
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from core.privileges import PrivilegesManager
+from core.runtime_state import RuntimeState
 from gui.tray_icon import ZapretTrayIcon
 from utils.config import Config
 from utils.logger import logger
+
+
+def should_restore_zapret_on_start(runtime_state: RuntimeState | None = None) -> bool:
+    """Return whether zapret should be restored on application startup."""
+    state = runtime_state or RuntimeState()
+    return state.should_restore_zapret()
 
 
 def main():
@@ -110,9 +117,15 @@ def main():
         app.setApplicationName(Config.APP_NAME)
         app.setApplicationVersion(Config.VERSION)
 
-        auto_start = "--autostart" in sys.argv[1:]
-        if auto_start:
-            logger.info("Autostart mode detected: zapret will start with the active preset")
+        autostart_mode = "--autostart" in sys.argv[1:]
+        auto_start = should_restore_zapret_on_start()
+        if autostart_mode:
+            logger.info(
+                "Autostart mode detected: restore saved zapret state = %s",
+                auto_start,
+            )
+        elif auto_start:
+            logger.info("Saved state requests zapret restore on startup")
 
         tray = ZapretTrayIcon(auto_start=auto_start)
         tray.show()

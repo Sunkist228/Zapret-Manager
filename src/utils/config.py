@@ -50,6 +50,7 @@ class Config:
 
     ACTIVE_PRESET = CONFIG_DIR / "preset-active.txt"
     CURRENT_PRESET_NAME = CONFIG_DIR / "current_preset.txt"
+    RUNTIME_STATE_FILE = CONFIG_DIR / "runtime-state.json"
 
     DEFAULT_PRESET_NAME = "Default (Discord, YouTube, Telegram)"
 
@@ -58,10 +59,18 @@ class Config:
     LEGACY_RUN_VALUE_NAMES = ["ZapretTray"]
 
     PROCESS_CHECK_TIMEOUT = 5
+    PROCESS_STATUS_CACHE_SECONDS = 10
     STATUS_UPDATE_INTERVAL = 3000
+    LOG_RETENTION_DAYS = 14
 
     WINDIVERT_SERVICES = ["WinDivert", "WinDivert14", "Monkey", "Monkey14"]
     CONFLICTING_SERVICES = ["GoodbyeDPI", "zapret", "discordfix_zapret", "winws1"]
+    GAMEGUARD_PROCESS_NAMES = [
+        "GameMon.des",
+        "GameGuard.des",
+        "GameGuard.exe",
+        "GameGuard64.exe",
+    ]
 
     UPDATE_ENABLED = True
     UPDATE_CHANNEL = "stable"
@@ -69,7 +78,7 @@ class Config:
 
     # GitHub Releases (primary update source)
     GITHUB_REPO_OWNER = "Sunkist228"
-    GITHUB_REPO_NAME = "zapret2"
+    GITHUB_REPO_NAME = "Zapret-Manager"
     GITHUB_API_BASE = "https://api.github.com"
 
     # Artifact servers (fallback update sources)
