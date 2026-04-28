@@ -144,9 +144,7 @@ class ZapretManager:
         """Return current preset name, tolerant to BOM."""
         try:
             if self.config.CURRENT_PRESET_NAME.exists():
-                name = self.config.CURRENT_PRESET_NAME.read_text(
-                    encoding="utf-8-sig"
-                ).strip()
+                name = self.config.CURRENT_PRESET_NAME.read_text(encoding="utf-8-sig").strip()
                 return name or None
         except Exception as exc:
             logger.debug("Не удалось прочитать текущий пресет: %s", exc)
@@ -212,11 +210,7 @@ class ZapretManager:
                 "в нем есть неподдерживаемые параметры."
             )
 
-        if (
-            "could not read" in text
-            or "cannot access file" in text
-            or "no such file" in text
-        ):
+        if "could not read" in text or "cannot access file" in text or "no such file" in text:
             return "В пресете указан отсутствующий файл ресурса."
 
         if "windivert" in text or return_code == 177:
@@ -269,10 +263,7 @@ class ZapretManager:
             if missing_resources:
                 preview = "\n".join(str(path) for path in missing_resources[:10])
                 extra = "" if len(missing_resources) <= 10 else "\n..."
-                message = (
-                    "В активном пресете отсутствуют ресурсы:\n"
-                    f"{preview}{extra}"
-                )
+                message = "В активном пресете отсутствуют ресурсы:\n" f"{preview}{extra}"
                 logger.error(message)
                 self._set_start_error(message)
                 return False

@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 
 from core.runtime_state import RuntimeState
-from main import should_restore_zapret_on_start
 
 
 def test_runtime_state_tracks_start_stop_and_shutdown(tmp_path):
@@ -31,11 +30,10 @@ def test_restore_start_enabled_only_when_last_exit_was_active(tmp_path):
         json.dumps({"zapret_was_active_on_exit": True}),
         encoding="utf-8",
     )
-    assert should_restore_zapret_on_start(RuntimeState(state_file)) is True
+    assert RuntimeState(state_file).should_restore_zapret() is True
 
     state_file.write_text(
         json.dumps({"zapret_was_active_on_exit": False}),
         encoding="utf-8",
     )
-    assert should_restore_zapret_on_start(RuntimeState(state_file)) is False
-
+    assert RuntimeState(state_file).should_restore_zapret() is False

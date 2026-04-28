@@ -16,6 +16,8 @@ class FakeResponse:
         self._payload = payload
         self._content = content
         self._raise_json = raise_json
+        self.text = content.decode("utf-8") if isinstance(content, bytes) else str(content)
+        self.headers = {}
 
     def json(self):
         if self._raise_json:
@@ -139,7 +141,47 @@ def test_download_update_verifies_checksum(temp_config):
     downloaded = manager.download_update(result.release)
 
     assert downloaded.file_path.exists()
+    assert downloaded.file_path.name == "zapret-manager-v1.0.1-windows-x64.exe"
     assert downloaded.file_path.read_bytes() == payload
+
+
+def test_github_release_prefers_versioned_asset_name(temp_config, monkeypatch):
+    monkeypatch.setattr(
+        config_module.Config,
+        "UPDATE_ENDPOINTS",
+        ({"type": "github", "url": "https://api.github.com"},),
+    )
+    payload = b"new version binary"
+    digest = hashlib.sha256(payload).hexdigest()
+    release_payload = {
+        "tag_name": "v1.0.1",
+        "published_at": "2026-04-17T10:00:00Z",
+        "body": "notes",
+        "assets": [
+            {
+                "name": "zapret-manager-v1.0.1-windows-x64.exe",
+                "browser_download_url": "https://github.test/download/app.exe",
+                "size": len(payload),
+            },
+            {
+                "name": "zapret-manager-v1.0.1-windows-x64.exe.sha256",
+                "browser_download_url": "https://github.test/download/app.exe.sha256",
+            },
+        ],
+    }
+    session = FakeSession(
+        [
+            FakeResponse(payload=release_payload),
+            FakeResponse(content=f"{digest}  zapret-manager-v1.0.1-windows-x64.exe"),
+        ]
+    )
+    manager = UpdateManager(session=session)
+
+    result = manager.check_for_updates(force=True)
+
+    assert result.update_available is True
+    assert result.release.download_url == "https://github.test/download/app.exe"
+    assert result.release.sha256 == digest
 
 
 def test_download_update_rejects_bad_checksum(temp_config):

@@ -10,7 +10,6 @@ from logging.handlers import TimedRotatingFileHandler
 import tempfile
 from datetime import datetime
 
-
 LOG_RETENTION_DAYS = 14
 LOG_DIR = Path(tempfile.gettempdir()) / "ZapretManager"
 
