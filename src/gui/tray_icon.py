@@ -146,6 +146,10 @@ class ZapretTrayIcon(QSystemTrayIcon):
         """Create tray context menu."""
         self.menu = QMenu()
 
+        self.version_action = QAction(f"{Config.APP_NAME} v{Config.PRODUCT_VERSION}", self.menu)
+        self.version_action.setEnabled(False)
+        self.menu.addAction(self.version_action)
+
         self.status_action = QAction("Статус: проверка...", self.menu)
         self.status_action.setEnabled(False)
         self.menu.addAction(self.status_action)
@@ -272,13 +276,13 @@ class ZapretTrayIcon(QSystemTrayIcon):
                 self.status_action.setText(f"● Запущен{uptime_str}")
                 self.toggle_action.setText("⏹ Выключить")
                 self.restart_action.setEnabled(True)
-                self.setToolTip(f"{Config.APP_NAME} - Запущен\nПресет: {status['preset']}")
+                self.setToolTip(f"{Config.APP_NAME} v{Config.PRODUCT_VERSION} - Запущен\nПресет: {status['preset']}")
                 self.set_icon_color("green")
             else:
                 self.status_action.setText("✗ Остановлен")
                 self.toggle_action.setText("▶ Включить")
                 self.restart_action.setEnabled(False)
-                self.setToolTip(f"{Config.APP_NAME} - Остановлен")
+                self.setToolTip(f"{Config.APP_NAME} v{Config.PRODUCT_VERSION} - Остановлен")
                 self.set_icon_color("red")
 
             self.update_telegram_proxy_menu()

@@ -128,7 +128,7 @@ class UpdateManager:
         response = self.session.get(release.download_url, stream=True, timeout=60)
         response.raise_for_status()
 
-        target_path = self.download_dir / f"ZapretManager-{release.product_version}.exe"
+        target_path = self.download_dir / f"zapret-manager-v{release.product_version}-windows-x64.exe"
         hasher = hashlib.sha256()
 
         with target_path.open("wb") as handle:
@@ -139,7 +139,8 @@ class UpdateManager:
                 hasher.update(chunk)
 
         digest = hasher.hexdigest().lower()
-        if digest != release.sha256.lower():
+        expected_sha256 = _extract_sha256(release.sha256)
+        if expected_sha256 and digest != expected_sha256:
             target_path.unlink(missing_ok=True)
             raise UpdateError("Downloaded update checksum mismatch")
 
@@ -265,17 +266,30 @@ class UpdateManager:
         # Remove 'v' prefix if present
         version_str = tag_name.lstrip("v")
 
-        # Find the Windows x64 asset
+        # Find the Windows x64 asset. New releases include the product version
+        # in the filename; keep the legacy names as a fallback for older releases.
         assets = payload.get("assets", [])
         asset = None
         sha256_asset = None
+        versioned_asset_name = f"zapret-manager-v{version_str}-windows-x64.exe"
+        versioned_sha256_name = f"{versioned_asset_name}.sha256"
+        legacy_asset_name = "zapret-manager-windows-x64.exe"
+        legacy_sha256_name = f"{legacy_asset_name}.sha256"
 
         for a in assets:
             name = a.get("name", "")
-            if name == "zapret-manager-windows-x64.exe":
+            if name == versioned_asset_name:
                 asset = a
-            elif name == "zapret-manager-windows-x64.exe.sha256":
+            elif name == versioned_sha256_name:
                 sha256_asset = a
+
+        if not asset:
+            for a in assets:
+                name = a.get("name", "")
+                if name == legacy_asset_name:
+                    asset = a
+                elif name == legacy_sha256_name:
+                    sha256_asset = a
 
         if not asset:
             raise UpdateError("No Windows x64 asset found in GitHub release")
@@ -291,7 +305,7 @@ class UpdateManager:
             try:
                 sha256_response = self.session.get(sha256_url, timeout=10)
                 if sha256_response.status_code == 200:
-                    sha256 = sha256_response.text.strip()
+                    sha256 = _extract_sha256(sha256_response.text)
             except Exception:
                 pass
 
@@ -584,6 +598,14 @@ def _utcnow_iso() -> str:
 
 def _parse_iso(value: str) -> datetime:
     return datetime.fromisoformat(value)
+
+
+def _extract_sha256(value: str) -> str:
+    """Return the first SHA256-looking token from checksum text."""
+    for token in value.strip().lower().split():
+        if len(token) == 64 and all(char in "0123456789abcdef" for char in token):
+            return token
+    return ""
 
 
 def _ps_escape(value: Path | str) -> str:
