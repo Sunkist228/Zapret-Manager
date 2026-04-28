@@ -60,6 +60,12 @@ def test_current_preset_name_ignores_utf8_bom(monkeypatch, tmp_path):
 
 
 def test_start_failure_diagnostics_are_actionable():
-    assert "несовместим" in ZapretManager.explain_start_failure("unknown option --dpi", 1)
-    assert "отсутствующий файл" in ZapretManager.explain_start_failure("cannot access file 'x'", 1)
-    assert "WinDivert" in ZapretManager.explain_start_failure("windivert: error opening filter", 177)
+    assert "несовместим" in ZapretManager.explain_start_failure(
+        "unknown option --dpi", 1
+    )
+    assert "отсутствующий файл" in ZapretManager.explain_start_failure(
+        "cannot access file 'x'", 1
+    )
+    assert "WinDivert" in ZapretManager.explain_start_failure(
+        "windivert: error opening filter", 177
+    )

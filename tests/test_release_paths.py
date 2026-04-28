@@ -17,7 +17,10 @@ def test_release_and_ci_use_single_build_dist_contract():
     build_script = (REPO_ROOT / "build" / "build.bat").read_text(encoding="utf-8")
 
     assert "zapret-manager-v${{ steps.bump.outputs.version }}-windows-x64.exe" in release_workflow
-    assert '$artifactName = "zapret-manager-v${{ steps.bump.outputs.version }}-windows-x64.exe"' in release_workflow
+    assert (
+        '$artifactName = "zapret-manager-v${{ steps.bump.outputs.version }}-windows-x64.exe"'
+        in release_workflow
+    )
     assert "build\\dist\\ZapretManager.exe" in release_workflow
     assert "build/dist/ZapretManager.exe" in jenkinsfile
     assert "dist\\ZapretManager.exe" in build_script

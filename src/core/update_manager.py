@@ -128,7 +128,9 @@ class UpdateManager:
         response = self.session.get(release.download_url, stream=True, timeout=60)
         response.raise_for_status()
 
-        target_path = self.download_dir / f"zapret-manager-v{release.product_version}-windows-x64.exe"
+        target_path = (
+            self.download_dir / f"zapret-manager-v{release.product_version}-windows-x64.exe"
+        )
         hasher = hashlib.sha256()
 
         with target_path.open("wb") as handle:

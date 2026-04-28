@@ -38,4 +38,3 @@ def test_restore_start_enabled_only_when_last_exit_was_active(tmp_path):
         encoding="utf-8",
     )
     assert should_restore_zapret_on_start(RuntimeState(state_file)) is False
-

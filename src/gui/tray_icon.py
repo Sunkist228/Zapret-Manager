@@ -276,7 +276,10 @@ class ZapretTrayIcon(QSystemTrayIcon):
                 self.status_action.setText(f"● Запущен{uptime_str}")
                 self.toggle_action.setText("⏹ Выключить")
                 self.restart_action.setEnabled(True)
-                self.setToolTip(f"{Config.APP_NAME} v{Config.PRODUCT_VERSION} - Запущен\nПресет: {status['preset']}")
+                self.setToolTip(
+                    f"{Config.APP_NAME} v{Config.PRODUCT_VERSION} - Запущен\n"
+                    f"Пресет: {status['preset']}"
+                )
                 self.set_icon_color("green")
             else:
                 self.status_action.setText("✗ Остановлен")
@@ -970,7 +973,9 @@ class ZapretTrayIcon(QSystemTrayIcon):
                     info.append("  - ...")
 
             gameguard_processes = self.detect_gameguard_processes()
-            gameguard_status = ", ".join(gameguard_processes) if gameguard_processes else "не найден"
+            gameguard_status = (
+                ", ".join(gameguard_processes) if gameguard_processes else "не найден"
+            )
             info.append(f"\nGameGuard: {gameguard_status}")
 
             info.append(f"\nПуть состояния обновлений: {Config.UPDATE_STATE_FILE}")
