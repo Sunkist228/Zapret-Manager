@@ -169,6 +169,27 @@ class ZapretManager:
             path = self.config.RESOURCES_DIR / path
         return path
 
+    def _resolve_blob_resource_path(self, value: str) -> Optional[Path]:
+        value = value.strip().strip("\"'")
+        if not value:
+            return None
+
+        if "@" in value:
+            return self._resolve_resource_path(value)
+
+        if ":" not in value:
+            return None
+
+        _, payload = value.split(":", 1)
+        payload = payload.strip().strip("\"'")
+        if not payload or payload.startswith(("0x", "$")):
+            return None
+
+        if payload.startswith("@"):
+            return self._resolve_resource_path(payload)
+
+        return None
+
     def validate_active_preset_resources(self) -> List[Path]:
         """Validate file references used by the active preset."""
         missing: List[Path] = []
@@ -192,7 +213,10 @@ class ZapretManager:
                     continue
 
                 value = line[len(option) :]
-                path = self._resolve_resource_path(value)
+                if option == "--blob=":
+                    path = self._resolve_blob_resource_path(value)
+                else:
+                    path = self._resolve_resource_path(value)
                 if path and not path.exists():
                     missing.append(path)
                 break
@@ -241,6 +265,7 @@ class ZapretManager:
         try:
             logger.info("=== Запуск zapret ===")
             self.last_start_error = None
+            self.config.prepare_runtime()
 
             if self.is_running():
                 logger.warning("winws2.exe уже запущен")

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from core.zapret_manager import ZapretManager
 from utils import config as config_module
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _configure_paths(monkeypatch, tmp_path):
@@ -36,6 +40,9 @@ def test_validate_active_preset_reports_missing_relative_resources(monkeypatch, 
                 "--hostlist=/lists/rooted.txt",
                 "--ipset=lists/missing-ipset.txt",
                 "--blob=tls:@bin/missing.bin",
+                "--blob=fake_default_udp:0x00000000000000000000000000000000",
+                "--blob=fake_default_udp",
+                "--lua-desync=fake:blob=fake_default_udp",
             ]
         ),
         encoding="utf-8",
@@ -45,8 +52,69 @@ def test_validate_active_preset_reports_missing_relative_resources(monkeypatch, 
 
     assert resources / "lists" / "missing-ipset.txt" in missing
     assert resources / "bin" / "missing.bin" in missing
+    assert resources / "fake_default_udp:0x00000000000000000000000000000000" not in missing
+    assert resources / "fake_default_udp" not in missing
     assert resources / "lists" / "present.txt" not in missing
     assert resources / "lists" / "rooted.txt" not in missing
+
+
+def test_default_preset_resource_validation_accepts_inline_blobs(monkeypatch, tmp_path):
+    resources = tmp_path / "resources"
+    config_dir = tmp_path / "config"
+    (resources / "bin").mkdir(parents=True)
+    (resources / "lists").mkdir()
+    (resources / "lua").mkdir()
+    config_dir.mkdir()
+    active_preset = config_dir / "preset-active.txt"
+    default_preset = (
+        REPO_ROOT / "src" / "resources" / "presets" / "Default (Discord, YouTube, Telegram).txt"
+    )
+    active_preset.write_text(
+        default_preset.read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+
+    for name in (
+        "tls_clienthello_www_google_com.bin",
+        "tls_clienthello_5.bin",
+        "tls_clienthello_7.bin",
+        "quic_initial_www_google_com.bin",
+        "quic_2.bin",
+    ):
+        (resources / "bin" / name).write_bytes(b"payload")
+
+    for name in (
+        "youtube.txt",
+        "ipset-youtube.txt",
+        "discord.txt",
+        "ipset-discord.txt",
+        "telegram.txt",
+        "ipset-telegram.txt",
+    ):
+        (resources / "lists" / name).write_text("example.com\n", encoding="utf-8")
+
+    for name in (
+        "zapret-lib.lua",
+        "zapret-antidpi.lua",
+        "zapret-auto.lua",
+        "custom_funcs.lua",
+        "custom_diag.lua",
+        "zapret-multishake.lua",
+    ):
+        (resources / "lua" / name).write_text("-- test\n", encoding="utf-8")
+
+    monkeypatch.setattr(config_module.Config, "RESOURCES_DIR", resources)
+    monkeypatch.setattr(config_module.Config, "BASE_DIR", REPO_ROOT)
+    monkeypatch.setattr(config_module.Config, "CONFIG_DIR", config_dir)
+    monkeypatch.setattr(config_module.Config, "ACTIVE_PRESET", active_preset)
+    monkeypatch.setattr(
+        config_module.Config,
+        "CURRENT_PRESET_NAME",
+        config_dir / "current_preset.txt",
+    )
+    monkeypatch.setattr(config_module.Config, "IS_FROZEN", True)
+
+    assert ZapretManager().validate_active_preset_resources() == []
 
 
 def test_current_preset_name_ignores_utf8_bom(monkeypatch, tmp_path):

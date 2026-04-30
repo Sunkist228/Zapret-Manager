@@ -35,8 +35,10 @@ def test_release_and_ci_use_single_build_dist_contract():
 
 
 def test_config_frozen_paths_point_to_bundled_resources(tmp_path):
+    local_app_data = tmp_path / "LocalAppData"
     script = f"""
 import sys
+import tempfile
 from pathlib import Path
 
 sys.frozen = True
@@ -45,14 +47,77 @@ sys._MEIPASS = r"{tmp_path}"
 from utils.config import Config
 
 base = Path(r"{tmp_path}")
+local_app_data = Path(r"{local_app_data}")
 assert Config.IS_FROZEN is True
 assert Config.BASE_DIR == base
-assert Config.RESOURCES_DIR == base / "resources"
-assert Config.BIN_DIR == base / "resources" / "bin"
-assert Config.WINWS2_EXE == base / "resources" / "bin" / "winws2.exe"
+assert Config.APP_DATA_DIR == local_app_data / "ZapretManager"
+assert Config.BUNDLED_RESOURCES_DIR == base / "resources"
+assert Config.RESOURCES_DIR == local_app_data / "ZapretManager" / "resources"
+assert Config.CONFIG_DIR == local_app_data / "ZapretManager" / "config"
+assert Config.CONFIG_DIR != Path(tempfile.gettempdir()) / "ZapretManager" / "config"
+assert Config.BIN_DIR == local_app_data / "ZapretManager" / "resources" / "bin"
+assert Config.WINWS2_EXE == local_app_data / "ZapretManager" / "resources" / "bin" / "winws2.exe"
 """
     env = os.environ.copy()
     env["PYTHONPATH"] = str(REPO_ROOT / "src")
+    env["LOCALAPPDATA"] = str(local_app_data)
+
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        capture_output=True,
+        text=True,
+        env=env,
+        timeout=10,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_frozen_runtime_preparation_copies_resources_and_migrates_temp_config(tmp_path):
+    bundle_root = tmp_path / "bundle"
+    bundled_resources = bundle_root / "resources"
+    local_app_data = tmp_path / "LocalAppData"
+    temp_root = tmp_path / "Temp"
+
+    for entry in ("bin", "presets", "lists", "lua", "windivert.filter"):
+        (bundled_resources / entry).mkdir(parents=True)
+        (bundled_resources / entry / "sentinel.txt").write_text(entry, encoding="utf-8")
+    (bundled_resources / "bin" / "winws2.exe").write_text("exe", encoding="utf-8")
+
+    legacy_config = temp_root / "ZapretManager" / "config"
+    legacy_config.mkdir(parents=True)
+    (legacy_config / "current_preset.txt").write_text("Default", encoding="utf-8")
+    (legacy_config / "runtime-state.json").write_text("{}", encoding="utf-8")
+
+    script = f"""
+import sys
+from pathlib import Path
+
+sys.frozen = True
+sys._MEIPASS = r"{bundle_root}"
+
+from utils.config import Config
+
+Config.prepare_runtime()
+
+app_data = Path(r"{local_app_data}") / "ZapretManager"
+
+def read_text(*parts):
+    return app_data.joinpath(*parts).read_text(encoding="utf-8")
+
+assert read_text("resources", "bin", "winws2.exe") == "exe"
+assert read_text("resources", "presets", "sentinel.txt") == "presets"
+assert read_text("resources", "lists", "sentinel.txt") == "lists"
+assert read_text("resources", "lua", "sentinel.txt") == "lua"
+assert read_text("resources", "windivert.filter", "sentinel.txt") == "windivert.filter"
+assert read_text("config", "current_preset.txt") == "Default"
+assert read_text("config", "runtime-state.json") == "{{}}"
+"""
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(REPO_ROOT / "src")
+    env["LOCALAPPDATA"] = str(local_app_data)
+    env["TEMP"] = str(temp_root)
+    env["TMP"] = str(temp_root)
 
     result = subprocess.run(
         [sys.executable, "-c", script],
