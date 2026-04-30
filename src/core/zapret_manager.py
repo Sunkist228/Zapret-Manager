@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+from core.privileges import PrivilegesManager
 from core.runtime_state import RuntimeState
 from utils.config import Config
 from utils.logger import create_winws2_log_file, logger
@@ -32,6 +33,7 @@ class ZapretManager:
         "--hostlist-exclude=",
         "--hostlist-auto=",
     )
+    REQUIRED_WINDIVERT_FILES = ("WinDivert.dll", "WinDivert32.sys", "WinDivert64.sys")
 
     def __init__(self):
         self.config = Config
@@ -139,6 +141,70 @@ class ZapretManager:
             )
         except Exception as exc:
             logger.warning("Не удалось включить TCP timestamps: %s", exc)
+
+    def _is_bfe_running(self) -> bool:
+        try:
+            result = subprocess.run(
+                ["sc", "query", "BFE"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="ignore",
+                creationflags=subprocess.CREATE_NO_WINDOW,
+                timeout=5,
+            )
+            return result.returncode == 0 and "RUNNING" in result.stdout
+        except Exception as exc:
+            logger.warning("Не удалось проверить службу BFE: %s", exc)
+            return False
+
+    def _ensure_bfe_running(self) -> bool:
+        if self._is_bfe_running():
+            return True
+
+        try:
+            logger.warning("Base Filtering Engine не запущен, пробуем запустить")
+            subprocess.run(
+                ["net", "start", "BFE"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="ignore",
+                creationflags=subprocess.CREATE_NO_WINDOW,
+                timeout=10,
+            )
+        except Exception as exc:
+            logger.warning("Не удалось запустить службу BFE: %s", exc)
+
+        return self._is_bfe_running()
+
+    def _check_start_prerequisites(self) -> Optional[str]:
+        if not PrivilegesManager.is_admin():
+            return (
+                "Недостаточно прав администратора для WinDivert. "
+                "Перезапустите Zapret Manager от имени администратора."
+            )
+
+        missing_windivert = [
+            name
+            for name in self.REQUIRED_WINDIVERT_FILES
+            if not (self.config.BIN_DIR / name).exists()
+        ]
+        if missing_windivert:
+            return (
+                "Отсутствуют файлы WinDivert в runtime-каталоге: "
+                f"{', '.join(missing_windivert)}. "
+                "Перезапустите Zapret Manager, чтобы восстановить ресурсы."
+            )
+
+        if not self._ensure_bfe_running():
+            return (
+                "Служба Base Filtering Engine (BFE) не запущена или недоступна. "
+                "WinDivert не может открыть фильтр без BFE. "
+                "Проверьте службу 'Base Filtering Engine' в Windows."
+            )
+
+        return None
 
     def get_current_preset_name(self) -> Optional[str]:
         """Return current preset name, tolerant to BOM."""
@@ -271,6 +337,12 @@ class ZapretManager:
                 logger.warning("winws2.exe уже запущен")
                 self.runtime_state.mark_zapret_active(self.get_current_preset_name())
                 return True
+
+            prerequisite_error = self._check_start_prerequisites()
+            if prerequisite_error:
+                logger.error(prerequisite_error)
+                self._set_start_error(prerequisite_error)
+                return False
 
             if not self.config.WINWS2_EXE.exists():
                 message = f"winws2.exe не найден: {self.config.WINWS2_EXE}"
