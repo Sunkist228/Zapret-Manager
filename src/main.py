@@ -49,8 +49,12 @@ def main():
         logger.info(f"Режим: {'EXE' if Config.IS_FROZEN else 'Python скрипт'}")
         logger.info(f"Базовая директория: {Config.BASE_DIR}")
 
+        Config.prepare_runtime()
+
         if Config.IS_FROZEN:
             logger.info(f"sys._MEIPASS: {sys._MEIPASS}")
+            logger.info(f"BUNDLED_RESOURCES_DIR: {Config.BUNDLED_RESOURCES_DIR}")
+            logger.info(f"APP_DATA_DIR: {Config.APP_DATA_DIR}")
             logger.info(f"RESOURCES_DIR: {Config.RESOURCES_DIR}")
             logger.info(f"BIN_DIR: {Config.BIN_DIR}")
             logger.info(f"WINWS2_EXE: {Config.WINWS2_EXE}")
