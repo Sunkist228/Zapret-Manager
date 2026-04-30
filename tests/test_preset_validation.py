@@ -14,6 +14,7 @@ def _configure_paths(monkeypatch, tmp_path):
     resources.mkdir()
     config_dir.mkdir()
     monkeypatch.setattr(config_module.Config, "RESOURCES_DIR", resources)
+    monkeypatch.setattr(config_module.Config, "BIN_DIR", resources / "bin")
     monkeypatch.setattr(config_module.Config, "BASE_DIR", tmp_path)
     monkeypatch.setattr(config_module.Config, "CONFIG_DIR", config_dir)
     monkeypatch.setattr(config_module.Config, "ACTIVE_PRESET", config_dir / "preset-active.txt")
@@ -125,6 +126,33 @@ def test_current_preset_name_ignores_utf8_bom(monkeypatch, tmp_path):
     )
 
     assert ZapretManager().get_current_preset_name() == "Default (Discord, YouTube, Telegram)"
+
+
+def test_start_prerequisites_report_missing_windivert(monkeypatch, tmp_path):
+    resources, _ = _configure_paths(monkeypatch, tmp_path)
+    (resources / "bin").mkdir()
+    monkeypatch.setattr("core.zapret_manager.PrivilegesManager.is_admin", lambda: True)
+
+    message = ZapretManager()._check_start_prerequisites()
+
+    assert message is not None
+    assert "WinDivert" in message
+    assert "BFE" not in message
+
+
+def test_start_prerequisites_report_unavailable_bfe(monkeypatch, tmp_path):
+    resources, _ = _configure_paths(monkeypatch, tmp_path)
+    (resources / "bin").mkdir()
+    for name in ZapretManager.REQUIRED_WINDIVERT_FILES:
+        (resources / "bin" / name).write_bytes(b"driver")
+
+    monkeypatch.setattr("core.zapret_manager.PrivilegesManager.is_admin", lambda: True)
+    monkeypatch.setattr(ZapretManager, "_ensure_bfe_running", lambda self: False)
+
+    message = ZapretManager()._check_start_prerequisites()
+
+    assert message is not None
+    assert "BFE" in message
 
 
 def test_start_failure_diagnostics_are_actionable():
